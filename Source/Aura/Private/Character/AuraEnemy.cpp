@@ -18,6 +18,13 @@ AAuraEnemy::AAuraEnemy()
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 }
 
+void AAuraEnemy::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
 void AAuraEnemy::HighlightActor()
 {
 	SetHighlighted(true);
@@ -40,6 +47,4 @@ void AAuraEnemy::BeginPlay()
 
 	GetMesh()->SetCustomDepthStencilValue(CustomDepthRed);
 	Weapon->SetCustomDepthStencilValue(CustomDepthRed);
-
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }

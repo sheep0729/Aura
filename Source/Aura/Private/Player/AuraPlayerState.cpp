@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AAuraPlayerState::AAuraPlayerState()
 {
