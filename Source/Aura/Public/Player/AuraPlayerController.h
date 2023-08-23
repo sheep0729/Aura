@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
-class IEnemy;
+class IEnemyInterface;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
@@ -33,6 +33,6 @@ private:
 
 	void CursorTrace();
 
-	IEnemy* LastActor;
-	IEnemy* ThisActor;
+	IEnemyInterface* LastActor;
+	IEnemyInterface* ThisActor;
 };

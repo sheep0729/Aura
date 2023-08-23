@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "AbilitySystem/AuraAbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "AuraCharacterBase.generated.h"
 
@@ -12,7 +13,7 @@ class UAuraAttributeSet;
 class UAuraAbilitySystemComponent;
 
 UCLASS(Abstract)
-class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
+class AURA_API AAuraCharacterBase : public ACharacter, public IAuraAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -21,7 +22,9 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	TObjectPtr<UAttributeSet> GetAttributeSet() const { return AttributeSet; }
+	virtual UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent() const override;
+
+	TObjectPtr<UAuraAttributeSet> GetAttributeSet() const { return AttributeSet; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -33,5 +36,8 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
-	TObjectPtr<UAttributeSet> AttributeSet;
+	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UAuraAttributeSet> AttributeSet;
 };

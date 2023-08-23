@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "Enemy.generated.h"
+#include "EnemyInterface.generated.h"
 
 UINTERFACE(MinimalAPI)
-class UEnemy : public UInterface
+class UEnemyInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class AURA_API IEnemy
+class AURA_API IEnemyInterface
 {
 	GENERATED_BODY()
 
