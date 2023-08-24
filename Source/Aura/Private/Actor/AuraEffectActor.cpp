@@ -21,12 +21,12 @@ void AAuraEffectActor::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AAuraEffectActor::ApplyEffectToClass(AActor* Target, TSubclassOf<UGameplayEffect> GameplayEffectClass)
+void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassOf<UGameplayEffect> GameplayEffectClass) const
 {
 	check(GameplayEffectClass);
 	
 	// UAbilitySystemComponent* TargetASC = Cast<IAbilitySystemInterface>(Target);
-	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target); // 同样适用于没有实现接口的情况
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor); // 同样适用于没有实现接口的情况
 	NULL_RETURN_VOID(TargetASC);
 	
 	FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();

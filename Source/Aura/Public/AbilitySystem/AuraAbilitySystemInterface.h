@@ -15,7 +15,7 @@ class UAuraAbilitySystemInterface : public UInterface
 	GENERATED_BODY()
 };
 
-class AURA_API IAuraAbilitySystemInterface : public IAbilitySystemInterface
+class AURA_API IAuraAbilitySystemInterface
 {
 	GENERATED_BODY()
 
