@@ -3,6 +3,8 @@
 
 #include "Character/AuraCharacterBase.h"
 
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+
 AAuraCharacterBase::AAuraCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -14,12 +16,12 @@ AAuraCharacterBase::AAuraCharacterBase()
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return GetAuraAbilitySystemComponent();
 }
 
 UAuraAbilitySystemComponent* AAuraCharacterBase::GetAuraAbilitySystemComponent() const
 {
-	return AuraAbilitySystemComponent;
+	return AbilitySystemComponent;
 }
 
 void AAuraCharacterBase::BeginPlay()

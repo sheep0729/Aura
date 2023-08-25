@@ -13,7 +13,7 @@ class UAuraAttributeSet;
 class UAuraAbilitySystemComponent;
 
 UCLASS(Abstract)
-class AURA_API AAuraCharacterBase : public ACharacter, public IAuraAbilitySystemInterface, public IAbilitySystemInterface
+class AURA_API AAuraCharacterBase : public ACharacter, public IAuraAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -33,10 +33,7 @@ protected:
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
-
-	UPROPERTY()
-	TObjectPtr<UAuraAbilitySystemComponent> AuraAbilitySystemComponent;
+	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAuraAttributeSet> AttributeSet;

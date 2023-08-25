@@ -10,12 +10,12 @@
 class UAuraAbilitySystemComponent;
 
 UINTERFACE(MinimalAPI)
-class UAuraAbilitySystemInterface : public UInterface
+class UAuraAbilitySystemInterface : public UAbilitySystemInterface
 {
 	GENERATED_BODY()
 };
 
-class AURA_API IAuraAbilitySystemInterface
+class AURA_API IAuraAbilitySystemInterface : public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
