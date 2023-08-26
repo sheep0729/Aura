@@ -41,7 +41,7 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	// 在这里能拿到 PlayerState ，见 APawn::PossessedBy
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
-	InitAbilityActorInfo();
+	InitAbility();
 }
 
 // Clients only
@@ -49,11 +49,13 @@ void AAuraCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	InitAbilityActorInfo();
+	InitAbility();
 }
 
-void AAuraCharacter::InitAbilityActorInfo()
+void AAuraCharacter::InitAbility()
 {
+	Super::InitAbility();
+	
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 

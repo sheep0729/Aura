@@ -22,7 +22,7 @@ void AAuraEnemy::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	InitAbility();
 }
 
 void AAuraEnemy::HighlightActor()
@@ -47,4 +47,11 @@ void AAuraEnemy::BeginPlay()
 
 	GetMesh()->SetCustomDepthStencilValue(CustomDepthRed);
 	Weapon->SetCustomDepthStencilValue(CustomDepthRed);
+}
+
+void AAuraEnemy::InitAbility()
+{
+	Super::InitAbility();
+
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }

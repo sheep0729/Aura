@@ -31,7 +31,8 @@ public:
 	{
 		bHighlighted = InBool;
 	}
-
+protected:
+	virtual void InitAbility() override;
 private:
 	bool bHighlighted;
 };
