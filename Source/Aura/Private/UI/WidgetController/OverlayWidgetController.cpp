@@ -24,11 +24,14 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::MaxHealthChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetManaAttribute()).AddUObject(this, &ThisClass::ManaChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetMaxManaAttribute()).AddUObject(this, &ThisClass::MaxManaChanged);
-	AbilitySystemComponent->GetOnEffectAssetTags().AddLambda([](const FGameplayTagContainer& AssetTags)
+	AbilitySystemComponent->GetOnEffectAssetTags().AddLambda([this](const FGameplayTagContainer& AssetTags)
 	{
 		for (const FGameplayTag& Tag : AssetTags)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 8, FColor::Cyan, FString::Format(TEXT("GE Asset Tag: {0}"), {Tag.ToString()}));
+			if (FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message")); !Tag.MatchesTag(MessageTag)) continue;
+			// GEngine->AddOnScreenDebugMessage(-1, 8, FColor::Cyan, FString::Format(TEXT("GE Asset Tag: {0}"), {Tag.ToString()}));
+			const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+			OnUIMessage.Broadcast(*Row);
 		}
 	});
 }

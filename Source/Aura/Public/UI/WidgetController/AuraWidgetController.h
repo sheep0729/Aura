@@ -51,7 +51,11 @@ public:
 	void InitWidgetController(const FWidgetControllerParams& WidgetControllerParams);
 	virtual void BroadcastInitialValues();
 	virtual void BindCallbacksToDependencies();
+
 protected:
+	template <typename T>
+	static T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
+
 	UPROPERTY(BlueprintReadOnly, Category = "Aura|WidgetController")
 	TObjectPtr<AAuraPlayerController> PlayerController;
 
@@ -64,3 +68,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Aura|WidgetController")
 	TObjectPtr<UAuraAttributeSet> Attributes;
 };
+
+template <typename T>
+T* UAuraWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag)
+{
+	return DataTable->FindRow<T>(Tag.GetTagName(), "");
+}
