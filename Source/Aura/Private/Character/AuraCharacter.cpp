@@ -4,12 +4,10 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
-#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
-#include "UI/WidgetController/AuraWidgetController.h"
 
 AAuraCharacter::AAuraCharacter()
 {
@@ -31,6 +29,13 @@ void AAuraCharacter::PostInitializeComponents()
 void AAuraCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+int32 AAuraCharacter::GetActorLevel()
+{
+	const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->GetActorLevel();
 }
 
 // Server Only
@@ -69,4 +74,6 @@ void AAuraCharacter::InitAbility()
 			AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
 		}
 	}
+
+	InitialAttributes(); // 也可以只在服务器上初始化
 }

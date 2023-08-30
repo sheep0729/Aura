@@ -5,9 +5,10 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 AAuraPlayerState::AAuraPlayerState()
+	:ActorLevel(1)
 {
 	NetUpdateFrequency = 100;
 
@@ -18,6 +19,13 @@ AAuraPlayerState::AAuraPlayerState()
 	AttributeSet = CreateDefaultSubobject<UAuraAttributeSet>("AttributeSet");
 }
 
+void AAuraPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ThisClass, ActorLevel);
+}
+
 UAbilitySystemComponent* AAuraPlayerState::GetAbilitySystemComponent() const
 {
 	return GetAuraAbilitySystemComponent();
@@ -26,4 +34,9 @@ UAbilitySystemComponent* AAuraPlayerState::GetAbilitySystemComponent() const
 UAuraAbilitySystemComponent* AAuraPlayerState::GetAuraAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AAuraPlayerState::OnRep_ActorLevel(int32 OldLevel)
+{
+	
 }
