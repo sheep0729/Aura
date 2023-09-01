@@ -39,7 +39,9 @@ void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, 
 	check(IsValid(GetAbilitySystemComponent()));
 	check(Effect);
 	
-	const FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(this); // 如果这里不设置，MMC 中拿不到 SourceObject
+	
 	const FGameplayEffectSpecHandle EffectSpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(Effect, Level, EffectContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data, GetAbilitySystemComponent());
 }
@@ -48,4 +50,5 @@ void AAuraCharacterBase::InitialAttributes() const
 {
 	ApplyEffectToSelf(DefaultPrimaryAttributesEffect, 1);
 	ApplyEffectToSelf(DefaultSecondaryAttributesEffect, 1);
+	ApplyEffectToSelf(DefaultVitalAttributesEffect, 1);
 }

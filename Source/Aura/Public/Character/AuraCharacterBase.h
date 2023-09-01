@@ -51,4 +51,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Aura|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesEffect;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Aura|Attributes")
+	TSubclassOf<UGameplayEffect> DefaultVitalAttributesEffect;
 };
