@@ -2,37 +2,40 @@
 
 
 #include "UI/HUD/AuraHUD.h"
-
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/Widget/AuraUserWidget.h" // 这行是需要的，Rider 有问题
-#include "UI/WidgetController/OverlayWidgetController.h"
+#include "UI/WidgetController/AttributeMenuWidgetController.h"
 
-UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController()
+void AAuraHUD::Init(AAuraPlayerController* PlayerController, AAuraPlayerState* PlayerState, UAuraAbilitySystemComponent* AbilitySystemComponent)
 {
-	if (OverlayWidgetController == nullptr)
+	WidgetControllerParams = {PlayerController, PlayerState, AbilitySystemComponent};
+	
+	for (const auto& Pair : WidgetClasses)
 	{
-		OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
-		OverlayWidgetController->InitWidgetController(OverlayWidgetControllerParams);
-		OverlayWidgetController->BindCallbacksToDependencies();
+		const auto& AuraWidget = Pair.Key;
+		const auto& WidgetClass = Pair.Value;
+		Widgets.Add(AuraWidget, CreateWidget<UAuraUserWidget>(GetWorld(), WidgetClass));
 	}
 
-	return OverlayWidgetController;
+	if (Widgets.Find(FAuraWidget::Overlay))
+	{
+		Widgets[FAuraWidget::Overlay]->AddToViewport();
+	}
 }
 
-void AAuraHUD::InitOverlay(AAuraPlayerController* PC, AAuraPlayerState* PS, UAuraAbilitySystemComponent* ASC, UAuraAttributeSet* AS)
+UAuraWidgetController* AAuraHUD::GetWidgetController(const FAuraWidget AuraWidget)
 {
-	checkf(OverlayWidgetClass, TEXT("OverlayWidgetClass == nullptr"));
-	checkf(OverlayWidgetControllerClass, TEXT("OverlayWidgetControllerClass == nullptr"));
-	
-	UAuraUserWidget* Widget = CreateWidget<UAuraUserWidget>(GetWorld(), OverlayWidgetClass);
+	if (!WidgetControllers.Find(AuraWidget))
+	{
+		const auto& Class = *WidgetControllerClasses.Find(AuraWidget);
+		check(Class);
+		
+		const auto& WidgetController = WidgetControllers.Add(AuraWidget, NewObject<UAuraWidgetController>(this, Class));
+		WidgetController->InitWidgetController(WidgetControllerParams);
+		WidgetController->BindCallbacksToDependencies();
+	}
 
-	OverlayWidgetControllerParams = FWidgetControllerParams{PC, PS, ASC, AS};
-	
-	UOverlayWidgetController* WidgetController = GetOverlayWidgetController();
-	Widget->SetWidgetController(WidgetController);
-	WidgetController->BroadcastInitialValues();
-	
-	Widget->AddToViewport();
+	return WidgetControllers[AuraWidget];
 }

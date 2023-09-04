@@ -1,40 +1,58 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "UI/WidgetController/AuraWidgetController.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraHUD.generated.h"
 
+class UAttributeMenuWidgetController;
 struct FWidgetControllerParams;
 class UOverlayWidgetController;
 class UAuraUserWidget;
 
+UENUM()
+enum class FAuraWidget
+{
+    None,
+    Overlay,
+    AttributeMenu,
+};
+
 UCLASS()
 class AURA_API AAuraHUD : public AHUD
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
+
 public:
-	UOverlayWidgetController* GetOverlayWidgetController();
+    template <typename T>
+    T* GetWidgetController(FAuraWidget AuraWidget);
 
-	void InitOverlay(AAuraPlayerController* PC, AAuraPlayerState* PS, UAuraAbilitySystemComponent* ASC, UAuraAttributeSet* AS);
-protected:
-	
+    void Init(AAuraPlayerController* PlayerController, AAuraPlayerState* PlayerState, UAuraAbilitySystemComponent* AbilitySystemComponent);
+
 private:
+    UAuraWidgetController* GetWidgetController(FAuraWidget AuraWidget);
 
-	UPROPERTY()
-	TObjectPtr<UAuraUserWidget> OverlayWidget;
-	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UAuraUserWidget> OverlayWidgetClass;
+    UPROPERTY()
+    TMap<FAuraWidget, UAuraUserWidget*> Widgets;
 
-	UPROPERTY()
-	TObjectPtr<UOverlayWidgetController> OverlayWidgetController;
-	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
+    UPROPERTY(EditAnywhere, Category = "Custom")
+    TMap<FAuraWidget, TSubclassOf<UAuraUserWidget>> WidgetClasses;
 
-	UPROPERTY()
-	FWidgetControllerParams OverlayWidgetControllerParams;
+    UPROPERTY()
+    TMap<FAuraWidget, UAuraWidgetController*> WidgetControllers;
+
+    UPROPERTY(EditAnywhere, Category = "Custom")
+    TMap<FAuraWidget, TSubclassOf<UAuraWidgetController>> WidgetControllerClasses;
+
+    UPROPERTY()
+    FWidgetControllerParams WidgetControllerParams;
 };
+
+template <typename T>
+T* AAuraHUD::GetWidgetController(const FAuraWidget AuraWidget)
+{
+    return Cast<T>(GetWidgetController(AuraWidget));
+}

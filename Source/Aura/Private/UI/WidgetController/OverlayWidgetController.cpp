@@ -10,6 +10,8 @@ void UOverlayWidgetController::BroadcastInitialValues()
 {
 	Super::BroadcastInitialValues();
 
+	const auto& Attributes = AbilitySystemComponent->GetSet<UAuraAttributeSet>();
+	
 	OnHealthChanged.Broadcast(Attributes->GetHealth());
 	OnMaxHealthChanged.Broadcast(Attributes->GetMaxHealth());
 	OnManaChanged.Broadcast(Attributes->GetMana());
@@ -20,6 +22,8 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	Super::BindCallbacksToDependencies();
 
+	const auto& Attributes = AbilitySystemComponent->GetSet<UAuraAttributeSet>();
+	
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::HandleMaxHealthChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetManaAttribute()).AddUObject(this, &ThisClass::HandleManaChanged);
@@ -47,13 +51,15 @@ void UOverlayWidgetController::HandleMaxManaChanged(const FOnAttributeChangeData
 	OnMaxManaChanged.Broadcast(Data.NewValue);
 }
 
-void UOverlayWidgetController::HandleMessageTags(const FGameplayTagContainer& MessageTags) const
+void UOverlayWidgetController::HandleMessageTags_Implementation(FGameplayTagContainer MessageTags)
 {
 	for (const FGameplayTag& Tag : MessageTags)
 	{
 		if (FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message")); !Tag.MatchesTag(MessageTag)) continue;
 		// GEngine->AddOnScreenDebugMessage(-1, 8, FColor::Cyan, FString::Format(TEXT("GE Asset Tag: {0}"), {Tag.ToString()}));
-		const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-		OnUIMessage.Broadcast(*Row);
+		if (const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag))
+		{
+			OnUIMessage.Broadcast(*Row);
+		}
 	}
 }

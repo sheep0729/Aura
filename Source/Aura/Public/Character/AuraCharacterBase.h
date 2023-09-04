@@ -26,8 +26,6 @@ public:
 
 	virtual UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent() const override;
 
-	TObjectPtr<UAuraAttributeSet> GetAttributeSet() const { return AttributeSet; }
-
 protected:
 	virtual void BeginPlay() override;
 
@@ -35,16 +33,13 @@ protected:
 
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, float Level) const;
 
-	void InitialAttributes() const;
+	void InitializeAttributes() const;
 
 	UPROPERTY(EditAnywhere, Category="Aura|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
-
-	UPROPERTY()
-	TObjectPtr<UAuraAttributeSet> AttributeSet;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Aura|Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesEffect;

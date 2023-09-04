@@ -4,6 +4,7 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -44,9 +45,8 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	// 在这里能拿到 PlayerState ，见 APawn::PossessedBy
-	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
-	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 	InitAbility();
+	InitializeAttributes(); // 也可以同时在 Client 上初始化，反正是复制的
 }
 
 // Clients only
@@ -54,7 +54,9 @@ void AAuraCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
-	InitAbility();
+	// 虽然理论上如果把 ASC 这个 UProperty 设置成 Replicated ，可以只在服务器上设置，但是
+	// 这会导致在 UI 绑定委托时需要等 ASC 复制过来再执行，会更麻烦。
+	InitAbility(); 
 }
 
 void AAuraCharacter::InitAbility()
@@ -63,17 +65,16 @@ void AAuraCharacter::InitAbility()
 	
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
-
+	
 	AbilitySystemComponent = AuraPlayerState->GetAuraAbilitySystemComponent();
-	AttributeSet = AuraPlayerState->GetAuraAttributeSet();
 
+	AbilitySystemComponent->InitAbilityActorInfo(AuraPlayerState, this);
+	
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
 		{
-			AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+			AuraHUD->Init(AuraPlayerController, AuraPlayerState, AbilitySystemComponent);
 		}
 	}
-
-	InitialAttributes(); // 也可以只在服务器上初始化
 }

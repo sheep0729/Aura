@@ -53,4 +53,3 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	FEffectContextData EffectContextData = FEffectContextData::GetEffectContextData(Data);
 }
-

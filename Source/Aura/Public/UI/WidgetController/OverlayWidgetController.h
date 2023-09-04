@@ -59,7 +59,9 @@ protected:
 	void HandleMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void HandleManaChanged(const FOnAttributeChangeData& Data) const;
 	void HandleMaxManaChanged(const FOnAttributeChangeData& Data) const;
-	void HandleMessageTags(const FGameplayTagContainer& MessageTags) const;
+
+	UFUNCTION(Client, Reliable)
+	void HandleMessageTags(FGameplayTagContainer MessageTags);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Aura|Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;

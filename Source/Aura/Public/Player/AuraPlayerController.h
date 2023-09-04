@@ -1,4 +1,4 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 #pragma once
 
@@ -19,9 +19,11 @@ class AURA_API AAuraPlayerController : public APlayerController
 public:
 	AAuraPlayerController();
 	virtual void PlayerTick(float DeltaTime) override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+
 private:
 	UPROPERTY(EditAnywhere, Category="Aura|Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;

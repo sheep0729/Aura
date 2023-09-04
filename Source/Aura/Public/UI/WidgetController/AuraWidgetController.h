@@ -22,8 +22,8 @@ struct FWidgetControllerParams
 	{
 	}
 
-	FWidgetControllerParams(AAuraPlayerController* PC, AAuraPlayerState* PS, UAuraAbilitySystemComponent* ASC, UAuraAttributeSet* AS)
-		: PlayerController(PC), PlayerState(PS), AbilitySystemComponent(ASC), Attributes(AS)
+	FWidgetControllerParams(AAuraPlayerController* PC, AAuraPlayerState* PS, UAuraAbilitySystemComponent* ASC)
+		: PlayerController(PC), PlayerState(PS), AbilitySystemComponent(ASC)
 	{
 	}
 
@@ -35,9 +35,6 @@ struct FWidgetControllerParams
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UAuraAttributeSet> Attributes;
 };
 
 UCLASS()
@@ -48,6 +45,8 @@ class AURA_API UAuraWidgetController : public UObject
 public:
 	UFUNCTION(BlueprintCallable) // TODO 考虑改掉这个函数
 	void InitWidgetController(const FWidgetControllerParams& WidgetControllerParams);
+
+	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
 	virtual void BindCallbacksToDependencies();
 
@@ -63,13 +62,15 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Aura|WidgetController")
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Aura|WidgetController")
-	TObjectPtr<UAuraAttributeSet> Attributes;
 };
 
 template <typename T>
 T* UAuraWidgetController::GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag)
 {
+	if (!IsValid(DataTable))
+	{
+		UE_LOG(LogTemp, Error, TEXT("[UAuraWidgetController::GetDataTableRowByTag] DataTable 无效"));
+		return nullptr;
+	}
 	return DataTable->FindRow<T>(Tag.GetTagName(), "");
 }

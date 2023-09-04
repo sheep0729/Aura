@@ -14,18 +14,8 @@ class AURA_API UAuraUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void SetWidgetController(UAuraWidgetController* InWidgetController)
-	{
-		WidgetController = InWidgetController;
-		OnWidgetControllerSet();
-	}
+	virtual void NativeConstruct() override;
 
-protected:
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnWidgetControllerSet();
-
-private:
-	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess))
-	TObjectPtr<UAuraWidgetController> WidgetController;
+	UFUNCTION(BlueprintNativeEvent)
+	void BindCallBacksToController();
 };

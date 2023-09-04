@@ -1,7 +1,6 @@
 // Copyright Yang Dong
 
 using UnrealBuildTool;
-using System.Collections.Generic;
 
 public class AuraEditorTarget : TargetRules
 {
@@ -11,6 +10,6 @@ public class AuraEditorTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 
-		ExtraModuleNames.AddRange( new string[] { "Aura" } );
+		ExtraModuleNames.AddRange( new[] { "Aura" } );
 	}
 }
