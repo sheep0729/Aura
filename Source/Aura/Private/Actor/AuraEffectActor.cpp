@@ -33,6 +33,9 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassO
 	const FGameplayEffectSpecHandle EffectSpec = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1, EffectContext);
 	const FActiveGameplayEffectHandle ActiveEffect = TargetASC->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data);
 
+	// 在客户端上这个回调默认不执行
+	if (!TargetASC->IsOwnerActorAuthoritative())TargetASC->OnGameplayEffectAppliedToSelf(TargetASC, *EffectSpec.Data, ActiveEffect);
+
 	if (EffectSpec.Data->Def->DurationPolicy == EGameplayEffectDurationType::Infinite && InfiniteGameplayEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
 	{
 		ActiveEffects.Add(ActiveEffect, TargetASC);
