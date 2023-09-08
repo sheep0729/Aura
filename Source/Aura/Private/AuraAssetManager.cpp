@@ -3,7 +3,7 @@
 
 #include "AuraAssetManager.h"
 
-#include "AbilitySystem/AuraAttributeSet.h"
+#include "AuraGameplayTags.h"
 
 UAuraAssetManager& UAuraAssetManager::Get()
 {
@@ -15,6 +15,5 @@ void UAuraAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
 
-	// FAuraGameplayTags::Initialize();
-	UAuraAttributeSet::InitializeAttributeTag();
+	FAuraGameplayTags::InitializeAuraGameplayTags();
 }

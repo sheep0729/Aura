@@ -3,9 +3,56 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include <functional>
+
+
 #include "AbilitySystem/AuraAttributeSet.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "Net/UnrealNetwork.h"
+#include "AbilitySystem/Ability/AuraGameplayAbility.h"
+#include "Algo/ForEach.h"
+
+void UAuraAbilitySystemComponent::GiveAbility(const TSubclassOf<UGameplayAbility> Ability, const int32 Level)
+{
+	FGameplayAbilitySpec AbilitySpec{Ability, Level};
+	if (const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+	{
+		AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->GetStartupInputTag());
+		GiveAbility(AbilitySpec);
+	}
+}
+
+void UAuraAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InputTag)
+{
+}
+
+void UAuraAbilitySystemComponent::OnAbilityInputHolding(const FGameplayTag& InputTag)
+{
+	FALSE_RETURN_VOID(InputTag.IsValid());
+
+	for (auto& AbilitySpec : GetActivatableAbilities())
+	{
+		if (IsAbilitySpecMatchInputTag(AbilitySpec, InputTag))
+		{
+			AbilitySpecInputPressed(AbilitySpec);
+			if (!AbilitySpec.IsActive())
+			{
+				TryActivateAbility(AbilitySpec.Handle);
+			}
+		}
+	}
+}
+
+void UAuraAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& InputTag)
+{
+	FALSE_RETURN_VOID(InputTag.IsValid());
+
+	for (auto& AbilitySpec : GetActivatableAbilities())
+	{
+		if (IsAbilitySpecMatchInputTag(AbilitySpec, InputTag))
+		{
+			AbilitySpecInputReleased(AbilitySpec);
+		}
+	}
+}
 
 void UAuraAbilitySystemComponent::InitializeComponent()
 {
@@ -31,4 +78,9 @@ void UAuraAbilitySystemComponent::OnEffectApplied(UAbilitySystemComponent* Abili
 	EffectSpec.GetAllAssetTags(AssetTags);
 
 	OnEffectAssetTags.Broadcast(AssetTags);
+}
+
+bool UAuraAbilitySystemComponent::IsAbilitySpecMatchInputTag(const FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& InputTag)
+{
+	return AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag);
 }

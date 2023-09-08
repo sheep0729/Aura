@@ -2,6 +2,8 @@
 
 
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+
+#include "AuraGameplayTags.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "Marco.h"
 #include "AbilitySystem/AuraAttributeSet.h"
@@ -36,17 +38,17 @@ UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidge
 
 const TArray<FGameplayTag>& UAuraAbilitySystemLibrary::GetPrimaryAttributeTags()
 {
-	return UAuraAttributeSet::GetPrimaryAttributeTags();
+	return FAuraGameplayTags::GetPrimaryAttributeTags();
 }
 
 const TArray<FGameplayTag>& UAuraAbilitySystemLibrary::GetSecondaryAttributeTags()
 {
-	return UAuraAttributeSet::GetSecondaryAttributeTags();
+	return FAuraGameplayTags::GetSecondaryAttributeTags();
 }
 
 const FGameplayAttribute& UAuraAbilitySystemLibrary::GetAttributesByTag(const FGameplayTag& AttributeTag)
 {
-	const auto AttributePtr = UAuraAttributeSet::GetAttributeMap().Find(AttributeTag);
+	const auto AttributePtr = FAuraGameplayTags::GetAttributeMap().Find(AttributeTag);
 	check(AttributePtr);
 	return *AttributePtr;
 }

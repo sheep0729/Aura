@@ -27,10 +27,23 @@ UAuraAbilitySystemComponent* AAuraCharacterBase::GetAuraAbilitySystemComponent()
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-void AAuraCharacterBase::InitAbility()
+void AAuraCharacterBase::InitAbilitySystem()
+{
+	InitAbilitySystemComponent();
+	NULL_RETURN_VOID(GetAuraAbilitySystemComponent());
+	
+	InitHUD();
+
+	if (HasAuthority())
+	{
+		InitAttributes(); // 也可以同时在 Client 上初始化，反正是复制的
+		InitAbilities();
+	}
+}
+
+void AAuraCharacterBase::InitAbilitySystemComponent()
 {
 }
 
@@ -38,17 +51,30 @@ void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, 
 {
 	check(IsValid(GetAbilitySystemComponent()));
 	check(Effect);
-	
+
 	FGameplayEffectContextHandle EffectContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
 	EffectContextHandle.AddSourceObject(this); // 如果这里不设置，MMC 中拿不到 SourceObject
-	
+
 	const FGameplayEffectSpecHandle EffectSpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(Effect, Level, EffectContextHandle);
 	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data, GetAbilitySystemComponent());
 }
 
-void AAuraCharacterBase::InitializeAttributes() const
+void AAuraCharacterBase::InitAttributes() const
 {
-	ApplyEffectToSelf(DefaultPrimaryAttributesEffect, 1);
-	ApplyEffectToSelf(DefaultSecondaryAttributesEffect, 1);
-	ApplyEffectToSelf(DefaultVitalAttributesEffect, 1);
+	for (const auto& AttributeEffect : DefaultAttributeEffects)
+	{
+		ApplyEffectToSelf(AttributeEffect, 1);
+	}
+}
+
+void AAuraCharacterBase::InitHUD()
+{
+}
+
+void AAuraCharacterBase::InitAbilities()
+{
+	for (const auto& Ability : DefaultAbilities)
+	{
+		AbilitySystemComponent->GiveAbility(Ability, 1);
+	}
 }

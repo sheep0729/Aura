@@ -40,7 +40,7 @@ public:
 	}
 
 protected:
-	virtual void InitAbility() override;
+	virtual void InitAbilitySystemComponent() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aura|Character Class Defults")
 	int32 ActorLevel;

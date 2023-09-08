@@ -2,8 +2,7 @@
 
 
 #include "AbilitySystem/AttributeInfo.h"
-
-#include "AbilitySystem/AuraAttributeSet.h"
+#include "AuraGameplayTags.h"
 #include "UObject/ObjectSaveContext.h"
 
 const FAuraAttributeInfo FAuraAttributeInfo::Empty{};
@@ -44,7 +43,7 @@ const FAuraAttributeInfo& UAttributeInfo::GetAttributeInfo(const FGameplayAttrib
 
 void UAttributeInfo::SetDefaultData()
 {
-	for (const auto& Pair : UAuraAttributeSet::GetAttributeMap())
+	for (const auto& Pair : FAuraGameplayTags::GetAttributeMap())
 	{
 		auto AttributeInfoPtr = AttributeInfos.Find(Pair.Value);
 		if (!AttributeInfoPtr)

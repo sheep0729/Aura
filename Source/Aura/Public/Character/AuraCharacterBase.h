@@ -9,6 +9,7 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 class UAttributeSet;
 class UAuraAttributeSet;
@@ -29,24 +30,30 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void InitAbility();
-
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, float Level) const;
 
-	void InitializeAttributes() const;
+	void InitAbilitySystem();
 
-	UPROPERTY(EditAnywhere, Category="Aura|Combat")
+	virtual void InitAbilitySystemComponent();
+
+	virtual void InitAttributes() const;
+
+	virtual void InitHUD();
+
+	virtual void InitAbilities();
+
+	UPROPERTY(EditAnywhere, Category="Custom|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Aura|Attributes")
-	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesEffect;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom|Attribute")
+	TArray<TSubclassOf<UGameplayEffect>> DefaultAttributeEffects;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Aura|Attributes")
-	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesEffect;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom|Ability")
+	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Aura|Attributes")
-	TSubclassOf<UGameplayEffect> DefaultVitalAttributesEffect;
+private:
+	
 };
