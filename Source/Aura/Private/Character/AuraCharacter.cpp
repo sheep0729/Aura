@@ -4,8 +4,13 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
+#include "NavigationPath.h"
+#include "NavigationSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Algo/ForEach.h"
+#include "Components/SplineComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Input/AuraEnhancedInputComponent.h"
 #include "Player/AuraPlayerController.h"
@@ -13,7 +18,14 @@
 #include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
+	: AutoMovementDestination(FVector::Zero()),
+	  FollowTime(0),
+	  ShortPressThreshold(.5),
+	  bAutoMoving(false),
+	  AutoRunAcceptanceRadius(50)
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator{0, 400, 0};
 	GetCharacterMovement()->bConstrainToPlane = true;
@@ -22,6 +34,9 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+
+	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
+	Spline->bDrawDebug = false;
 }
 
 void AAuraCharacter::PostInitializeComponents()
@@ -36,7 +51,7 @@ void AAuraCharacter::BeginPlay()
 	if (const auto PlayerController = Cast<APlayerController>(GetController()))
 	{
 		check(InputMappingContext);
-		
+
 		if (const TObjectPtr<UEnhancedInputLocalPlayerSubsystem> Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(InputMappingContext, 0);
@@ -44,10 +59,20 @@ void AAuraCharacter::BeginPlay()
 	}
 }
 
+void AAuraCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (bAutoMoving)
+	{
+		AutoMove();
+	}
+}
+
 void AAuraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
+
 	UAuraEnhancedInputComponent* AuraEnhancedInputComponent = CastChecked<UAuraEnhancedInputComponent>(PlayerInputComponent);
 
 	AuraEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
@@ -129,11 +154,66 @@ void AAuraCharacter::HandleAbilityInput_Pressed(const FGameplayTag InputTag)
 void AAuraCharacter::HandleAbilityInput_Holding(const FGameplayTag InputTag)
 {
 	NULL_RETURN_VOID(GetAuraAbilitySystemComponent());
-	GetAuraAbilitySystemComponent()->OnAbilityInputHolding(InputTag);
+
+	const auto PlayerController = Cast<AAuraPlayerController>(GetController());
+	NULL_RETURN_VOID(PlayerController);
+
+	if (!InputTag.MatchesTagExact(FAuraGameplayTags::GetInputTagLMB()) || PlayerController->IsTargeting())
+	{
+		GetAuraAbilitySystemComponent()->OnAbilityInputHolding(InputTag);
+	}
+	else
+	{
+		FollowTime += GetWorld()->GetDeltaSeconds();
+
+
+		if (PlayerController->GetCursorHit().bBlockingHit)
+		{
+			AutoMovementDestination = PlayerController->GetCursorHit().ImpactPoint;
+		}
+
+		const FVector Direction = (AutoMovementDestination - GetActorLocation()).GetSafeNormal();
+		AddMovementInput(Direction);
+	}
 }
 
 void AAuraCharacter::HandleAbilityInput_Released(const FGameplayTag InputTag)
 {
 	NULL_RETURN_VOID(GetAuraAbilitySystemComponent());
-	GetAuraAbilitySystemComponent()->OnAbilityInputReleased(InputTag);
+
+	const auto PlayerController = Cast<AAuraPlayerController>(GetController());
+	NULL_RETURN_VOID(PlayerController);
+
+	if (!InputTag.MatchesTagExact(FAuraGameplayTags::GetInputTagLMB()) || PlayerController->IsTargeting())
+	{
+		GetAuraAbilitySystemComponent()->OnAbilityInputReleased(InputTag);
+	}
+	else if (FollowTime < ShortPressThreshold)
+	{
+		if (UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), AutoMovementDestination))
+		{
+			Spline->ClearSplinePoints();
+			Algo::ForEach(NavigationPath->PathPoints, [this](const FVector& Location) { Spline->AddSplinePoint(Location, ESplineCoordinateSpace::World); });
+			Spline->SetDrawDebug(true);
+			AutoMovementDestination = NavigationPath->PathPoints.Last(0);
+			bAutoMoving = true;
+		}
+	}
+
+	FollowTime = 0;
+}
+
+void AAuraCharacter::AutoMove()
+{
+	const FVector Location = Spline->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World);
+	const FVector Direction = Spline->FindDirectionClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World);
+
+	AddMovementInput(Direction);
+
+	if (const float Distance = (Location - AutoMovementDestination).Length(); Distance < AutoRunAcceptanceRadius)
+	{
+		bAutoMoving = false;
+		Spline->ClearSplinePoints();
+		Spline->SetDrawDebug(false);
+	}
 }

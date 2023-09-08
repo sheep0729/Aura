@@ -4,8 +4,12 @@
 #include "Player/AuraPlayerController.h"
 
 #include "Interaction/EnemyInterface.h"
+#include "Kismet/KismetSystemLibrary.h"
 
-AAuraPlayerController::AAuraPlayerController(): LastActor(nullptr), ThisActor(nullptr)
+AAuraPlayerController::AAuraPlayerController()
+	: LastActor(nullptr),
+	  ThisActor(nullptr)
+
 {
 	bReplicates = true;
 }
@@ -28,11 +32,14 @@ void AAuraPlayerController::BeginPlay()
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputModeData.SetHideCursorDuringCapture(false);
 	SetInputMode(InputModeData);
+
+#if WITH_EDITOR
+	UKismetSystemLibrary::ExecuteConsoleCommand(this, "show splines", this);
+#endif
 }
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit)
 	{

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
-#include "AuraAttributeSet.h"
 #include "GameplayTagContainer.h"
 #include "Marco.h"
 #include "AuraAbilitySystemComponent.generated.h"
@@ -22,12 +21,15 @@ public:
 	void OnAbilityInputPressed(const FGameplayTag& InputTag);
 	void OnAbilityInputHolding(const FGameplayTag& InputTag);
 	void OnAbilityInputReleased(const FGameplayTag& InputTag);
+	virtual FActiveGameplayEffectHandle ApplyGameplayEffectSpecToSelf(const FGameplayEffectSpec& GameplayEffect, FPredictionKey PredictionKey) override;
 	
 	REF_GETTER(OnEffectAssetTags);
 
 protected:
 	virtual void InitializeComponent() override;
 	virtual void UninitializeComponent() override;
+
+	UFUNCTION(Client, Reliable)
 	void OnEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 
 	FOnEffectAssetTagsSingature OnEffectAssetTags;

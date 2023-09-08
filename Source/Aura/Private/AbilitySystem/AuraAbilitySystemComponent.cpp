@@ -54,6 +54,11 @@ void UAuraAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& Inp
 	}
 }
 
+FActiveGameplayEffectHandle UAuraAbilitySystemComponent::ApplyGameplayEffectSpecToSelf(const FGameplayEffectSpec& GameplayEffect, FPredictionKey PredictionKey)
+{
+	return Super::ApplyGameplayEffectSpecToSelf(GameplayEffect, PredictionKey);
+}
+
 void UAuraAbilitySystemComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
@@ -72,7 +77,7 @@ void UAuraAbilitySystemComponent::UninitializeComponent()
 }
 
 
-void UAuraAbilitySystemComponent::OnEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
+void UAuraAbilitySystemComponent::OnEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle)
 {
 	FGameplayTagContainer AssetTags;
 	EffectSpec.GetAllAssetTags(AssetTags);
