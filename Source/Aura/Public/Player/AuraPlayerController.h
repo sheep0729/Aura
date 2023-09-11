@@ -30,18 +30,14 @@ public:
 
 	CONST_REF_GETTER(CursorHit);
 
+	bool IsTargetingEnemy() const;
+
 	VALUE_GETTER(PathFollowingComponent);
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	// Highlight
-	
-	void CursorTrace();
 
-	FHitResult CursorHit;
-	IEnemyInterface* LastActor;
-	IEnemyInterface* ThisActor;
 	UPROPERTY()
 	TObjectPtr<UPathFollowingComponent> PathFollowingComponent;
 };

@@ -8,8 +8,8 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 
-AAuraEnemy::AAuraEnemy()
-	:ActorLevel(1)
+AAuraEnemy::AAuraEnemy(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer), ActorLevel(1)
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
@@ -24,7 +24,7 @@ void AAuraEnemy::PostInitializeComponents()
 	InitAbilitySystem();
 }
 
-void AAuraEnemy::HighlightActor()
+void AAuraEnemy::HighlightActor(UPrimitiveComponent* TouchedComponent)
 {
 	SetHighlighted(true);
 
@@ -32,7 +32,7 @@ void AAuraEnemy::HighlightActor()
 	Weapon->SetRenderCustomDepth(true);
 }
 
-void AAuraEnemy::UnHighlightActor()
+void AAuraEnemy::UnhighlightActor(UPrimitiveComponent* TouchedComponent)
 {
 	SetHighlighted(false);
 
@@ -44,8 +44,11 @@ void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetMesh()->SetCustomDepthStencilValue(CustomDepthRed);
-	Weapon->SetCustomDepthStencilValue(CustomDepthRed);
+	GetMesh()->SetCustomDepthStencilValue(CustomDepth::Red);
+	Weapon->SetCustomDepthStencilValue(CustomDepth::Red);
+
+	GetCapsuleComponent()->OnBeginCursorOver.AddDynamic(this, &ThisClass::HighlightActor);
+	GetCapsuleComponent()->OnEndCursorOver.AddDynamic(this, &ThisClass::UnhighlightActor);
 }
 
 void AAuraEnemy::InitAbilitySystemComponent()

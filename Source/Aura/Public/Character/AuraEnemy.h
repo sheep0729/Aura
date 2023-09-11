@@ -13,11 +13,14 @@ class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 	GENERATED_BODY()
 
 public:
-	AAuraEnemy();
+	AAuraEnemy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	virtual void PostInitializeComponents() override;
 
-	virtual void HighlightActor() override;
-	virtual void UnHighlightActor() override;
+	UFUNCTION()
+	virtual void HighlightActor(UPrimitiveComponent* TouchedComponent) override;
+	
+	UFUNCTION()
+	virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) override;
 
 	virtual void BeginPlay() override;
 

@@ -18,6 +18,6 @@ class AURA_API IEnemyInterface
 
 public:
 
-	virtual void HighlightActor() = 0;
-	virtual void UnHighlightActor() = 0;
+	virtual void HighlightActor(UPrimitiveComponent* TouchedComponent) = 0;
+	virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) = 0;
 };
