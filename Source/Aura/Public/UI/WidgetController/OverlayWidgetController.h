@@ -8,7 +8,7 @@
 
 class UAuraUserWidget;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSingature, float, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAttributeChangedSingature, float, NewValue, bool, bInit);
 
 USTRUCT()
 struct FUIWidgetRow : public FTableRowBase

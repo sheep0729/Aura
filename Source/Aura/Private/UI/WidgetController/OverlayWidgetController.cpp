@@ -33,22 +33,22 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 void UOverlayWidgetController::HandleHealthChanged(const FOnAttributeChangeData& Data) const
 {
-	OnHealthChanged.Broadcast(Data.NewValue);
+	OnHealthChanged.Broadcast(Data.NewValue, false);
 }
 
 void UOverlayWidgetController::HandleMaxHealthChanged(const FOnAttributeChangeData& Data) const
 {
-	OnMaxHealthChanged.Broadcast(Data.NewValue);
+	OnMaxHealthChanged.Broadcast(Data.NewValue, false);
 }
 
 void UOverlayWidgetController::HandleManaChanged(const FOnAttributeChangeData& Data) const
 {
-	OnManaChanged.Broadcast(Data.NewValue);
+	OnManaChanged.Broadcast(Data.NewValue, false);
 }
 
 void UOverlayWidgetController::HandleMaxManaChanged(const FOnAttributeChangeData& Data) const
 {
-	OnMaxManaChanged.Broadcast(Data.NewValue);
+	OnMaxManaChanged.Broadcast(Data.NewValue, false);
 }
 
 void UOverlayWidgetController::HandleMessageTags_Implementation(FGameplayTagContainer MessageTags)
