@@ -3,9 +3,6 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
-#include <functional>
-
-
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Ability/AuraGameplayAbility.h"
 #include "Algo/ForEach.h"
