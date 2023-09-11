@@ -17,9 +17,17 @@ class AURA_API UAuraInputConfig : public UDataAsset
 
 public:
 	const UInputAction* GetAbilityInputAction(const FGameplayTag& GameplayTag, bool bLogNotFound = false) const;
+	const UInputAction* GetNativeInputAction(const FGameplayTag& GameplayTag, bool bLogNotFound = false) const;
 
 	CONST_REF_GETTER(AbilityInputActions);
 protected:
+
+	const UInputAction* GetInputAction(const TMap<FGameplayTag, UInputAction*>& InputActions, const FGameplayTag& GameplayTag, bool bLogNotFound = false) const;
+
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TMap<FGameplayTag, UInputAction*> AbilityInputActions;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TMap<FGameplayTag, UInputAction*> NativeInputActions;
 };

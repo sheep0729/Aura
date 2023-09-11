@@ -18,10 +18,26 @@ public:
 	template <typename UserClass, typename PressedFuncType, typename HoldingFuncType, typename ReleasedFuncType>
 	void BindAbilityActions(const UAuraInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, HoldingFuncType HoldingFunc,
 	                        ReleasedFuncType ReleasedFunc);
+
+	template <class UserClass, typename FuncType>
+	void BindNativeAction(const UAuraInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object,
+	                      FuncType Func, bool bLogIfNotFound = false);
 };
 
+template <class UserClass, typename FuncType>
+void UAuraEnhancedInputComponent::BindNativeAction(const UAuraInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent,
+                                                   UserClass* Object, FuncType Func, bool bLogIfNotFound)
+{
+	check(InputConfig);
+	if (const UInputAction* IA = InputConfig->GetNativeInputAction(InputTag, bLogIfNotFound))
+	{
+		BindAction(IA, TriggerEvent, Object, Func);
+	}
+}
+
 template <typename UserClass, typename PressedFuncType, typename HoldingFuncType, typename ReleasedFuncType>
-void UAuraEnhancedInputComponent::BindAbilityActions(const UAuraInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, HoldingFuncType HoldingFunc,
+void UAuraEnhancedInputComponent::BindAbilityActions(const UAuraInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc,
+                                                     HoldingFuncType HoldingFunc,
                                                      ReleasedFuncType ReleasedFunc)
 {
 	check(InputConfig);

@@ -57,7 +57,8 @@ void AAuraCharacter::BeginPlay()
 	{
 		check(InputMappingContext);
 
-		if (const TObjectPtr<UEnhancedInputLocalPlayerSubsystem> Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (const TObjectPtr<UEnhancedInputLocalPlayerSubsystem> Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(
+			PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(InputMappingContext, 0);
 		}
@@ -80,9 +81,14 @@ void AAuraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	UAuraEnhancedInputComponent* AuraEnhancedInputComponent = CastChecked<UAuraEnhancedInputComponent>(PlayerInputComponent);
 
-	AuraEnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
+	AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::GetInputTagMove(), ETriggerEvent::Triggered, this, &ThisClass::Move);
+	AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::GetInputTagShift(), ETriggerEvent::Started, this,
+	                                             &ThisClass::ShiftPressed);
+	AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::GetInputTagShift(), ETriggerEvent::Completed, this,
+	                                             &ThisClass::ShiftReleased);
 
-	AuraEnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::HandleAbilityInput_Pressed, &ThisClass::HandleAbilityInput_Holding, &ThisClass::HandleAbilityInput_Released);
+	AuraEnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::HandleAbilityInput_Pressed, &ThisClass::HandleAbilityInput_Holding,
+	                                               &ThisClass::HandleAbilityInput_Released);
 }
 
 int32 AAuraCharacter::GetActorLevel()

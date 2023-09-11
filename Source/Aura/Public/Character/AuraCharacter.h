@@ -35,24 +35,38 @@ public:
 	/* Combat Interface */
 	virtual int32 GetActorLevel() override;
 	/* Combat Interface */
+
+	AAuraPlayerController* GetAuraPlayerController() const
+	{
+		return Cast<AAuraPlayerController>(GetController());
+	}
+
+	AAuraPlayerController* GetAuraPlayerControllerChecked() const
+	{
+		return CastChecked<AAuraPlayerController>(GetController());
+	}
+
+	virtual void OnRep_Controller() override;
+
 protected:
 	virtual void InitAbilitySystemComponent() override;
 	virtual void InitHUD() override;
 
+	bool IsAbilityInput(const FGameplayTag& InputTag) const;
+
 private:
 	void Move(const FInputActionValue& InputActionValue);
+	void ShiftPressed();
+	void ShiftReleased();
 	void HandleAbilityInput_Pressed(const FGameplayTag InputTag); // 这里的参数不能用引用
 	void HandleAbilityInput_Holding(const FGameplayTag InputTag);
 	void HandleAbilityInput_Released(const FGameplayTag InputTag);
 	void AutoMove();
 
-	UPROPERTY(EditAnywhere, Category="Aura|Input")
+	UPROPERTY(EditAnywhere, Category="Custom|Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
 
-	UPROPERTY(EditAnywhere, Category="Aura|Input")
-	TObjectPtr<UInputAction> MoveAction;
-
-	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UPROPERTY(EditDefaultsOnly, Category="Custom|Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
 
 	// Click to move
