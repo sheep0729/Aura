@@ -69,6 +69,8 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="Custom|Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
 
+	bool bShiftKeyDown;
+
 	// Click to move
 
 	FVector Destination;

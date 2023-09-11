@@ -24,11 +24,10 @@ class AURA_API AAuraPlayerController : public APlayerController
 
 public:
 	AAuraPlayerController();
-	virtual void PlayerTick(float DeltaTime) override;
 
-	bool IsTargeting() const {return ThisActor != nullptr;}
+	void GetInteractiveHit(FHitResult& InteractiveHit) const;
 
-	CONST_REF_GETTER(CursorHit);
+	bool IsTargetingEnemy(const FHitResult& Hit) const;
 
 	bool IsTargetingEnemy() const;
 

@@ -21,11 +21,16 @@ void AAuraPlayerController::GetInteractiveHit(FHitResult& InteractiveHit) const
 	GetHitResultUnderCursor(EAuraCollisionChannel::Interactivity, false, InteractiveHit);
 }
 
-void AAuraPlayerController::PlayerTick(float DeltaTime)
+bool AAuraPlayerController::IsTargetingEnemy(const FHitResult& Hit) const
 {
-	Super::PlayerTick(DeltaTime);
+	return Hit.bBlockingHit && Hit.GetActor()->Implements<UEnemyInterface>();
+}
 
-	CursorTrace();
+bool AAuraPlayerController::IsTargetingEnemy() const
+{
+	FHitResult Hit;
+	GetInteractiveHit(Hit);
+	return IsTargetingEnemy(Hit);
 }
 
 void AAuraPlayerController::BeginPlay()

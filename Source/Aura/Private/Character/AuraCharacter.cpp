@@ -163,6 +163,16 @@ void AAuraCharacter::Move(const FInputActionValue& InputActionValue)
 	AddMovementInput(RightDirection, InputActionVector.X);
 }
 
+void AAuraCharacter::ShiftPressed()
+{
+	bShiftKeyDown = true;
+}
+
+void AAuraCharacter::ShiftReleased()
+{
+	bShiftKeyDown = false;
+}
+
 void AAuraCharacter::HandleAbilityInput_Pressed(const FGameplayTag InputTag)
 {
 	if (IsAbilityInput(InputTag))

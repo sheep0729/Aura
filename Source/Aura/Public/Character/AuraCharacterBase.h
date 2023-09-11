@@ -22,7 +22,7 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAuraAbilitySystem
 	GENERATED_BODY()
 
 public:
-	AAuraCharacterBase();
+	AAuraCharacterBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
@@ -43,8 +43,13 @@ protected:
 
 	virtual void InitAbilities();
 
+	virtual FVector GetWeaponFireSocketLocation() override;
+
 	UPROPERTY(EditAnywhere, Category="Custom|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
+	
+	UPROPERTY(EditAnywhere, Category="Custom|Combat")
+	FName WeaponFireSocketName;
 
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
@@ -54,7 +59,4 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom|Ability")
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
-
-private:
-	
 };

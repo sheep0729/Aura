@@ -3,6 +3,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraGameplayEffectTypes.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -45,6 +46,10 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
+		UKismetSystemLibrary::PrintString(Data.Target.GetAvatarActor(),
+		                                  FString::Format(
+			                                  TEXT("Changed Health on [{0}], Health = [{1}]"), {Data.Target.GetAvatarActor()->GetName(), GetHealth()}),
+		                                  true, true, FLinearColor::Green, 2, FName(GetNameSafe(this)));
 	}
 	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{

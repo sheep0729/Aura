@@ -121,6 +121,8 @@ IMPLEMENT_INPUT_TAG(FAuraGameplayTags, 1);
 IMPLEMENT_INPUT_TAG(FAuraGameplayTags, 2);
 IMPLEMENT_INPUT_TAG(FAuraGameplayTags, 3);
 IMPLEMENT_INPUT_TAG(FAuraGameplayTags, 4);
+IMPLEMENT_INPUT_TAG(FAuraGameplayTags, Move);
+IMPLEMENT_INPUT_TAG(FAuraGameplayTags, Shift);
 
 #define INPUT_TAG_STR(InputName) "Input." #InputName
 
@@ -156,4 +158,6 @@ void FAuraGameplayTags::InitializeAuraGameplayTags()
 	ADD_NATIVE_INPUT_TAG(2, "Input Tag for 2 Key");
 	ADD_NATIVE_INPUT_TAG(3, "Input Tag for 3 Key");
 	ADD_NATIVE_INPUT_TAG(4, "Input Tag for 4 Key");
+	ADD_NATIVE_INPUT_TAG(Move, "Input Tag for Move");
+	ADD_NATIVE_INPUT_TAG(Shift, "Input Tag for Shift Key");
 }
