@@ -30,6 +30,7 @@ public:
 
 	CONST_REF_GETTER(CursorHit);
 
+	VALUE_GETTER(PathFollowingComponent);
 protected:
 	virtual void BeginPlay() override;
 
@@ -41,4 +42,6 @@ private:
 	FHitResult CursorHit;
 	IEnemyInterface* LastActor;
 	IEnemyInterface* ThisActor;
+	UPROPERTY()
+	TObjectPtr<UPathFollowingComponent> PathFollowingComponent;
 };

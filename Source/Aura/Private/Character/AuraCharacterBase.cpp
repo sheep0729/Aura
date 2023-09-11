@@ -6,7 +6,8 @@
 #include "Character/AuraCharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"  // Rider bug
 
-AAuraCharacterBase::AAuraCharacterBase()
+AAuraCharacterBase::AAuraCharacterBase(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer.SetDefaultSubobjectClass(CharacterMovementComponentName, UAuraCharacterMovementComponent::StaticClass()))
 {
 	PrimaryActorTick.bCanEverTick = false;
 

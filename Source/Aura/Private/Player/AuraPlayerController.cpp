@@ -9,11 +9,16 @@
 #include "Navigation/PathFollowingComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
-	: LastActor(nullptr),
-	  ThisActor(nullptr)
-
 {
 	bReplicates = true;
+	bEnableMouseOverEvents = true;
+
+	PathFollowingComponent = CreateDefaultSubobject<UPathFollowingComponent>("PathFollowingComponent");
+}
+
+void AAuraPlayerController::GetInteractiveHit(FHitResult& InteractiveHit) const
+{
+	GetHitResultUnderCursor(EAuraCollisionChannel::Interactivity, false, InteractiveHit);
 }
 
 void AAuraPlayerController::PlayerTick(float DeltaTime)
@@ -34,33 +39,4 @@ void AAuraPlayerController::BeginPlay()
 	InputModeData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputModeData.SetHideCursorDuringCapture(false);
 	SetInputMode(InputModeData);
-
-#if WITH_EDITOR
-	UKismetSystemLibrary::ExecuteConsoleCommand(this, "show splines", this);
-#endif
-}
-
-void AAuraPlayerController::CursorTrace()
-{
-	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
-	if (!CursorHit.bBlockingHit)
-	{
-		return;
-	}
-
-	LastActor = ThisActor;
-	ThisActor = Cast<IEnemyInterface>(CursorHit.GetActor());
-
-	if (LastActor != ThisActor)
-	{
-		if (ThisActor)
-		{
-			ThisActor->HighlightActor();
-		}
-
-		if (LastActor)
-		{
-			LastActor->UnHighlightActor();
-		}
-	}
 }

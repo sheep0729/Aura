@@ -22,7 +22,7 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase
 	GENERATED_BODY()
 
 public:
-	AAuraCharacter();
+	AAuraCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	virtual void PostInitializeComponents() override;
 	virtual void PossessedBy(AController* NewController) override;
@@ -61,7 +61,7 @@ private:
 	void HandleAbilityInput_Pressed(const FGameplayTag InputTag); // 这里的参数不能用引用
 	void HandleAbilityInput_Holding(const FGameplayTag InputTag);
 	void HandleAbilityInput_Released(const FGameplayTag InputTag);
-	void AutoMove();
+	void AbortMove();
 
 	UPROPERTY(EditAnywhere, Category="Custom|Input")
 	TObjectPtr<UInputMappingContext> InputMappingContext;
@@ -71,14 +71,7 @@ private:
 
 	// Click to move
 
-	FVector AutoMovementDestination;
-	float FollowTime;
+	FVector Destination;
 	float ShortPressThreshold;
-	bool bAutoMoving;
-
-	UPROPERTY(EditDefaultsOnly)
-	float AutoRunAcceptanceRadius;
-
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<USplineComponent> Spline;
+	float FollowTime;
 };

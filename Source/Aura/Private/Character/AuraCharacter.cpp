@@ -22,12 +22,8 @@
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
 
-AAuraCharacter::AAuraCharacter()
-	: AutoMovementDestination(FVector::Zero()),
-	  FollowTime(0),
-	  ShortPressThreshold(.5),
-	  bAutoMoving(false),
-	  AutoRunAcceptanceRadius(50)
+AAuraCharacter::AAuraCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer), Destination(FVector::Zero()), ShortPressThreshold(.5), FollowTime(0)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -39,9 +35,6 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
-
-	Spline = CreateDefaultSubobject<USplineComponent>("Spline");
-	Spline->bDrawDebug = false;
 }
 
 void AAuraCharacter::PostInitializeComponents()
@@ -68,11 +61,6 @@ void AAuraCharacter::BeginPlay()
 void AAuraCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	if (bAutoMoving)
-	{
-		AutoMove();
-	}
 }
 
 void AAuraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -126,13 +114,28 @@ void AAuraCharacter::InitHUD()
 	}
 }
 
+bool AAuraCharacter::IsAbilityInput(const FGameplayTag& InputTag) const
+{
+	return !InputTag.MatchesTagExact(FAuraGameplayTags::GetInputTagLMB()) || Cast<AAuraPlayerController>(GetController())->IsTargetingEnemy() ||
+		bShiftKeyDown;
+}
+
 // Server Only
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	GetAuraPlayerController()->GetPathFollowingComponent()->Initialize();
+
 	// 在这里能拿到 PlayerState ，见 APawn::PossessedBy
 	InitAbilitySystem();
+}
+
+void AAuraCharacter::OnRep_Controller()
+{
+	Super::OnRep_Controller();
+
+	GetAuraPlayerController()->GetPathFollowingComponent()->Initialize();
 }
 
 // Clients only
@@ -148,6 +151,8 @@ void AAuraCharacter::OnRep_PlayerState()
 
 void AAuraCharacter::Move(const FInputActionValue& InputActionValue)
 {
+	AbortMove();
+
 	const FRotator YawRotator{0, GetControlRotation().Yaw, 0};
 	const FVector ForwardDirection = FRotationMatrix{YawRotator}.GetUnitAxis(EAxis::X);
 	const FVector RightDirection = FRotationMatrix{YawRotator}.GetUnitAxis(EAxis::Y);
@@ -160,30 +165,38 @@ void AAuraCharacter::Move(const FInputActionValue& InputActionValue)
 
 void AAuraCharacter::HandleAbilityInput_Pressed(const FGameplayTag InputTag)
 {
+	if (IsAbilityInput(InputTag))
+	{
+		AbortMove();
+		GetAuraAbilitySystemComponent()->OnAbilityInputPressed(InputTag);
+	}
 }
 
 void AAuraCharacter::HandleAbilityInput_Holding(const FGameplayTag InputTag)
 {
 	NULL_RETURN_VOID(GetAuraAbilitySystemComponent());
 
-	const auto PlayerController = Cast<AAuraPlayerController>(GetController());
-	NULL_RETURN_VOID(PlayerController);
-
-	if (!InputTag.MatchesTagExact(FAuraGameplayTags::GetInputTagLMB()) || PlayerController->IsTargeting())
+	if (IsAbilityInput(InputTag))
 	{
+		AbortMove();
 		GetAuraAbilitySystemComponent()->OnAbilityInputHolding(InputTag);
 	}
 	else
 	{
+		
 		FollowTime += GetWorld()->GetDeltaSeconds();
+		
+		const auto PlayerController = Cast<AAuraPlayerController>(GetController());
+		NULL_RETURN_VOID(PlayerController);
 
-
-		if (PlayerController->GetCursorHit().bBlockingHit)
+		FHitResult InteractiveHit;
+		PlayerController->GetInteractiveHit(InteractiveHit);
+		if (InteractiveHit.bBlockingHit)
 		{
-			AutoMovementDestination = PlayerController->GetCursorHit().ImpactPoint;
+			Destination = InteractiveHit.ImpactPoint;
 		}
 
-		const FVector Direction = (AutoMovementDestination - GetActorLocation()).GetSafeNormal();
+		const FVector Direction = (Destination - GetActorLocation()).GetSafeNormal();
 		AddMovementInput(Direction);
 	}
 }
@@ -191,40 +204,21 @@ void AAuraCharacter::HandleAbilityInput_Holding(const FGameplayTag InputTag)
 void AAuraCharacter::HandleAbilityInput_Released(const FGameplayTag InputTag)
 {
 	NULL_RETURN_VOID(GetAuraAbilitySystemComponent());
+	GetAuraAbilitySystemComponent()->OnAbilityInputReleased(InputTag); // tell ASC anyway
 
-	const auto PlayerController = Cast<AAuraPlayerController>(GetController());
-	NULL_RETURN_VOID(PlayerController);
-
-	if (!InputTag.MatchesTagExact(FAuraGameplayTags::GetInputTagLMB()) || PlayerController->IsTargeting())
+	if (!IsAbilityInput(InputTag) && FollowTime < ShortPressThreshold)
 	{
-		GetAuraAbilitySystemComponent()->OnAbilityInputReleased(InputTag);
-	}
-	else if (FollowTime < ShortPressThreshold)
-	{
-		if (UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToLocationSynchronously(this, GetActorLocation(), AutoMovementDestination))
-		{
-			Spline->ClearSplinePoints();
-			Algo::ForEach(NavigationPath->PathPoints, [this](const FVector& Location) { Spline->AddSplinePoint(Location, ESplineCoordinateSpace::World); });
-			Spline->SetDrawDebug(true);
-			AutoMovementDestination = NavigationPath->PathPoints.Last(0);
-			bAutoMoving = true;
-		}
+		UKismetSystemLibrary::DrawDebugSphere(this, Destination, 8, 8, FLinearColor::Blue, 3, 1);
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), Destination);
 	}
 
 	FollowTime = 0;
 }
 
-void AAuraCharacter::AutoMove()
+void AAuraCharacter::AbortMove()
 {
-	const FVector Location = Spline->FindLocationClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World);
-	const FVector Direction = Spline->FindDirectionClosestToWorldLocation(GetActorLocation(), ESplineCoordinateSpace::World);
-
-	AddMovementInput(Direction);
-
-	if (const float Distance = (Location - AutoMovementDestination).Length(); Distance < AutoRunAcceptanceRadius)
+	if (const auto PathFollowingComponent = GetAuraPlayerControllerChecked()->GetPathFollowingComponent())
 	{
-		bAutoMoving = false;
-		Spline->ClearSplinePoints();
-		Spline->SetDrawDebug(false);
+		PathFollowingComponent->AbortMove(*this, FPathFollowingResultFlags::UserAbort, FAIRequestID::AnyRequest, EPathFollowingVelocityMode::Reset);
 	}
 }
