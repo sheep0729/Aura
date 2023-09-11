@@ -9,6 +9,7 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UNavMovementComponent;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAttributeSet;

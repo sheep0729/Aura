@@ -1,9 +1,10 @@
 // Copyright Yang Dong
 
 
-#include "AuraAssetManager.h"
+#include "Data/AuraAssetManager.h"
 
-#include "AuraGameplayTags.h"
+#include "AbilitySystemGlobals.h"
+#include "Data/AuraGameplayTags.h"
 
 UAuraAssetManager& UAuraAssetManager::Get()
 {

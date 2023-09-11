@@ -3,7 +3,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
-#include "AuraGameplayTags.h"
+#include "Data/AuraGameplayTags.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "Marco.h"
 #include "AbilitySystem/AuraAttributeSet.h"

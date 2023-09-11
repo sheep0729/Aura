@@ -2,7 +2,7 @@
 
 
 #include "AbilitySystem/AttributeInfo.h"
-#include "AuraGameplayTags.h"
+#include "Data/AuraGameplayTags.h"
 #include "UObject/ObjectSaveContext.h"
 
 const FAuraAttributeInfo FAuraAttributeInfo::Empty{};

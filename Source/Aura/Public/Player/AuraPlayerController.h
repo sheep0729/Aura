@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "Marco.h"
 #include "GameFramework/PlayerController.h"
+#include "Interaction/EnemyInterface.h"
 #include "AuraPlayerController.generated.h"
 
+class UPathFollowingComponent;
 class USplineComponent;
 struct FGameplayTag;
 class UAuraInputConfig;

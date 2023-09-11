@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Marco.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "GameplayPrediction.h"
 
 
 AAuraEffectActor::AAuraEffectActor()
@@ -24,20 +26,27 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassO
 {
 	check(GameplayEffectClass);
 
-
 	// UAbilitySystemComponent* TargetASC = Cast<IAbilitySystemInterface>(Target);
-	UAbilitySystemComponent* TargetAbilitySystemComponent = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor); // 同样适用于没有实现接口的情况
-	NULL_RETURN_VOID(TargetAbilitySystemComponent);
+	UAuraAbilitySystemComponent* TargetASC = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor));
+	// 同样适用于没有实现接口的情况
+	NULL_RETURN_VOID(TargetASC);
 
-	FGameplayEffectContextHandle EffectContext = TargetAbilitySystemComponent->MakeEffectContext();
+	const auto TargetPawn = Cast<APawn>(TargetASC->GetAvatarActor());
+	NULL_RETURN_VOID(TargetPawn);
+
+	FScopedPredictionWindow ScopedPredictionWindow{TargetASC, !TargetPawn->HasAuthority() && TargetPawn->IsLocallyControlled()};
+
+	FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
-	const FGameplayEffectSpecHandle EffectSpec = TargetAbilitySystemComponent->MakeOutgoingSpec(GameplayEffectClass, 1, EffectContext);
+	const FGameplayEffectSpecHandle EffectSpec = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1, EffectContext);
 
-	const FActiveGameplayEffectHandle ActiveEffect = TargetAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*EffectSpec.Data,  TargetAbilitySystemComponent->GetPredictionKeyForNewAction());
+	const FActiveGameplayEffectHandle ActiveEffect = TargetASC->ApplyGameplayEffectSpecToSelf(
+		*EffectSpec.Data, TargetASC->GetPredictionKeyForNewAction());
 
-	if (EffectSpec.Data->Def->DurationPolicy == EGameplayEffectDurationType::Infinite && InfiniteGameplayEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
+	if (EffectSpec.Data->Def->DurationPolicy == EGameplayEffectDurationType::Infinite && InfiniteGameplayEffectRemovalPolicy ==
+		EEffectRemovalPolicy::RemoveOnEndOverlap)
 	{
-		ActiveEffects.Add(ActiveEffect, TargetAbilitySystemComponent);
+		ActiveEffects.Add(ActiveEffect, TargetASC);
 	}
 }
 

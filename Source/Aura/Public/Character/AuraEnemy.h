@@ -26,6 +26,7 @@ public:
 	{
 		return ActorLevel;
 	}
+
 	/* Combat Interface */
 
 	UFUNCTION(BlueprintCallable)

@@ -26,7 +26,7 @@ struct FAuraAttributeInfo
 	FGameplayAttribute Attribute;
 
 	UPROPERTY(BlueprintReadOnly, Transient)
-	mutable float AttributeValue;
+	mutable float AttributeValue = 0;
 
 	static const FAuraAttributeInfo Empty;
 };

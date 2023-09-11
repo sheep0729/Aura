@@ -3,8 +3,10 @@
 
 #include "Player/AuraPlayerController.h"
 
+#include "Aura/Aura.h"
 #include "Interaction/EnemyInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Navigation/PathFollowingComponent.h"
 
 AAuraPlayerController::AAuraPlayerController()
 	: LastActor(nullptr),

@@ -1,7 +1,7 @@
 // Copyright Yang Dong
 
 
-#include "AuraGameplayTags.h"
+#include "Data/AuraGameplayTags.h"
 
 #include "GameplayTagsManager.h"
 #include "AbilitySystem/AuraAttributeSet.h"

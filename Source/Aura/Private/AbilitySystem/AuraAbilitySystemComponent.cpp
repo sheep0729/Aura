@@ -54,26 +54,14 @@ void UAuraAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& Inp
 	}
 }
 
-FActiveGameplayEffectHandle UAuraAbilitySystemComponent::ApplyGameplayEffectSpecToSelf(const FGameplayEffectSpec& GameplayEffect, FPredictionKey PredictionKey)
-{
-	return Super::ApplyGameplayEffectSpecToSelf(GameplayEffect, PredictionKey);
-}
-
 void UAuraAbilitySystemComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
 	// IMPORTANT: OnGameplayEffectAppliedDelegateToSelf only called on server !!
-	OnEffectAppliedDelegateHandle = OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectApplied);
+	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &ThisClass::OnEffectApplied);
 
 	AddSet<UAuraAttributeSet>();
-}
-
-void UAuraAbilitySystemComponent::UninitializeComponent()
-{
-	Super::UninitializeComponent();
-
-	OnGameplayEffectAppliedDelegateToSelf.Remove(OnEffectAppliedDelegateHandle);
 }
 
 
@@ -82,7 +70,10 @@ void UAuraAbilitySystemComponent::OnEffectApplied_Implementation(UAbilitySystemC
 	FGameplayTagContainer AssetTags;
 	EffectSpec.GetAllAssetTags(AssetTags);
 
-	OnEffectAssetTags.Broadcast(AssetTags);
+	if (ActiveEffectHandle.WasSuccessfullyApplied())
+	{
+		OnEffectAssetTags.Broadcast(AssetTags);
+	}
 }
 
 bool UAuraAbilitySystemComponent::IsAbilitySpecMatchInputTag(const FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& InputTag)

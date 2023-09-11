@@ -2,8 +2,9 @@
 
 
 #include "Character/AuraCharacterBase.h"
-
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Character/AuraCharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"  // Rider bug
 
 AAuraCharacterBase::AAuraCharacterBase()
 {

@@ -1,56 +1,44 @@
 ﻿#pragma once
 
-#define NULL_RETURN_VOID(Pointer)    \
-	if (Pointer == nullptr)          \
-	{                                \
-		return;                      \
+#define IF_THIS_THEN_THAT(Condition, Do) \
+	if ((Condition)) {      \
+		Do                  \
 	}
 
-#define NULL_RETURN_VALUE(Pointer, Value) \
-	if (Pointer == nullptr)               \
-	{                                     \
-		return Value;                     \
-	}
+#define NULL_THEN_THAT(Pointer, Do) IF_THIS_THEN_THAT(Pointer == nullptr, Do)
+#define TRUE_THEN_THAT(Value, Do) IF_THIS_THEN_THAT(Value, Do)
+#define FALSE_THEN_THAT(Value, Do) IF_THIS_THEN_THAT(!(Value), Do)
 
-#define TRUE_RETURN_VOID(Value)      \
-	if (Value)                       \
-	{                                \
-		return;                      \
-	}
+#define NULL_RETURN_VOID(Pointer)  NULL_THEN_THAT(Pointer, return;)
+#define NULL_RETURN_VALUE(Pointer, Value) NULL_THEN_THAT(Pointer,return Value;)
+#define NULL_CONTINUE(Pointer) NULL_THEN_THAT(Pointer,continue;)
 
-#define FALSE_RETURN_VOID(Value)     \
-	if (!(Value))                    \
-	{                                \
-		return;                      \
-	}
+#define TRUE_RETURN_VOID(Value) TRUE_THEN_THAT(Value, return;)
 
-#define FALSE_RETURN_Value(Value, Ret) \
-	if (!(Value))                      \
-	{                                  \
-		return Ret;                    \
-	}
+#define FALSE_RETURN_VOID(Value) FALSE_THEN_THAT(Value, return;)
+#define FALSE_RETURN_VALUE(Value, Ret) FALSE_THEN_THAT(Value, return Ret;)
 
 #define VALUE_GETTER(Property)                          \
-	FORCEINLINE_DEBUGGABLE auto Get##Property() const { \
+	FORCEINLINE auto Get##Property() const { \
 		return Property;                                \
 	}
 
 #define STATIC_CONST_REF_GETTER(Property)                       \
-	FORCEINLINE_DEBUGGABLE static const auto& Get##Property() { \
-	return Property;                                            \
+	FORCEINLINE static const auto& Get##Property() { \
+		return Property;                                        \
 	}
 
 #define CONST_REF_GETTER(Property)                             \
-	FORCEINLINE_DEBUGGABLE const auto& Get##Property() const { \
+	FORCEINLINE const auto& Get##Property() const { \
 	    return Property;                                       \
 	}
 
 #define REF_GETTER(Property)                             \
-	FORCEINLINE_DEBUGGABLE auto& Get##Property() {       \
+	FORCEINLINE auto& Get##Property() {       \
 		return Property;                                 \
 	}
 
 #define SETTER(Property)                                                  \
-	FORCEINLINE_DEBUGGABLE void Set##Property(const auto& In##Property) { \
+	FORCEINLINE void Set##Property(const auto& In##Property) { \
 		Property = In##Property;                                          \
 	}

@@ -6,6 +6,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
+#include "Components/CapsuleComponent.h"
 
 AAuraEnemy::AAuraEnemy()
 	:ActorLevel(1)

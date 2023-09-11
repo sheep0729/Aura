@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Player/AuraPlayerController.h"
 #include "AuraCharacter.generated.h"
 
+class AAuraPlayerController;
+class UNavigationPath;
 class USplineComponent;
 struct FGameplayTag;
 struct FInputActionValue;

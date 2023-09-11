@@ -7,14 +7,17 @@ public class Aura : ModuleRules
 	public Aura(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new[] { "Core", "CoreUObject", "Engine", "InputCore", "GameplayAbilities" });
 
-		PrivateDependencyModuleNames.AddRange(new[] { "EnhancedInput", "GameplayTags", "GameplayTags", "GameplayTasks", "NavigationSystem" });
+		PublicDependencyModuleNames.AddRange(
+			new[] { "Core", "CoreUObject", "Engine", "InputCore", "GameplayAbilities" });
+
+		PrivateDependencyModuleNames.AddRange(new[]
+			{ "EnhancedInput", "GameplayTags", "GameplayTags", "GameplayTasks", "NavigationSystem", "Niagara", "AIModule", "AIModule", "AIModule"
+			});
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
+
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
