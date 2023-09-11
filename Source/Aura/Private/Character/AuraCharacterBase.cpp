@@ -10,6 +10,7 @@ AAuraCharacterBase::AAuraCharacterBase(const FObjectInitializer& ObjectInitializ
 	:Super(ObjectInitializer.SetDefaultSubobjectClass(CharacterMovementComponentName, UAuraCharacterMovementComponent::StaticClass()))
 {
 	PrimaryActorTick.bCanEverTick = false;
+	bCanAffectNavigationGeneration = true;
 
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
@@ -79,4 +80,10 @@ void AAuraCharacterBase::InitAbilities()
 	{
 		AbilitySystemComponent->GiveAbility(Ability, 1);
 	}
+}
+
+FVector AAuraCharacterBase::GetWeaponFireSocketLocation()
+{
+	check(Weapon);
+	return Weapon->GetSocketLocation(WeaponFireSocketName);
 }
