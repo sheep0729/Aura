@@ -3,11 +3,10 @@
 
 #include "UI/WidgetController/AuraWidgetController.h"
 
-void UAuraWidgetController::InitWidgetController(const FWidgetControllerParams& WidgetControllerParams)
+void UAuraWidgetController::Initialize(UAbilitySystemComponent* AbilitySystemComponent)
 {
-	PlayerController = WidgetControllerParams.PlayerController;
-	PlayerState = WidgetControllerParams.PlayerState;
-	AbilitySystemComponent = WidgetControllerParams.AbilitySystemComponent;
+	WidgetControllerActorInfo.InitFromAbilitySystemComponent(AbilitySystemComponent);
+	BindCallbacksToDependencies();
 }
 
 void UAuraWidgetController::BroadcastInitialValues()

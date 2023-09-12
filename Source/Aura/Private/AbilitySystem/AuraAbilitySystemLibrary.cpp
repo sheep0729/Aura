@@ -10,31 +10,31 @@
 #include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/AuraUserWidget.h"
 
-UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(const UAuraUserWidget* AuraUserWidget)
-{
-	NULL_RETURN_VALUE(AuraUserWidget, nullptr);
-
-	const auto PlayerController = AuraUserWidget->GetOwningPlayer();
-	NULL_RETURN_VALUE(PlayerController, nullptr);
-
-	AAuraHUD* HUD = Cast<AAuraHUD>(PlayerController->GetHUD());
-	NULL_RETURN_VALUE(HUD, nullptr);
-
-	return HUD->GetWidgetController<UOverlayWidgetController>(FAuraWidget::Overlay);
-}
-
-UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidgetController(const UAuraUserWidget* AuraUserWidget)
-{
-	NULL_RETURN_VALUE(AuraUserWidget, nullptr);
-
-	const auto PlayerController = AuraUserWidget->GetOwningPlayer();
-	NULL_RETURN_VALUE(PlayerController, nullptr);
-
-	AAuraHUD* HUD = Cast<AAuraHUD>(PlayerController->GetHUD());
-	NULL_RETURN_VALUE(HUD, nullptr);
-
-	return HUD->GetWidgetController<UAttributeMenuWidgetController>(FAuraWidget::AttributeMenu);
-}
+// UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(const UAuraUserWidget* AuraUserWidget)
+// {
+// 	INVALID_RETURN_VALUE(AuraUserWidget, nullptr);
+//
+// 	const auto PlayerController = AuraUserWidget->GetOwningPlayer();
+// 	INVALID_RETURN_VALUE(PlayerController, nullptr);
+//
+// 	AAuraHUD* HUD = Cast<AAuraHUD>(PlayerController->GetHUD());
+// 	INVALID_RETURN_VALUE(HUD, nullptr);
+//
+// 	return HUD->GetWidgetController<UOverlayWidgetController>(FAuraWidget::Overlay);
+// }
+//
+// UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidgetController(const UAuraUserWidget* AuraUserWidget)
+// {
+// 	INVALID_RETURN_VALUE(AuraUserWidget, nullptr);
+//
+// 	const auto PlayerController = AuraUserWidget->GetOwningPlayer();
+// 	INVALID_RETURN_VALUE(PlayerController, nullptr);
+//
+// 	AAuraHUD* HUD = Cast<AAuraHUD>(PlayerController->GetHUD());
+// 	INVALID_RETURN_VALUE(HUD, nullptr);
+//
+// 	return HUD->GetWidgetController<UAttributeMenuWidgetController>(FAuraWidget::AttributeMenu);
+// }
 
 const TArray<FGameplayTag>& UAuraAbilitySystemLibrary::GetPrimaryAttributeTags()
 {

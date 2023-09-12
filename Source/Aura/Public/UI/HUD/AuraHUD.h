@@ -9,50 +9,49 @@
 #include "AuraHUD.generated.h"
 
 class UAttributeMenuWidgetController;
-struct FWidgetControllerParams;
+struct FWidgetControllerActorInfo;
 class UOverlayWidgetController;
 class UAuraUserWidget;
 
 UENUM()
-enum class FAuraWidget
+enum class EHUDWidget
 {
-    None,
-    Overlay,
-    AttributeMenu,
+	None,
+	Overlay,
+	AttributeMenu,
 };
 
 UCLASS()
 class AURA_API AAuraHUD : public AHUD
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    template <typename T>
-    T* GetWidgetController(FAuraWidget AuraWidget);
+	// template <typename T>
+	// T* GetWidgetController();
+	
+	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
 
-    void Init(AAuraPlayerController* PlayerController, AAuraPlayerState* PlayerState, UAuraAbilitySystemComponent* AbilitySystemComponent);
+	bool AddWidgetToViewPort(EHUDWidget Widget);
 
 private:
-    UAuraWidgetController* GetWidgetController(FAuraWidget AuraWidget);
+	UAuraWidgetController* GetWidgetController(const EHUDWidget Widget, UAbilitySystemComponent* AbilitySystemComponent);
 
-    UPROPERTY()
-    TMap<FAuraWidget, UAuraUserWidget*> Widgets;
+	UPROPERTY()
+	TMap<EHUDWidget, UAuraUserWidget*> Widgets;
 
-    UPROPERTY(EditAnywhere, Category = "Custom")
-    TMap<FAuraWidget, TSubclassOf<UAuraUserWidget>> WidgetClasses;
+	UPROPERTY(EditDefaultsOnly)
+	TMap<EHUDWidget, TSubclassOf<UAuraUserWidget>> WidgetClasses;
+	
+	UPROPERTY()
+	TMap<EHUDWidget, UAuraWidgetController*> WidgetControllers;
 
-    UPROPERTY()
-    TMap<FAuraWidget, UAuraWidgetController*> WidgetControllers;
-
-    UPROPERTY(EditAnywhere, Category = "Custom")
-    TMap<FAuraWidget, TSubclassOf<UAuraWidgetController>> WidgetControllerClasses;
-
-    UPROPERTY()
-    FWidgetControllerParams WidgetControllerParams;
+	UPROPERTY(EditDefaultsOnly)
+	TMap<EHUDWidget, TSubclassOf<UAuraWidgetController>> WidgetControllerClasses;
 };
 
-template <typename T>
-T* AAuraHUD::GetWidgetController(const FAuraWidget AuraWidget)
-{
-    return Cast<T>(GetWidgetController(AuraWidget));
-}
+// template <typename T>
+// T* AAuraHUD::GetWidgetController()
+// {
+//     return Cast<T>(GetWidgetController(T::StaticClass()));
+// }

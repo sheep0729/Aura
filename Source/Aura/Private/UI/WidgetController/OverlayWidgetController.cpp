@@ -10,7 +10,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
 {
 	Super::BroadcastInitialValues();
 
-	const auto& Attributes = AbilitySystemComponent->GetSet<UAuraAttributeSet>();
+	const auto& Attributes = WidgetControllerActorInfo.GetAbilitySystemComponent()->GetSet<UAuraAttributeSet>();
 
 	OnHealthChanged.Broadcast(Attributes->GetHealth(), true);
 	OnMaxHealthChanged.Broadcast(Attributes->GetMaxHealth(), true);
@@ -22,6 +22,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 {
 	Super::BindCallbacksToDependencies();
 
+	const auto& AbilitySystemComponent = Cast<UAuraAbilitySystemComponent>(WidgetControllerActorInfo.GetAbilitySystemComponent());
 	const auto& Attributes = AbilitySystemComponent->GetSet<UAuraAttributeSet>();
 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attributes->GetHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);

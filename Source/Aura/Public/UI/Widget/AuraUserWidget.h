@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Marco.h"
 #include "Blueprint/UserWidget.h"
 #include "AuraUserWidget.generated.h"
 
@@ -14,8 +15,18 @@ class AURA_API UAuraUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	virtual void NativeConstruct() override;
+	UFUNCTION(BlueprintCallable)
+	void SetWidgetController(UAuraWidgetController* InWidgetController)
+	{
+		WidgetController = InWidgetController;
+		OnWidgetControllerSet();
+	}
 
-	UFUNCTION(BlueprintNativeEvent)
-	void BindCallBacksToController();
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWidgetControllerSet();
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UAuraWidgetController> WidgetController;
 };

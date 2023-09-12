@@ -35,9 +35,9 @@ void AAuraCharacterBase::BeginPlay()
 void AAuraCharacterBase::InitAbilitySystem()
 {
 	InitAbilitySystemComponent();
-	NULL_RETURN_VOID(GetAuraAbilitySystemComponent());
+	INVALID_RETURN_VOID(GetAuraAbilitySystemComponent());
 	
-	InitHUD();
+	InitUI();
 
 	if (HasAuthority())
 	{
@@ -70,7 +70,7 @@ void AAuraCharacterBase::InitAttributes() const
 	}
 }
 
-void AAuraCharacterBase::InitHUD()
+void AAuraCharacterBase::InitUI()
 {
 }
 

@@ -29,10 +29,10 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassO
 	// UAbilitySystemComponent* TargetASC = Cast<IAbilitySystemInterface>(Target);
 	UAuraAbilitySystemComponent* TargetASC = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor));
 	// 同样适用于没有实现接口的情况
-	NULL_RETURN_VOID(TargetASC);
+	INVALID_RETURN_VOID(TargetASC);
 
 	const auto TargetPawn = Cast<APawn>(TargetASC->GetAvatarActor());
-	NULL_RETURN_VOID(TargetPawn);
+	INVALID_RETURN_VOID(TargetPawn);
 
 	FScopedPredictionWindow ScopedPredictionWindow{TargetASC, !TargetPawn->HasAuthority() && TargetPawn->IsLocallyControlled()};
 
@@ -83,7 +83,7 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 	if (InfiniteGameplayEffectRemovalPolicy == EEffectRemovalPolicy::RemoveOnEndOverlap)
 	{
 		UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
-		NULL_RETURN_VOID(TargetASC);
+		INVALID_RETURN_VOID(TargetASC);
 
 		TArray<FActiveGameplayEffectHandle> HandlesToRemove;
 		for (const auto& Pair : ActiveEffects)

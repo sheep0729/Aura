@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "Marco.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "GameFramework/PlayerStart.h"
+#include "GameFramework/PlayerState.h"
 #include "AuraWidgetController.generated.h"
 
 class UAuraAbilitySystemComponent;
@@ -14,54 +18,84 @@ class UAttributeSet;
 class UAbilitySystemComponent;
 
 USTRUCT(BlueprintType)
-struct FWidgetControllerParams
+struct FWidgetControllerActorInfo
 {
 	GENERATED_BODY()
 
-	FWidgetControllerParams()
+	void InitFromAbilitySystemComponent(UAbilitySystemComponent* InAbilitySystemComponent)
 	{
+		AbilitySystemComponent = InAbilitySystemComponent;
+
+		if (!AbilitySystemComponent.IsValid())
+		{
+			AbilitySystemComponent = nullptr;
+			PlayerState = nullptr;
+			PlayerController = nullptr;
+
+			return;
+		}
+
+		PlayerController = AbilitySystemComponent->AbilityActorInfo->PlayerController;
+
+		for (AActor* TestActor = AbilitySystemComponent->GetOwnerActor(); IsValid(TestActor); TestActor = TestActor->GetOwner())
+		{
+			if (PlayerState = Cast<APlayerState>(TestActor); PlayerState.IsValid())
+			{
+				break;
+			}
+		}
 	}
 
-	FWidgetControllerParams(AAuraPlayerController* PC, AAuraPlayerState* PS, UAuraAbilitySystemComponent* ASC)
-		: PlayerController(PC), PlayerState(PS), AbilitySystemComponent(ASC)
+	APlayerController* GetPlayerController()
 	{
+		return PlayerController.Get();
 	}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<AAuraPlayerController> PlayerController;
+	APlayerState* GetPlayerState()
+	{
+		return PlayerState.Get();
+	}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<AAuraPlayerState> PlayerState;
+	UAbilitySystemComponent* GetAbilitySystemComponent()
+	{
+		return AbilitySystemComponent.Get();
+	}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
+private:
+	UPROPERTY()
+	TWeakObjectPtr<APlayerController> PlayerController;
+
+	UPROPERTY()
+	TWeakObjectPtr<APlayerState> PlayerState;
+
+	UPROPERTY()
+	TWeakObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 };
 
-UCLASS()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAttributeChangedSingature, float, NewValue, bool, bInit);
+
+UCLASS(BlueprintType, Blueprintable)
 class AURA_API UAuraWidgetController : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable) // TODO 考虑改掉这个函数
-	void InitWidgetController(const FWidgetControllerParams& WidgetControllerParams);
-
 	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues();
-	virtual void BindCallbacksToDependencies();
+
+	void Initialize(UAbilitySystemComponent* AbilitySystemComponent);
+
+	SETTER(WidgetControllerActorInfo);
+	CONST_REF_GETTER(WidgetControllerActorInfo);
 
 protected:
 	template <typename T>
 	static T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);
 
-	UPROPERTY(BlueprintReadOnly, Category = "Aura|WidgetController")
-	TObjectPtr<AAuraPlayerController> PlayerController;
+	virtual void BindCallbacksToDependencies();
 
 	UPROPERTY(BlueprintReadOnly, Category = "Aura|WidgetController")
-	TObjectPtr<AAuraPlayerState> PlayerState;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Aura|WidgetController")
-	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
+	FWidgetControllerActorInfo WidgetControllerActorInfo;
 };
 
 template <typename T>

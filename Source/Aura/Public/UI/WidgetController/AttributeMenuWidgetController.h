@@ -10,8 +10,9 @@ class UAttributeInfo;
 struct FAuraAttributeInfo;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeInfoSingature, const FAuraAttributeInfo&, Info);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttributeMenuClosedSingature);
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS()
 class AURA_API UAttributeMenuWidgetController : public UAuraWidgetController
 {
 	GENERATED_BODY()
@@ -23,11 +24,17 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Custom|GAS|Attributes")
 	FOnAttributeInfoSingature OnAttributeInfo;
 
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Custom|GAS|Messages")
+	FOnAttributeMenuClosedSingature OnAttributeMenuClosed;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Custom|GAS|Messages")
+	FOnAttributeMenuClosedSingature OnClickedAttributeMenuButton;
+	
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAttributeInfo> AttributeInfoData;
 
-	void HandleAttributeValueChanged(const FOnAttributeChangeData& Data) const;
+	void HandleAttributeValueChanged(const FOnAttributeChangeData& Data);
 
-	const FAuraAttributeInfo& GetAttributeInfo(const FGameplayAttribute& Attribute) const;
+	const FAuraAttributeInfo& GetAttributeInfo(const FGameplayAttribute& Attribute);
 };

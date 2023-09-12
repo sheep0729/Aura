@@ -98,18 +98,15 @@ void AAuraCharacter::InitAbilitySystemComponent()
 	AbilitySystemComponent->InitAbilityActorInfo(AuraPlayerState, this);
 }
 
-void AAuraCharacter::InitHUD()
+void AAuraCharacter::InitUI()
 {
-	Super::InitHUD();
+	Super::InitUI();
 
-	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
-	check(AuraPlayerState);
-
-	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
+	if (const AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))
 		{
-			AuraHUD->Init(AuraPlayerController, AuraPlayerState, AbilitySystemComponent);
+			AuraHUD->Initialize(AbilitySystemComponent);
 		}
 	}
 }
@@ -184,7 +181,7 @@ void AAuraCharacter::HandleAbilityInput_Pressed(const FGameplayTag InputTag)
 
 void AAuraCharacter::HandleAbilityInput_Holding(const FGameplayTag InputTag)
 {
-	NULL_RETURN_VOID(GetAuraAbilitySystemComponent());
+	INVALID_RETURN_VOID(GetAuraAbilitySystemComponent());
 
 	if (IsAbilityInput(InputTag))
 	{
@@ -197,7 +194,7 @@ void AAuraCharacter::HandleAbilityInput_Holding(const FGameplayTag InputTag)
 		FollowTime += GetWorld()->GetDeltaSeconds();
 		
 		const auto PlayerController = Cast<AAuraPlayerController>(GetController());
-		NULL_RETURN_VOID(PlayerController);
+		INVALID_RETURN_VOID(PlayerController);
 
 		FHitResult InteractiveHit;
 		PlayerController->GetInteractiveHit(InteractiveHit);
@@ -213,7 +210,7 @@ void AAuraCharacter::HandleAbilityInput_Holding(const FGameplayTag InputTag)
 
 void AAuraCharacter::HandleAbilityInput_Released(const FGameplayTag InputTag)
 {
-	NULL_RETURN_VOID(GetAuraAbilitySystemComponent());
+	INVALID_RETURN_VOID(GetAuraAbilitySystemComponent());
 	GetAuraAbilitySystemComponent()->OnAbilityInputReleased(InputTag); // tell ASC anyway
 
 	if (!IsAbilityInput(InputTag) && FollowTime < ShortPressThreshold)

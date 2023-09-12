@@ -5,13 +5,18 @@
 		Do                  \
 	}
 
-#define NULL_THEN_THAT(Pointer, Do) IF_THIS_THEN_THAT(Pointer == nullptr, Do)
+#define INVALID_THEN_THAT(Object, Do) IF_THIS_THEN_THAT(!IsValid(Object), Do)
+#define INVALID_POINTER_THEN_THAT(Pointer, Do) IF_THIS_THEN_THAT(!Pointer.IsValid(), Do)
 #define TRUE_THEN_THAT(Value, Do) IF_THIS_THEN_THAT(Value, Do)
 #define FALSE_THEN_THAT(Value, Do) IF_THIS_THEN_THAT(!(Value), Do)
 
-#define NULL_RETURN_VOID(Pointer)  NULL_THEN_THAT(Pointer, return;)
-#define NULL_RETURN_VALUE(Pointer, Value) NULL_THEN_THAT(Pointer,return Value;)
-#define NULL_CONTINUE(Pointer) NULL_THEN_THAT(Pointer,continue;)
+#define INVALID_RETURN_VOID(Object)  INVALID_THEN_THAT(Object, return;)
+#define INVALID_RETURN_VALUE(Object, Value) INVALID_THEN_THAT(Object,return Value;)
+#define INVALID_CONTINUE(Object) INVALID_THEN_THAT(Object,continue;)
+
+#define INVALID_POINTER_RETURN_VOID(Pointer)  INVALID_POINTER_THEN_THAT(Pointer, return;)
+#define INVALID_POINTER_RETURN_VALUE(Pointer, Value) INVALID_POINTER_THEN_THAT(Pointer,return Value;)
+#define INVALID_POINTER_CONTINUE(Pointer) INVALID_POINTER_THEN_THAT(Pointer,continue;)
 
 #define TRUE_RETURN_VOID(Value) TRUE_THEN_THAT(Value, return;)
 
@@ -20,6 +25,11 @@
 
 #define VALUE_GETTER(Property)                          \
 	FORCEINLINE auto Get##Property() const { \
+		return Property;                                \
+	}
+
+#define CONST_VALUE_GETTER(Property)                          \
+	FORCEINLINE const auto Get##Property() const { \
 		return Property;                                \
 	}
 

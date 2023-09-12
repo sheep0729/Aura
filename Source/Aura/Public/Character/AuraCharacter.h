@@ -50,7 +50,7 @@ public:
 
 protected:
 	virtual void InitAbilitySystemComponent() override;
-	virtual void InitHUD() override;
+	virtual void InitUI() override;
 
 	bool IsAbilityInput(const FGameplayTag& InputTag) const;
 

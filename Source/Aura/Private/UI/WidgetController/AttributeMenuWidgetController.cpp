@@ -13,9 +13,8 @@ void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 	Super::BindCallbacksToDependencies();
 	for (const auto& Attribute : UAuraAttributeSet::GetAttributes())
 	{
-		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ThisClass::HandleAttributeValueChanged);
+		WidgetControllerActorInfo.GetAbilitySystemComponent()->GetGameplayAttributeValueChangeDelegate(Attribute).AddUObject(this, &ThisClass::HandleAttributeValueChanged);
 	}
-	
 }
 
 void UAttributeMenuWidgetController::BroadcastInitialValues()
@@ -28,14 +27,14 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 	}
 }
 
-void UAttributeMenuWidgetController::HandleAttributeValueChanged(const FOnAttributeChangeData& Data) const
+void UAttributeMenuWidgetController::HandleAttributeValueChanged(const FOnAttributeChangeData& Data)
 {
 	OnAttributeInfo.Broadcast(GetAttributeInfo(Data.Attribute));
 }
 
-const FAuraAttributeInfo& UAttributeMenuWidgetController::GetAttributeInfo(const FGameplayAttribute& Attribute) const
+const FAuraAttributeInfo& UAttributeMenuWidgetController::GetAttributeInfo(const FGameplayAttribute& Attribute)
 {
 	const auto& Info = AttributeInfoData->GetAttributeInfo(Attribute);
-	Info.AttributeValue = AbilitySystemComponent->GetNumericAttribute(Attribute);
+	Info.AttributeValue = WidgetControllerActorInfo.GetAbilitySystemComponent()->GetNumericAttribute(Attribute);
 	return Info;
 }

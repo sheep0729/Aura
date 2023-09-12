@@ -39,7 +39,7 @@ protected:
 
 	virtual void InitAttributes() const;
 
-	virtual void InitHUD();
+	virtual void InitUI();
 
 	virtual void InitAbilities();
 

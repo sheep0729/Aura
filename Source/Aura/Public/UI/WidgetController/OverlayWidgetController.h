@@ -8,8 +8,6 @@
 
 class UAuraUserWidget;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAttributeChangedSingature, float, NewValue, bool, bInit);
-
 USTRUCT()
 struct FUIWidgetRow : public FTableRowBase
 {
@@ -30,31 +28,32 @@ struct FUIWidgetRow : public FTableRowBase
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUIMessageSingature, const FUIWidgetRow&, Row);
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS()
 class AURA_API UOverlayWidgetController : public UAuraWidgetController
 {
 	GENERATED_BODY()
 
 public:
 	virtual void BroadcastInitialValues() override;
-	virtual void BindCallbacksToDependencies() override;
-
-	UPROPERTY(BlueprintAssignable, Category = "Aura|GAS|Attributes")
+	
+	UPROPERTY(BlueprintAssignable, Category = "Custom|GAS|Attributes")
 	FOnAttributeChangedSingature OnHealthChanged;
 	
-	UPROPERTY(BlueprintAssignable, Category = "Aura|GAS|Attributes")
+	UPROPERTY(BlueprintAssignable, Category = "Custom|GAS|Attributes")
 	FOnAttributeChangedSingature OnMaxHealthChanged;
 	
-	UPROPERTY(BlueprintAssignable, Category = "Aura|GAS|Attributes")
+	UPROPERTY(BlueprintAssignable, Category = "Custom|GAS|Attributes")
 	FOnAttributeChangedSingature OnManaChanged;
 	
-	UPROPERTY(BlueprintAssignable, Category = "Aura|GAS|Attributes")
+	UPROPERTY(BlueprintAssignable, Category = "Custom|GAS|Attributes")
 	FOnAttributeChangedSingature OnMaxManaChanged;
 
-	UPROPERTY(BlueprintAssignable, Category = "Aura|GAS|Messages")
+	UPROPERTY(BlueprintAssignable, Category = "Custom|GAS|Messages")
 	FOnUIMessageSingature OnUIMessage;
 
 protected:
+	virtual void BindCallbacksToDependencies() override;
+	
 	void HandleHealthChanged(const FOnAttributeChangeData& Data) const;
 	void HandleMaxHealthChanged(const FOnAttributeChangeData& Data) const;
 	void HandleManaChanged(const FOnAttributeChangeData& Data) const;
