@@ -25,4 +25,5 @@ namespace EAuraCollisionProfileName
 {
 	inline const FName Projectile{"Projectile"};
 	inline const FName Pickup{"Pickup"};
+	inline const FName Enemy{"Enemy"};
 }
