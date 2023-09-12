@@ -7,21 +7,24 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
+#include "UI/Widget/AuraUserWidget.h"
+#include "UI/WidgetController/EnemyWidgetController.h"
 
 AAuraEnemy::AAuraEnemy(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer), ActorLevel(1)
+	: Super(ObjectInitializer), ActorLevel(1), WidgetControllerClass(UEnemyWidgetController::StaticClass())
 {
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
-}
 
-void AAuraEnemy::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+	WidgetController = Cast<UEnemyWidgetController>(
+		CreateDefaultSubobject("WidgetController", WidgetControllerClass, WidgetControllerClass, true, false)
+	);
 
-	InitAbilitySystem();
+	GetCapsuleComponent()->SetCollisionProfileName(EAuraCollisionProfileName::Enemy);
 }
 
 void AAuraEnemy::HighlightActor(UPrimitiveComponent* TouchedComponent)
@@ -49,6 +52,8 @@ void AAuraEnemy::BeginPlay()
 
 	GetCapsuleComponent()->OnBeginCursorOver.AddDynamic(this, &ThisClass::HighlightActor);
 	GetCapsuleComponent()->OnEndCursorOver.AddDynamic(this, &ThisClass::UnhighlightActor);
+
+	InitAbilitySystem();
 }
 
 void AAuraEnemy::InitAbilitySystemComponent()
@@ -56,4 +61,12 @@ void AAuraEnemy::InitAbilitySystemComponent()
 	Super::InitAbilitySystemComponent();
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+}
+
+void AAuraEnemy::InitUI()
+{
+	Super::InitUI();
+
+	WidgetController->Initialize(AbilitySystemComponent);
+	Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject())->SetWidgetController(WidgetController);
 }

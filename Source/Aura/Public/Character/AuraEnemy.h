@@ -7,6 +7,9 @@
 #include "Interaction/EnemyInterface.h"
 #include "AuraEnemy.generated.h"
 
+class UEnemyWidgetController;
+class UWidgetComponent;
+
 UCLASS()
 class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 {
@@ -14,7 +17,6 @@ class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 
 public:
 	AAuraEnemy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	virtual void PostInitializeComponents() override;
 
 	UFUNCTION()
 	virtual void HighlightActor(UPrimitiveComponent* TouchedComponent) override;
@@ -46,8 +48,19 @@ public:
 protected:
 	virtual void InitAbilitySystemComponent() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Aura|Character Class Defults")
+	virtual void InitUI() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom|Character Class Defults")
 	int32 ActorLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UWidgetComponent> HealthBar;
+
+	UPROPERTY()
+	TObjectPtr<UEnemyWidgetController> WidgetController;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom|UI")
+	TSubclassOf<UEnemyWidgetController> WidgetControllerClass;
 
 private:
 	bool bHighlighted;
