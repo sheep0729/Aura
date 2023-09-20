@@ -1,10 +1,12 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
+#include "UObject/StrongObjectPtr.h"
+#include "Marco.h"
 #include "AuraEnemy.generated.h"
 
 class UEnemyWidgetController;
@@ -13,55 +15,64 @@ class UWidgetComponent;
 UCLASS()
 class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	AAuraEnemy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+    AAuraEnemy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	UFUNCTION()
-	virtual void HighlightActor(UPrimitiveComponent* TouchedComponent) override;
-	
-	UFUNCTION()
-	virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) override;
+    UFUNCTION()
+    virtual void HighlightActor(UPrimitiveComponent* TouchedComponent) override;
 
-	virtual void BeginPlay() override;
+    UFUNCTION()
+    virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) override;
 
-	/* Combat Interface */
-	virtual int32 GetActorLevel() override
-	{
-		return ActorLevel;
-	}
+    virtual void BeginPlay() override;
 
-	/* Combat Interface */
+    /* Combat Interface */
+    virtual int32 GetActorLevel() const override
+    {
+        return ActorLevel;
+    }
 
-	UFUNCTION(BlueprintCallable)
-	bool IsHighlighted() const
-	{
-		return bHighlighted;
-	}
+    /* Combat Interface */
 
-	void SetHighlighted(bool InBool)
-	{
-		bHighlighted = InBool;
-	}
+    UFUNCTION(BlueprintCallable)
+    bool IsHighlighted() const
+    {
+        return bHighlighted;
+    }
+
+    void SetHighlighted(bool InBool)
+    {
+        bHighlighted = InBool;
+    }
+
+    UFUNCTION()
+    bool IsHitReacting() const
+    {
+        return bHitReacting;
+    }
 
 protected:
-	virtual void InitAbilitySystemComponent() override;
+    virtual void InitAbilitySystemComponent() override;
 
-	virtual void InitUI() override;
+    virtual void InitUI() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom|Character Class Defults")
-	int32 ActorLevel;
+    UFUNCTION()
+    void OnHitReact(const FGameplayTag Tag, int32 Count);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TObjectPtr<UWidgetComponent> HealthBar;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom|Character Class Defults")
+    int32 ActorLevel;
 
-	UPROPERTY()
-	TObjectPtr<UEnemyWidgetController> WidgetController;
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<UWidgetComponent> HealthBar;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Custom|UI")
-	TSubclassOf<UEnemyWidgetController> WidgetControllerClass;
+    UPROPERTY(EditAnywhere)
+    TObjectPtr<UEnemyWidgetController> WidgetController;
 
-private:
-	bool bHighlighted;
+    UPROPERTY()
+    bool bHitReacting;
+
+    UPROPERTY()
+    bool bHighlighted;
 };

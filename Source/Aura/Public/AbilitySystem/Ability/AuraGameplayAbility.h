@@ -15,7 +15,10 @@ class AURA_API UAuraGameplayAbility : public UGameplayAbility
 public:
 	CONST_REF_GETTER(StartupInputTag)
 
-private:
+protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Custom|Input")
 	FGameplayTag StartupInputTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+	FScalableFloat Damage;
 };

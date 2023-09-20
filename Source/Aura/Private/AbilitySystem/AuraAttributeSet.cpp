@@ -1,9 +1,10 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraGameplayEffectTypes.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include <AbilitySystem/AuraAbilitySystemComponent.h>
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
@@ -20,10 +21,11 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	if (Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0, GetMaxHealth());
-		// UE_LOG(LogTemp, Log, TEXT("New Health = %f"), NewValue);
+		 //UE_LOG(LogTemp, Log, TEXT("New Health = %f"), NewValue);
 	}
 	else if (Attribute == GetMaxHealthAttribute())
 	{
+		SetHealth(FMath::Min(GetHealth(), GetMaxHealth()));
 		// UE_LOG(LogTemp, Log, TEXT("New Max Health = %f"), NewValue);
 	}
 	else if (Attribute == GetManaAttribute())
@@ -33,6 +35,7 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	}
 	else if (Attribute == GetMaxManaAttribute())
 	{
+		SetMana(FMath::Min(GetMana(), GetMaxMana()));
 		// UE_LOG(LogTemp, Log, TEXT("New Max Mana = %f"), NewValue);
 	}
 }
@@ -43,9 +46,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	// Source = causer if the effect, Target = target of the effect (owner of this AS)
 
+	FEffectContextData EffectContextData = FEffectContextData::GetEffectContextData(Data);
+
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
-		SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
+		//SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
 		UKismetSystemLibrary::PrintString(Data.Target.GetAvatarActor(),
 		                                  FString::Format(
 			                                  TEXT("Changed Health on [{0}], Health = [{1}]"), {Data.Target.GetAvatarActor()->GetName(), GetHealth()}),
@@ -53,8 +58,17 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		SetMana(FMath::Clamp(GetMana(), 0, GetMaxMana()));
+		//SetMana(FMath::Clamp(GetMana(), 0, GetMaxMana()));
 	}
-
-	FEffectContextData EffectContextData = FEffectContextData::GetEffectContextData(Data);
+	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		float Damage = GetIncomingDamage();
+		float OldHealth = GetHealth();
+		float NewHealth = OldHealth - Damage;
+		SetHealth(NewHealth);
+		SetIncomingDamage(0);
+		
+		auto TargetASC = Cast<UAuraAbilitySystemComponent>(EffectContextData.Target.AbilitySystemComponent);
+		TargetASC->GetOnDamaged().Broadcast(Damage, OldHealth, NewHealth);
+	}
 }

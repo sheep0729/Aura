@@ -1,10 +1,12 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
+
+class UAnimMontage;
 
 UINTERFACE(MinimalAPI, BlueprintType)
 class UCombatInterface : public UInterface
@@ -18,9 +20,12 @@ class AURA_API ICombatInterface
 
 public:
 
-	virtual int32 GetActorLevel() PURE_VIRTUAL(ICombatInterface::GetActorLevel, return -1;);
+	virtual int32 GetActorLevel() const PURE_VIRTUAL(ICombatInterface::GetActorLevel, return -1;);
 	virtual FVector GetWeaponFireSocketLocation() PURE_VIRTUAL(ICombatInterface::GetWeaponFireSocketLocation, return FVector(););
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetFacingTarget(const FVector& TargetLocation);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UAnimMontage* GetHitReactMontage();
 };

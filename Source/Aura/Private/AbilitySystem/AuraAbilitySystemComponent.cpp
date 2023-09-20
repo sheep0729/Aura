@@ -1,4 +1,4 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
@@ -6,15 +6,20 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Ability/AuraGameplayAbility.h"
 #include "Algo/ForEach.h"
+#include <Character/AuraCharacterBase.h>
 
 void UAuraAbilitySystemComponent::GiveAbility(const TSubclassOf<UGameplayAbility> Ability, const int32 Level)
 {
 	FGameplayAbilitySpec AbilitySpec{Ability, Level};
-	if (const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+    if (const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
 	{
-		AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->GetStartupInputTag());
-		GiveAbility(AbilitySpec);
+		if (const FGameplayTag& InputTag = AuraGameplayAbility->GetStartupInputTag();InputTag.IsValid()) 
+        {
+			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->GetStartupInputTag());
+        }
 	}
+
+	GiveAbility(AbilitySpec);
 }
 
 void UAuraAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InputTag)

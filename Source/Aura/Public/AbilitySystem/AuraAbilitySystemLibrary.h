@@ -16,12 +16,6 @@ class AURA_API UAuraAbilitySystemLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	// UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|WidgetController")
-	// static UOverlayWidgetController* GetOverlayWidgetController(const UAuraUserWidget* AuraUserWidget);
-	//
-	// UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|WidgetController")
-	// static UAttributeMenuWidgetController* GetAttributeMenuWidgetController(const UAuraUserWidget* AuraUserWidget);
-
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|Attributes")
 	static const TArray<FGameplayTag>& GetPrimaryAttributeTags();
 

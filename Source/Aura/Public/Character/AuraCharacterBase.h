@@ -1,4 +1,4 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 #pragma once
 
@@ -9,12 +9,15 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+enum class EAuraCharacterClass : uint8;
 class UNavMovementComponent;
 class UGameplayAbility;
 class UGameplayEffect;
 class UAttributeSet;
 class UAuraAttributeSet;
 class UAuraAbilitySystemComponent;
+class UAnimMontage;
+struct FAuraCharacterInfo;
 
 UCLASS(Abstract)
 class AURA_API AAuraCharacterBase : public ACharacter, public IAuraAbilitySystemInterface, public ICombatInterface
@@ -28,6 +31,8 @@ public:
 
 	virtual UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent() const override;
 
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -35,7 +40,11 @@ protected:
 
 	void InitAbilitySystem();
 
+	const FAuraCharacterInfo& GetCharacterInfo() const;
+
 	virtual void InitAbilitySystemComponent();
+
+	virtual void PostInitAbilitySystemComponent();
 
 	virtual void InitAttributes() const;
 
@@ -44,6 +53,11 @@ protected:
 	virtual void InitAbilities();
 
 	virtual FVector GetWeaponFireSocketLocation() override;
+
+	void HandleDamaged(float Damage, float OldHealth, float NewHealth);
+
+	UPROPERTY(EditAnywhere, Category="Custom|Class")
+	EAuraCharacterClass CharacterClass;
 
 	UPROPERTY(EditAnywhere, Category="Custom|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
@@ -54,9 +68,8 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom|Attribute")
-	TArray<TSubclassOf<UGameplayEffect>> DefaultAttributeEffects;
+	UPROPERTY(EditDefaultsOnly, Category = "Custom|Montage")
+	TObjectPtr<UAnimMontage> HitReact;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Custom|Ability")
-	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
+	friend class UAuraAbilitySystemComponent;
 };

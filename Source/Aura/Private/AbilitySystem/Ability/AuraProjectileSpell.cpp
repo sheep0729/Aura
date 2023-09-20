@@ -1,10 +1,12 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 
 #include "AbilitySystem/Ability/AuraProjectileSpell.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Actor/AuraProjectile.h"
+#include "Data/AuraGameplayTags.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -40,8 +42,13 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn
 		);
 
-		auto SourceASC = GetAbilitySystemComponentFromActorInfo();
-		auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+		const auto SourceASC = GetAbilitySystemComponentFromActorInfo();
+		const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), SourceASC->MakeEffectContext());
+
+		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+		UKismetSystemLibrary::PrintString(this, FString::Format(TEXT("FireBolt Damage = [{0}]"), {ScaledDamage}));
+
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FAuraGameplayTags::GetEffectTagDamage(), ScaledDamage);
 		Projectile->SetDamageEffectSpecHandle(SpecHandle);
 
 		Projectile->FinishSpawning(SpawnTransform);

@@ -1,9 +1,9 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 
-#include "AbilitySystem/AttributeInfo.h"
+#include "Data/AttributeInfo.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"

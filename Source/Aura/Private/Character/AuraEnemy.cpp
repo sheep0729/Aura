@@ -1,4 +1,4 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 
 #include "Character/AuraEnemy.h"
@@ -10,63 +10,85 @@
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/EnemyWidgetController.h"
+#include "Data/AuraGameplayTags.h"
 
 AAuraEnemy::AAuraEnemy(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer), ActorLevel(1), WidgetControllerClass(UEnemyWidgetController::StaticClass())
+    : Super(ObjectInitializer),
+    ActorLevel(1)
 {
-	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+    GetMesh()->SetCollisionProfileName(EAuraCollisionProfileName::Enemy);
+    // GetCapsuleComponent()->SetCollisionProfileName(EAuraCollisionProfileName::Enemy);
 
-	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
-	WidgetController = Cast<UEnemyWidgetController>(
-		CreateDefaultSubobject("WidgetController", WidgetControllerClass, WidgetControllerClass, true, false)
-	);
+    AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
+    AbilitySystemComponent->SetIsReplicated(true);
+    AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 
-	GetCapsuleComponent()->SetCollisionProfileName(EAuraCollisionProfileName::Enemy);
-}
+    HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+    HealthBar->SetupAttachment(GetRootComponent());
+    HealthBar->SetRelativeLocation(FVector{ 0, 0, 60 });
+    HealthBar->SetWidgetSpace(EWidgetSpace::Screen);
 
-void AAuraEnemy::HighlightActor(UPrimitiveComponent* TouchedComponent)
-{
-	SetHighlighted(true);
-
-	GetMesh()->SetRenderCustomDepth(true);
-	Weapon->SetRenderCustomDepth(true);
-}
-
-void AAuraEnemy::UnhighlightActor(UPrimitiveComponent* TouchedComponent)
-{
-	SetHighlighted(false);
-
-	GetMesh()->SetRenderCustomDepth(false);
-	Weapon->SetRenderCustomDepth(false);
+    WidgetController = CreateDefaultSubobject<UEnemyWidgetController>("WidgetController");
 }
 
 void AAuraEnemy::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-	GetMesh()->SetCustomDepthStencilValue(CustomDepth::Red);
-	Weapon->SetCustomDepthStencilValue(CustomDepth::Red);
+    GetMesh()->SetCustomDepthStencilValue(CustomDepth::Red);
+    Weapon->SetCustomDepthStencilValue(CustomDepth::Red);
 
-	GetCapsuleComponent()->OnBeginCursorOver.AddDynamic(this, &ThisClass::HighlightActor);
-	GetCapsuleComponent()->OnEndCursorOver.AddDynamic(this, &ThisClass::UnhighlightActor);
+    GetCapsuleComponent()->OnBeginCursorOver.AddDynamic(this, &ThisClass::HighlightActor);
+    GetCapsuleComponent()->OnEndCursorOver.AddDynamic(this, &ThisClass::UnhighlightActor);
 
-	InitAbilitySystem();
+    InitAbilitySystem();
 }
 
 void AAuraEnemy::InitAbilitySystemComponent()
 {
-	Super::InitAbilitySystemComponent();
+    Super::InitAbilitySystemComponent();
 
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+    AbilitySystemComponent->InitAbilityActorInfo(this, this);
+    AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::GetEffectTagHitReact(), EGameplayTagEventType::NewOrRemoved).AddUObject(
+        this,
+        &AAuraEnemy::OnHitReact
+    );
 }
 
 void AAuraEnemy::InitUI()
 {
-	Super::InitUI();
+    Super::InitUI();
 
-	WidgetController->Initialize(AbilitySystemComponent);
-	Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject())->SetWidgetController(WidgetController);
+    // 如果需要蓝图的 WidgetControllerClass ，可以在这里 New
+    // EnemyWidgetController = NewObject<UEnemyWidgetController>(this, WidgetControllerClass);
+    INVALID_RETURN_VOID(WidgetController);
+
+    WidgetController->Initialize(AbilitySystemComponent);
+
+    const auto HealthBarWidget = HealthBar->GetUserWidgetObject();
+    INVALID_RETURN_VOID(HealthBarWidget);
+
+    // UserWidget Component 直到 BeginPlay 才初始化自己的 Widget
+    Cast<UAuraUserWidget>(HealthBarWidget)->SetWidgetController(WidgetController);
+}
+
+void AAuraEnemy::HighlightActor(UPrimitiveComponent* TouchedComponent)
+{
+    SetHighlighted(true);
+
+    GetMesh()->SetRenderCustomDepth(true);
+    Weapon->SetRenderCustomDepth(true);
+}
+
+void AAuraEnemy::UnhighlightActor(UPrimitiveComponent* TouchedComponent)
+{
+    SetHighlighted(false);
+
+    GetMesh()->SetRenderCustomDepth(false);
+    Weapon->SetRenderCustomDepth(false);
+}
+
+void AAuraEnemy::OnHitReact(const FGameplayTag Tag, int32 Count)
+{
+    bHitReacting = Count != 0;
 }

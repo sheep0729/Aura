@@ -1,4 +1,4 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 
 #include "Data/AuraGameplayTags.h"
@@ -129,6 +129,16 @@ IMPLEMENT_INPUT_TAG(FAuraGameplayTags, Shift);
 #define ADD_NATIVE_INPUT_TAG(InputName, TagDevComment) \
 	INPUT_TAG_NAME(InputName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(INPUT_TAG_STR(InputName)), TagDevComment);
 
+// Effect Tag
+
+#define IMPLEMENT_EFFECT_TAG(ClassName, EffectName) IMPLEMENT_TAG(ClassName, EFFECT_TAG_NAME(EffectName))
+#define EFFECT_TAG_STR(EffectName) "Effect." #EffectName
+#define ADD_NATIVE_EFFECT_TAG(EffectName, TagDevComment) \
+	EFFECT_TAG_NAME(EffectName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(EFFECT_TAG_STR(EffectName)), TagDevComment);
+
+IMPLEMENT_EFFECT_TAG(FAuraGameplayTags, Damage);
+IMPLEMENT_EFFECT_TAG(FAuraGameplayTags, HitReact);
+
 // Initialize
 
 void FAuraGameplayTags::InitializeAuraGameplayTags()
@@ -160,4 +170,7 @@ void FAuraGameplayTags::InitializeAuraGameplayTags()
 	ADD_NATIVE_INPUT_TAG(4, "Input Tag for 4 Key");
 	ADD_NATIVE_INPUT_TAG(Move, "Input Tag for Move");
 	ADD_NATIVE_INPUT_TAG(Shift, "Input Tag for Shift Key");
+
+	ADD_NATIVE_EFFECT_TAG(Damage, "");
+	ADD_NATIVE_EFFECT_TAG(HitReact, "Tag granted when reacting to hit");
 }

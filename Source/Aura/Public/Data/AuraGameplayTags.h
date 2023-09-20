@@ -1,4 +1,4 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 #pragma once
 
@@ -8,13 +8,13 @@
 
 #define DECLARE_TAG(TagName) static FGameplayTag TagName;
 
-#define ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName) Attribute_##AttributeClass##_##AttributeName
+// Attribute
 
+#define ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName) Attribute_##AttributeClass##_##AttributeName
 #define DECLARE_ATTRIBUTE_TAG(AttributeClass, AttributeName) DECLARE_TAG(ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName));
 #define DECLARE_VITAL_ATTRIBUTE_TAG(AttributeName) DECLARE_ATTRIBUTE_TAG(Vital, AttributeName)
 #define DECLARE_PRIMARY_ATTRIBUTE_TAG(AttributeName) DECLARE_ATTRIBUTE_TAG(Primary, AttributeName)
 #define DECLARE_SECONDARY_ATTRIBUTE_TAG(AttributeName) DECLARE_ATTRIBUTE_TAG(Secondary, AttributeName)
-
 #define ATTRIBUTE_TAG_GETTER(AttributeClass, AttributeName)       \
 	static const FGameplayTag& GetAttributeTag##AttributeName()   \
 	{                                                             \
@@ -24,13 +24,24 @@
 #define PRIMARY_ATTRIBUTE_TAG_GETTER(AttributeName) ATTRIBUTE_TAG_GETTER(Primary, AttributeName)
 #define SECONDARY_ATTRIBUTE_TAG_GETTER(AttributeName) ATTRIBUTE_TAG_GETTER(Secondary, AttributeName)
 
+// Input
+
 #define INPUT_TAG_NAME(InputName) InputTag_##InputName
 #define DECLARE_INPUT_TAG(InputName) DECLARE_TAG(INPUT_TAG_NAME(InputName));
-
 #define INPUT_TAG_GETTER(InputName)                     \
 	static const FGameplayTag& GetInputTag##InputName() \
 	{                                                   \
 		return INPUT_TAG_NAME(InputName);               \
+	}
+
+// Effect
+
+#define EFFECT_TAG_NAME(EffectName) Effect_##EffectName
+#define DECLARE_EFFECT_TAG(EffectName) DECLARE_TAG(EFFECT_TAG_NAME(EffectName))
+#define EFFECT_TAG_GETTER(EffectName)                     \
+	static const FGameplayTag& GetEffectTag##EffectName() \
+	{                                                     \
+		return EFFECT_TAG_NAME(EffectName);               \
 	}
 
 struct FAuraGameplayTags
@@ -70,6 +81,9 @@ struct FAuraGameplayTags
 	INPUT_TAG_GETTER(Move);
 	INPUT_TAG_GETTER(Shift);
 
+	EFFECT_TAG_GETTER(Damage);
+	EFFECT_TAG_GETTER(HitReact);
+
 protected:
 	DECLARE_VITAL_ATTRIBUTE_TAG(Health);
 	DECLARE_VITAL_ATTRIBUTE_TAG(Mana);
@@ -98,4 +112,7 @@ protected:
 	DECLARE_INPUT_TAG(4);
 	DECLARE_INPUT_TAG(Move);
 	DECLARE_INPUT_TAG(Shift);
+
+	DECLARE_EFFECT_TAG(Damage);
+	DECLARE_EFFECT_TAG(HitReact);
 };

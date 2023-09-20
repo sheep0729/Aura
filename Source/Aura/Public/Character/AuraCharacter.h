@@ -33,7 +33,7 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	/* Combat Interface */
-	virtual int32 GetActorLevel() override;
+	virtual int32 GetActorLevel() const override;
 	/* Combat Interface */
 
 	AAuraPlayerController* GetAuraPlayerController() const
