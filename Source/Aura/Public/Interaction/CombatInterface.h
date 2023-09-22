@@ -22,6 +22,7 @@ public:
 
 	virtual int32 GetActorLevel() const PURE_VIRTUAL(ICombatInterface::GetActorLevel, return -1;);
 	virtual FVector GetWeaponFireSocketLocation() PURE_VIRTUAL(ICombatInterface::GetWeaponFireSocketLocation, return FVector(););
+	virtual void Die() = 0;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetFacingTarget(const FVector& TargetLocation);

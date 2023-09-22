@@ -9,6 +9,7 @@
 #include "Marco.h"
 #include "AuraEnemy.generated.h"
 
+struct FGameplayTag;
 class UEnemyWidgetController;
 class UWidgetComponent;
 
@@ -19,15 +20,17 @@ class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 
 public:
     AAuraEnemy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+    
+    virtual void BeginPlay() override;
 
     UFUNCTION()
     virtual void HighlightActor(UPrimitiveComponent* TouchedComponent) override;
 
     UFUNCTION()
     virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) override;
-
-    virtual void BeginPlay() override;
-
+    
+    virtual void Die() override;
+    
     /* Combat Interface */
     virtual int32 GetActorLevel() const override
     {
@@ -67,7 +70,7 @@ protected:
     UPROPERTY(EditAnywhere)
     TObjectPtr<UWidgetComponent> HealthBar;
 
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, Instanced)
     TObjectPtr<UEnemyWidgetController> WidgetController;
 
     UPROPERTY()
@@ -75,4 +78,7 @@ protected:
 
     UPROPERTY()
     bool bHighlighted;
+
+    UPROPERTY()
+    int LifeSpanAfterDeath;
 };
