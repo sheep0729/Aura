@@ -1,4 +1,4 @@
-// Copyright Yang Dong
+﻿// Copyright Yang Dong
 
 
 #include "UI/WidgetController/EnemyWidgetController.h"

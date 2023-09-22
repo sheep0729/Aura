@@ -6,7 +6,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Ability/AuraGameplayAbility.h"
 #include "Algo/ForEach.h"
-#include <Character/AuraCharacterBase.h>
+#include "Character/AuraCharacterBase.h"
 
 void UAuraAbilitySystemComponent::GiveAbility(const TSubclassOf<UGameplayAbility> Ability, const int32 Level)
 {

@@ -62,13 +62,13 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		float Damage = GetIncomingDamage();
-		float OldHealth = GetHealth();
-		float NewHealth = OldHealth - Damage;
+		const float Damage = GetIncomingDamage();
+		const float OldHealth = GetHealth();
+		const float NewHealth = FMath::Max(0, OldHealth - Damage);
 		SetHealth(NewHealth);
 		SetIncomingDamage(0);
-		
-		auto TargetASC = Cast<UAuraAbilitySystemComponent>(EffectContextData.Target.AbilitySystemComponent);
+
+		const auto TargetASC = Cast<UAuraAbilitySystemComponent>(EffectContextData.Target.AbilitySystemComponent);
 		TargetASC->GetOnDamaged().Broadcast(Damage, OldHealth, NewHealth);
 	}
 }

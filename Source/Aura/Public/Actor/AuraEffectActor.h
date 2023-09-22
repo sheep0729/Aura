@@ -41,25 +41,25 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
 
-	UPROPERTY(EditAnywhere, Category = "Aura|Applied Effects", BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects", BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> InstantGameplayEffectClass;
 
-	UPROPERTY(EditAnywhere, Category = "Aura|Applied Effects", BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects", BlueprintReadOnly)
 	EEffectApplicationPolicy InstantGameplayEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
 
-	UPROPERTY(EditAnywhere, Category = "Aura|Applied Effects", BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects", BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> DurationGameplayEffectClass;
 
-	UPROPERTY(EditAnywhere, Category = "Aura|Applied Effects", BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects", BlueprintReadOnly)
 	EEffectApplicationPolicy DurationGameplayEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
 
-	UPROPERTY(EditAnywhere, Category = "Aura|Applied Effects", BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects", BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> InfiniteGameplayEffectClass;
 
-	UPROPERTY(EditAnywhere, Category = "Aura|Applied Effects", BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects", BlueprintReadOnly)
 	EEffectApplicationPolicy InfiniteGameplayEffectApplicationPolicy = EEffectApplicationPolicy::ApplyOnBeginOverlap;
 
-	UPROPERTY(EditAnywhere, Category = "Aura|Applied Effects", BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects", BlueprintReadOnly)
 	EEffectRemovalPolicy InfiniteGameplayEffectRemovalPolicy = EEffectRemovalPolicy::RemoveOnEndOverlap;
 
 	UFUNCTION(BlueprintCallable)
