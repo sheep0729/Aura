@@ -119,6 +119,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	Dissolve();
 }
 
 FVector AAuraCharacterBase::GetWeaponFireSocketLocation()
@@ -137,6 +139,21 @@ void AAuraCharacterBase::HandleDamaged(float Damage, float OldHealth, float NewH
 	{
 		AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer{FAuraGameplayTags::GetEffectTagHitReact()});
 	}
+}
+
+void AAuraCharacterBase::Dissolve()
+{
+	TArray<UMaterialInstanceDynamic*> DynamicMaterials;
+	DynamicMaterials.Add(SetDynamicDissolveMaterial(GetMesh(), DissolveMaterialInstance));
+	DynamicMaterials.Add(SetDynamicDissolveMaterial(Weapon, WeaponDissolveMaterialInstance));
+	StartDissolveTimeline(DynamicMaterials);
+}
+
+UMaterialInstanceDynamic* AAuraCharacterBase::SetDynamicDissolveMaterial(USkeletalMeshComponent* InMesh, UMaterialInstance* MaterialInstance)
+{
+	const auto MaterialInstanceDynamic = UMaterialInstanceDynamic::Create(MaterialInstance, InMesh);
+	InMesh->SetMaterial(0, MaterialInstanceDynamic);
+	return MaterialInstanceDynamic;
 }
 
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()

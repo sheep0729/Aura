@@ -61,6 +61,13 @@ protected:
 
 	void HandleDamaged(float Damage, float OldHealth, float NewHealth);
 
+	void Dissolve();
+
+	UMaterialInstanceDynamic* SetDynamicDissolveMaterial(USkeletalMeshComponent* InMesh, UMaterialInstance* MaterialInstance);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(const TArray<UMaterialInstanceDynamic*>& MaterialInstanceDynamic);
+
 	UPROPERTY(EditAnywhere, Category="Custom|Class")
 	EAuraCharacterClass CharacterClass;
 
@@ -75,6 +82,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Custom|Montage")
 	TObjectPtr<UAnimMontage> HitReact;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 
 	friend class UAuraAbilitySystemComponent;
 };
