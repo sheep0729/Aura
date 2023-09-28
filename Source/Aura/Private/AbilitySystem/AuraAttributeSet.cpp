@@ -50,7 +50,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
-		//SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
+		SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
 		UKismetSystemLibrary::PrintString(Data.Target.GetAvatarActor(),
 		                                  FString::Format(
 			                                  TEXT("Changed Health on [{0}], Health = [{1}]"), {Data.Target.GetAvatarActor()->GetName(), GetHealth()}),
@@ -58,7 +58,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		//SetMana(FMath::Clamp(GetMana(), 0, GetMaxMana()));
+		SetMana(FMath::Clamp(GetMana(), 0, GetMaxMana()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
