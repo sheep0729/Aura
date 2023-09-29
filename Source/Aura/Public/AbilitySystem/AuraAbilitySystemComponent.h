@@ -8,6 +8,7 @@
 #include "Marco.h"
 #include "AuraAbilitySystemComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDamagedSingature, float, Damage, float, OldHealth, float , NewHealth);
 
 UCLASS()
 class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
@@ -37,9 +38,6 @@ protected:
 
 private:
 	bool IsAbilitySpecMatchInputTag(const FGameplayAbilitySpec& AbilitySpec,const FGameplayTag& InputTag);
-	
-	FDelegateHandle OnEffectAppliedDelegateHandle;
 
-	DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnDamagedSingature, float, /*Damage, */float, /*OldHealth, */float/* , NewHealth*/);
 	FOnDamagedSingature OnDamaged;
 };

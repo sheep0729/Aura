@@ -59,7 +59,8 @@ protected:
 
 	virtual FVector GetWeaponFireSocketLocation() override;
 
-	void HandleDamaged(float Damage, float OldHealth, float NewHealth);
+	UFUNCTION()
+	virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth);
 
 	void Dissolve();
 

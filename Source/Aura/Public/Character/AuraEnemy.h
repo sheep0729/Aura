@@ -9,6 +9,7 @@
 #include "Marco.h"
 #include "AuraEnemy.generated.h"
 
+class UFloatingDamageComponent;
 struct FGameplayTag;
 class UEnemyWidgetController;
 class UWidgetComponent;
@@ -64,6 +65,8 @@ protected:
     UFUNCTION()
     void OnHitReact(const FGameplayTag Tag, int32 Count);
 
+    virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth) override;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom|Character Class Defults")
     int32 ActorLevel;
 
@@ -73,6 +76,7 @@ protected:
     UPROPERTY(EditAnywhere, Instanced)
     TObjectPtr<UEnemyWidgetController> WidgetController;
 
+    // TODO 考虑删掉
     UPROPERTY()
     bool bHitReacting;
 
@@ -81,4 +85,12 @@ protected:
 
     UPROPERTY()
     int LifeSpanAfterDeath;
+
+private:
+
+    UFUNCTION(NetMulticast, Reliable)
+    void ShowFloatingDamage(float Damage);
+
+    UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
+    TSubclassOf<UFloatingDamageComponent> FloatingDamageComponentClass;
 };

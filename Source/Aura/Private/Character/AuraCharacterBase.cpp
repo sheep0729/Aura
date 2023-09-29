@@ -67,7 +67,7 @@ void AAuraCharacterBase::InitAbilitySystemComponent()
 
 void AAuraCharacterBase::PostInitAbilitySystemComponent()
 {
-	AbilitySystemComponent->GetOnDamaged().AddUObject(this, &ThisClass::HandleDamaged);
+	AbilitySystemComponent->GetOnDamaged().AddDynamic(this, &ThisClass::HandleDamaged);
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, float Level) const

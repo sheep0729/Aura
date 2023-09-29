@@ -74,6 +74,7 @@ private:
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnAttributeChangedSingature, float, NewValue, bool, bInit);
 
+
 UCLASS(BlueprintType, Blueprintable)
 class AURA_API UAuraWidgetController : public UObject
 {

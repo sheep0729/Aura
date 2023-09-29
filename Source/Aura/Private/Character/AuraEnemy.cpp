@@ -6,6 +6,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
+#include "Character/FloatingDamageComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
@@ -97,4 +98,24 @@ void AAuraEnemy::Die()
 void AAuraEnemy::OnHitReact(const FGameplayTag Tag, int32 Count)
 {
 	bHitReacting = Count != 0;
+}
+
+void AAuraEnemy::HandleDamaged(float Damage, float OldHealth, float NewHealth)
+{
+	Super::HandleDamaged(Damage, OldHealth, NewHealth);
+
+	ShowFloatingDamage(Damage);
+}
+
+void AAuraEnemy::ShowFloatingDamage_Implementation(float Damage)
+{
+	INVALID_RETURN_VOID(FloatingDamageComponentClass);
+	
+	UFloatingDamageComponent* FloatingDamageComponent = NewObject<UFloatingDamageComponent>(this, FloatingDamageComponentClass);
+	FloatingDamageComponent->RegisterComponent();
+	
+	FloatingDamageComponent->SetDamage(Damage);
+	FloatingDamageComponent->SetRelativeTransform(GetRootComponent()->GetRelativeTransform());
+	
+	// FloatingDamageComponent->SetWorldTransform(GetActorTransform() + GetRootComponent()->GetRelativeTransform());
 }

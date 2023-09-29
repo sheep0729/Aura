@@ -65,6 +65,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		const float Damage = GetIncomingDamage();
 		const float OldHealth = GetHealth();
 		const float NewHealth = FMath::Max(0, OldHealth - Damage);
+		
 		SetHealth(NewHealth);
 		SetIncomingDamage(0);
 
