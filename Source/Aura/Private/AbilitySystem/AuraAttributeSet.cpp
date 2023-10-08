@@ -21,7 +21,7 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	if (Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0, GetMaxHealth());
-		 //UE_LOG(LogTemp, Log, TEXT("New Health = %f"), NewValue);
+		//UE_LOG(LogTemp, Log, TEXT("New Health = %f"), NewValue);
 	}
 	else if (Attribute == GetMaxHealthAttribute())
 	{
@@ -40,6 +40,22 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	}
 }
 
+#define PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Attribute) \
+	{\
+		FName AttributeName = GET_MEMBER_NAME_CHECKED(ThisClass, Attribute);\
+		UKismetSystemLibrary::PrintString(\
+			Data.Target.GetAvatarActor(), \
+			FString::Format( \
+				TEXT("Changed {0} on [{1}], BaseValue = [{2}], CurrentValue = [{3}]"),\
+				{\
+					AttributeName.ToString(), \
+					Data.Target.GetAvatarActor()->GetName(), \
+					##Attribute.GetBaseValue(), \
+					##Attribute.GetCurrentValue()\
+				}), \
+			true, true, FLinearColor::Green, 2, AttributeName);\
+	}
+
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -47,14 +63,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	// Source = causer if the effect, Target = target of the effect (owner of this AS)
 
 	FEffectContextData EffectContextData = FEffectContextData::GetEffectContextData(Data);
-
+	
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
+		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health);
 		SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
-		UKismetSystemLibrary::PrintString(Data.Target.GetAvatarActor(),
-		                                  FString::Format(
-			                                  TEXT("Changed Health on [{0}], Health = [{1}]"), {Data.Target.GetAvatarActor()->GetName(), GetHealth()}),
-		                                  true, true, FLinearColor::Green, 2, FName(GetNameSafe(this)));
 	}
 	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
@@ -62,14 +75,22 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
+		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(IncomingDamage);
+
 		const float Damage = GetIncomingDamage();
 		const float OldHealth = GetHealth();
 		const float NewHealth = FMath::Max(0, OldHealth - Damage);
-		
+
 		SetHealth(NewHealth);
 		SetIncomingDamage(0);
 
 		const auto TargetASC = Cast<UAuraAbilitySystemComponent>(EffectContextData.Target.AbilitySystemComponent);
 		TargetASC->GetOnDamaged().Broadcast(Damage, OldHealth, NewHealth);
+
+		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health);
+	}
+	else if (Data.EvaluatedData.Attribute == GetArmorAttribute())
+	{
+		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Armor);
 	}
 }
