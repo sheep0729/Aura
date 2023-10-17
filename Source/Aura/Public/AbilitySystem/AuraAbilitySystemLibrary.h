@@ -7,6 +7,8 @@
 #include "UI/HUD/AuraHUD.h"
 #include "AuraAbilitySystemLibrary.generated.h"
 
+enum class EAuraCharacterClass : uint8;
+struct FAuraCharacterInfo;
 class UAttributeMenuWidgetController;
 class UOverlayWidgetController;
 
@@ -36,4 +38,11 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|Attributes")
 	static const TArray<FGameplayAttribute>& GetSecondaryAttributes();
+
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|Character")
+	static const FAuraCharacterInfo& GetCharacterInfo(const UObject* WorldContextObject, const EAuraCharacterClass CharacterClass);
+	
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|Character")
+	static const UCurveTable* GetDamageCalculationCoefficients(const UObject* WorldContextObject);
+	
 };

@@ -7,6 +7,8 @@
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "Marco.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Game/AuraGameStateBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "UI/HUD/AuraHUD.h"
 #include "UI/Widget/AuraUserWidget.h"
 
@@ -45,4 +47,16 @@ const TArray<FGameplayAttribute>& UAuraAbilitySystemLibrary::GetPrimaryAttribute
 const TArray<FGameplayAttribute>& UAuraAbilitySystemLibrary::GetSecondaryAttributes()
 {
 	return UAuraAttributeSet::GetSecondaryAttributes();
+}
+
+const FAuraCharacterInfo& UAuraAbilitySystemLibrary::GetCharacterInfo(const UObject* WorldContextObject, const EAuraCharacterClass CharacterClass)
+{
+	const auto GameState = CastChecked<AAuraGameStateBase>(UGameplayStatics::GetGameState(WorldContextObject));
+	return GameState->GetCharacterInfo(CharacterClass);
+}
+
+const UCurveTable* UAuraAbilitySystemLibrary::GetDamageCalculationCoefficients(const UObject* WorldContextObject)
+{
+	const auto GameState = CastChecked<AAuraGameStateBase>(UGameplayStatics::GetGameState(WorldContextObject));
+	return GameState->GetDamageCalculationCoefficients();
 }

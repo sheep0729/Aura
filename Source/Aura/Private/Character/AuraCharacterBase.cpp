@@ -3,6 +3,7 @@
 
 #include "Character/AuraCharacterBase.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Character/AuraCharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"  // Rider bug
 #include "Data/AuraCharacterInfo.h"
@@ -57,8 +58,7 @@ void AAuraCharacterBase::InitAbilitySystem()
 
 const FAuraCharacterInfo& AAuraCharacterBase::GetCharacterInfo() const
 {
-	const auto GameState = CastChecked<AAuraGameStateBase>(UGameplayStatics::GetGameState(this));
-	return GameState->GetCharacterInfo(CharacterClass);
+	return UAuraAbilitySystemLibrary::GetCharacterInfo(this, CharacterClass);
 }
 
 void AAuraCharacterBase::InitAbilitySystemComponent()

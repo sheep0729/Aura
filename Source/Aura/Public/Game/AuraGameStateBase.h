@@ -17,6 +17,7 @@ class AURA_API AAuraGameStateBase : public AGameStateBase
 
 public:
 	const FAuraCharacterInfo& GetCharacterInfo(EAuraCharacterClass CharacterClass) const;
+	const UCurveTable* GetDamageCalculationCoefficients() const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Character")

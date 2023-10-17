@@ -22,7 +22,7 @@ enum class EAuraCharacterClass : uint8
 	Ranger
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FAuraCharacterInfo
 {
 	GENERATED_BODY()
@@ -50,6 +50,7 @@ class AURA_API UAuraCharacterData : public UDataAsset
 public:
 	const FAuraCharacterInfo& GetCharacterInfo(EAuraCharacterClass CharacterClass);
 
+	CONST_REF_GETTER(DamageCalculationCoefficients);
 protected:
 	virtual void PreSave(FObjectPreSaveContext SaveContext) override;
 	virtual void PostLoad() override;
@@ -57,9 +58,12 @@ protected:
 	void FillDefaultValues();
 	void FillDefaultValues(FAuraCharacterInfo& Data);
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Character")
 	FAuraCharacterInfo DefaultCharacterInfo;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Character")
 	TMap<EAuraCharacterClass, FAuraCharacterInfo> CharacterInfoMap;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TObjectPtr<UCurveTable> DamageCalculationCoefficients;
 };
