@@ -7,6 +7,7 @@
 #include "Marco.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemNativeLibrary.h"
+#include "AbilitySystem/AuraAbilityType.h"
 #include "Data/AuraGameplayTags.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -89,13 +90,19 @@ void UGEEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 	// 获取 SetByCaller 的 Magnitude ，如果没找到会返回 0
 	float DamageMagnitude = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::GetEffectTagDamage());
 
+	// 获取 Effect Context
+	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
+	FAuraGameplayEffectContext* EffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get());
+
 	// 半伤
 
 	float TargetBlockChance = 0;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FAuraDamageStatics::Get().BlockChanceDef, AggregatorEvaluateParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max(0, TargetBlockChance);
-	
-	if (const bool bBlocked = FMath::RandRange(1, 100) <= TargetBlockChance; bBlocked)
+
+	const bool bBlocked = FMath::RandRange(1, 100) <= TargetBlockChance;
+	EffectContext->SetIsBlockHit(bBlocked);
+	if (bBlocked)
 	{
 		DamageMagnitude *= 0.5;
 	}
@@ -134,8 +141,10 @@ void UGEEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 	const float CriticalHitResistance = CriticalHitResistanceCurve->Eval(TargetCombatInterface->GetActorLevel());
 	
 	const float EffectiveCriticalHitChance = SourceCriticalHitChance - TargetCriticalHitResistance * CriticalHitResistance;
+	const bool bCriticalHit = FMath::RandRange(1, 100) < EffectiveCriticalHitChance;
 
-	if (const bool bCriticalHit = FMath::RandRange(1, 100) < EffectiveCriticalHitChance; bCriticalHit)
+	EffectContext->SetIsCriticalHit(bCriticalHit);
+	if (bCriticalHit)
 	{
 		float SourceCriticalHitDamage = 0;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FAuraDamageStatics::Get().CriticalHitDamageDef, AggregatorEvaluateParameters, SourceCriticalHitDamage);

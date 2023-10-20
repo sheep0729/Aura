@@ -9,6 +9,8 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+struct FGameplayEffectContext;
+struct FGameplayEffectContextHandle;
 enum class EAuraCharacterClass : uint8;
 class UNavMovementComponent;
 class UGameplayAbility;
@@ -60,7 +62,7 @@ protected:
 	virtual FVector GetWeaponFireSocketLocation() override;
 
 	UFUNCTION()
-	virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth);
+	virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle);
 
 	void Dissolve();
 

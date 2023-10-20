@@ -6,6 +6,7 @@
 #include "Data/AuraGameplayTags.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "Marco.h"
+#include "AbilitySystem/AuraAbilityType.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Game/AuraGameStateBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -59,4 +60,40 @@ const UCurveTable* UAuraAbilitySystemLibrary::GetDamageCalculationCoefficients(c
 {
 	const auto GameState = CastChecked<AAuraGameStateBase>(UGameplayStatics::GetGameState(WorldContextObject));
 	return GameState->GetDamageCalculationCoefficients();
+}
+
+bool UAuraAbilitySystemLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FAuraGameplayEffectContext* EffectContext = static_cast<const FAuraGameplayEffectContext*>(EffectContextHandle.Get()); EffectContext)
+	{
+		return EffectContext->IsBlockHit();
+	}
+
+	return false;
+}
+
+bool UAuraAbilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	if (const FAuraGameplayEffectContext* EffectContext = static_cast<const FAuraGameplayEffectContext*>(EffectContextHandle.Get()); EffectContext)
+	{
+		return EffectContext->IsCriticalHit();
+	}
+
+	return false;
+}
+
+void UAuraAbilitySystemLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle, bool bInIsBlockHit)
+{
+	if (FAuraGameplayEffectContext* EffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()); EffectContext)
+	{
+		EffectContext->SetIsBlockHit(bInIsBlockHit);
+	}
+}
+
+void UAuraAbilitySystemLibrary::SetIsIsCriticalHit(FGameplayEffectContextHandle& EffectContextHandle, bool bInIsCriticalHit)
+{
+	if (FAuraGameplayEffectContext* EffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get()); EffectContext)
+	{
+		EffectContext->SetIsCriticalHit(bInIsCriticalHit);
+	}
 }

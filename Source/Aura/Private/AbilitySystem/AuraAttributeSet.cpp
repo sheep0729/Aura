@@ -62,7 +62,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	// Source = causer if the effect, Target = target of the effect (owner of this AS)
 
-	FEffectContextData EffectContextData = FEffectContextData::GetEffectContextData(Data);
+	const auto [EffectContext, Source, Target] = FEffectContextData::GetEffectContextData(Data);
 	
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
@@ -84,8 +84,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		SetHealth(NewHealth);
 		SetIncomingDamage(0);
 
-		const auto TargetASC = Cast<UAuraAbilitySystemComponent>(EffectContextData.Target.AbilitySystemComponent);
-		TargetASC->GetOnDamaged().Broadcast(Damage, OldHealth, NewHealth);
+		const auto TargetASC = Cast<UAuraAbilitySystemComponent>(Target.AbilitySystemComponent);
+		TargetASC->GetOnDamaged().Broadcast(Damage, OldHealth, NewHealth, EffectContext);
 
 		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health);
 	}

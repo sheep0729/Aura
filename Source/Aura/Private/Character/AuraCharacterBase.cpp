@@ -129,7 +129,7 @@ FVector AAuraCharacterBase::GetWeaponFireSocketLocation()
 	return Weapon->GetSocketLocation(WeaponFireSocketName);
 }
 
-void AAuraCharacterBase::HandleDamaged(float Damage, float OldHealth, float NewHealth)
+void AAuraCharacterBase::HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle)
 {
 	if (NewHealth == 0)
 	{

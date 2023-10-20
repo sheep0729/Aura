@@ -4,6 +4,8 @@
 #include "Character/AuraEnemy.h"
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/AuraAbilityType.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
 #include "Character/FloatingDamageComponent.h"
@@ -100,16 +102,19 @@ void AAuraEnemy::OnHitReact(const FGameplayTag Tag, int32 Count)
 	bHitReacting = Count != 0;
 }
 
-void AAuraEnemy::HandleDamaged(float Damage, float OldHealth, float NewHealth)
+void AAuraEnemy::HandleDamaged(const float Damage, const float OldHealth, const float NewHealth, const FGameplayEffectContextHandle EffectContextHandle)
 {
-	Super::HandleDamaged(Damage, OldHealth, NewHealth);
+	Super::HandleDamaged(Damage, OldHealth, NewHealth, EffectContextHandle);
 
-	ShowFloatingDamage(Damage);
+	ShowFloatingDamage(Damage, EffectContextHandle);
 }
 
-void AAuraEnemy::ShowFloatingDamage_Implementation(float Damage)
+void AAuraEnemy::ShowFloatingDamage_Implementation(float Damage, const FGameplayEffectContextHandle& EffectContextHandle)
 {
 	INVALID_RETURN_VOID(FloatingDamageComponentClass);
+	
+	const bool bBlockedHit = UAuraAbilitySystemLibrary::IsBlockedHit(EffectContextHandle);
+	const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(EffectContextHandle);
 	
 	UFloatingDamageComponent* FloatingDamageComponent = NewObject<UFloatingDamageComponent>(this, FloatingDamageComponentClass);
 	FloatingDamageComponent->RegisterComponent();

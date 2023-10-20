@@ -8,7 +8,7 @@
 #include "Marco.h"
 #include "AuraAbilitySystemComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnDamagedSingature, float, Damage, float, OldHealth, float , NewHealth);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnDamagedSingature, float, Damage, float, OldHealth, float, NewHealth, const FGameplayEffectContextHandle, GameplayEffectContext);
 
 UCLASS()
 class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
