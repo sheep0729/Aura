@@ -23,6 +23,11 @@
 #define FALSE_RETURN_VOID(Value) FALSE_THEN_THAT(Value, return;)
 #define FALSE_RETURN_VALUE(Value, Ret) FALSE_THEN_THAT(Value, return Ret;)
 
+#define VALUE_GETTER_FUNC_NAME(Property, FuncName)       \
+	FORCEINLINE auto FuncName() const { \
+		return Property;                                \
+	}
+
 #define VALUE_GETTER(Property)                          \
 	FORCEINLINE auto Get##Property() const { \
 		return Property;                                \
@@ -46,6 +51,11 @@
 #define REF_GETTER(Property)                             \
 	FORCEINLINE auto& Get##Property() {       \
 		return Property;                                 \
+	}
+
+#define SETTER_FUNC_NAME(Property, FuncName)                                  \
+	FORCEINLINE void FuncName(const auto& In##Property) { \
+		Property = In##Property;                                          \
 	}
 
 #define SETTER(Property)                                                  \
