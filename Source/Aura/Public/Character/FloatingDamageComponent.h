@@ -13,5 +13,5 @@ class AURA_API UFloatingDamageComponent : public UWidgetComponent
 
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void SetDamage(float Damage);
+	void SetDamage(float Damage, bool bBlockedHit, bool bCriticalHit);
 };

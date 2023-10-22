@@ -119,7 +119,7 @@ void AAuraEnemy::ShowFloatingDamage_Implementation(float Damage, const FGameplay
 	UFloatingDamageComponent* FloatingDamageComponent = NewObject<UFloatingDamageComponent>(this, FloatingDamageComponentClass);
 	FloatingDamageComponent->RegisterComponent();
 	
-	FloatingDamageComponent->SetDamage(Damage);
+	FloatingDamageComponent->SetDamage(Damage, bBlockedHit, bCriticalHit);
 	FloatingDamageComponent->SetRelativeTransform(GetRootComponent()->GetRelativeTransform());
 	
 	// FloatingDamageComponent->SetWorldTransform(GetActorTransform() + GetRootComponent()->GetRelativeTransform());
