@@ -55,6 +55,7 @@ UGEEC_Damage::UGEEC_Damage()
 	RelevantAttributesToCapture.Add(FAuraDamageStatics::Get().CriticalHitDamageDef);
 }
 
+// 注意：只有 instant 和 periodic 的 GE 可以使用 Execution Calculation，也就是说 GEEC 改变的是 BaseValue
 void UGEEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
                                           FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
@@ -78,17 +79,14 @@ void UGEEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 	FAggregatorEvaluateParameters AggregatorEvaluateParameters;
 	AggregatorEvaluateParameters.SourceTags = SourceTags;
 	AggregatorEvaluateParameters.TargetTags = TargetTags;
-
-	// 获取计算需要捕获的 Attribute 的 Magnitude
-	// float ArmorMagnitude = 0;
-	// ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FAuraDamageStatics::Get().ArmorDef, AggregatorEvaluateParameters, ArmorMagnitude);
-	// ArmorMagnitude = FMath::Max(0, ArmorMagnitude);
-	// Custom Calculation，可以修改多个属性
-	// 注意：只有 instant 和 periodic 的 GE 可以使用 Execution Calculation，也就是说 GEEC 改变的是 BaseValue
-	// const FGameplayModifierEvaluatedData EvaluatedData(FAuraDamageStatics::Get().ArmorProperty, EGameplayModOp::Additive, ArmorMagnitude);
 	
 	// 获取 SetByCaller 的 Magnitude ，如果没找到会返回 0
-	float DamageMagnitude = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::GetEffectTagDamage());
+	float DamageMagnitude = 0;
+	for (const auto& DamageAndResistance : FAuraGameplayTags::GetDamageTypeMap())
+	{
+		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageAndResistance.Key);
+		DamageMagnitude += DamageTypeValue;
+	}
 
 	// 获取 Effect Context
 	FGameplayEffectContextHandle EffectContextHandle = Spec.GetContext();
@@ -129,6 +127,7 @@ void UGEEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 	DamageMagnitude *= (100 - EffectiveArmor * EffectiveArmorCoefficient) / 100;
 
 	// 暴击
+	
 	float SourceCriticalHitChance = 0;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(FAuraDamageStatics::Get().CriticalHitChanceDef, AggregatorEvaluateParameters, SourceCriticalHitChance);
 	SourceCriticalHitChance = FMath::Max(0, SourceCriticalHitChance);

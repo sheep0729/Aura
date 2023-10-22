@@ -44,12 +44,14 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 		const auto SourceASC = GetAbilitySystemComponentFromActorInfo();
 		const auto EffectContext = SourceASC->MakeEffectContext();
-		const auto SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContext);
+		const auto SpecHandle = SourceASC->MakeOutgoingSpec(GetDamageEffectClass(), GetAbilityLevel(), EffectContext);
 
-		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
-		UKismetSystemLibrary::PrintString(this, FString::Format(TEXT("FireBolt Damage = [{0}]"), {ScaledDamage}));
-
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FAuraGameplayTags::GetEffectTagDamage(), ScaledDamage);
+		for (auto& DamagePair : GetDamageMap())
+		{
+			const float ScaledDamage = DamagePair.Value.GetValueAtLevel(GetAbilityLevel());
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, DamagePair.Key, ScaledDamage);
+		}
+		
 		Projectile->SetDamageEffectSpecHandle(SpecHandle);
 
 		Projectile->FinishSpawning(SpawnTransform);

@@ -44,6 +44,16 @@
 		return EFFECT_TAG_NAME(EffectName);               \
 	}
 
+// Damage
+
+#define DAMAGE_TYPE_TAG_NAME(DamageTypeName) DamageType_##DamageTypeName
+#define DECLARE_DAMAGE_TYPE_TAG(DamageTypeName) DECLARE_TAG(DAMAGE_TYPE_TAG_NAME(DamageTypeName))
+#define DAMAGE_TYPE_TAG_GETTER(DamageTypeName)                     \
+static const FGameplayTag& GetDamageTypeTag##DamageTypeName()      \
+{                                                                  \
+	return DAMAGE_TYPE_TAG_NAME(DamageTypeName);                   \
+}
+
 struct FAuraGameplayTags
 {
 	static void InitializeAuraGameplayTags();
@@ -66,6 +76,10 @@ struct FAuraGameplayTags
 	SECONDARY_ATTRIBUTE_TAG_GETTER(ManaRegeneration);
 	SECONDARY_ATTRIBUTE_TAG_GETTER(MaxHealth);
 	SECONDARY_ATTRIBUTE_TAG_GETTER(MaxMana);
+	SECONDARY_ATTRIBUTE_TAG_GETTER(FireResistance);
+	SECONDARY_ATTRIBUTE_TAG_GETTER(LightningResistance);
+	SECONDARY_ATTRIBUTE_TAG_GETTER(ArcaneResistance);
+	SECONDARY_ATTRIBUTE_TAG_GETTER(PhysicalResistance);
 
 	static const TArray<FGameplayTag>& GetPrimaryAttributeTags();
 	static const TArray<FGameplayTag>& GetSecondaryAttributeTags();
@@ -84,6 +98,13 @@ struct FAuraGameplayTags
 	EFFECT_TAG_GETTER(Damage);
 	EFFECT_TAG_GETTER(HitReact);
 
+	DAMAGE_TYPE_TAG_GETTER(Fire);
+	DAMAGE_TYPE_TAG_GETTER(Lightning);
+	DAMAGE_TYPE_TAG_GETTER(Arcane);
+	DAMAGE_TYPE_TAG_GETTER(Physical);
+
+	static const TMap<FGameplayTag, FGameplayTag>& GetDamageTypeMap();
+	
 protected:
 	DECLARE_VITAL_ATTRIBUTE_TAG(Health);
 	DECLARE_VITAL_ATTRIBUTE_TAG(Mana);
@@ -103,6 +124,10 @@ protected:
 	DECLARE_SECONDARY_ATTRIBUTE_TAG(ManaRegeneration);
 	DECLARE_SECONDARY_ATTRIBUTE_TAG(MaxHealth);
 	DECLARE_SECONDARY_ATTRIBUTE_TAG(MaxMana);
+	DECLARE_SECONDARY_ATTRIBUTE_TAG(FireResistance);
+	DECLARE_SECONDARY_ATTRIBUTE_TAG(LightningResistance);
+	DECLARE_SECONDARY_ATTRIBUTE_TAG(ArcaneResistance);
+	DECLARE_SECONDARY_ATTRIBUTE_TAG(PhysicalResistance);
 
 	DECLARE_INPUT_TAG(LMB);
 	DECLARE_INPUT_TAG(RMB);
@@ -115,4 +140,9 @@ protected:
 
 	DECLARE_EFFECT_TAG(Damage);
 	DECLARE_EFFECT_TAG(HitReact);
+	
+	DECLARE_DAMAGE_TYPE_TAG(Fire);
+	DECLARE_DAMAGE_TYPE_TAG(Lightning);
+	DECLARE_DAMAGE_TYPE_TAG(Arcane);
+	DECLARE_DAMAGE_TYPE_TAG(Physical);
 };

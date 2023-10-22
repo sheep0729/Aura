@@ -26,6 +26,10 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, ManaRegeneration, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, MaxMana, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, FireResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, LightningResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, ArcaneResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, PhysicalResistance, COND_None, REPNOTIFY_Always);
 }
 
 #define ON_REP_ATTRIBUTE(ClassName, PropertyName)                                                 \
@@ -50,7 +54,12 @@ ON_REP_ATTRIBUTE(UAuraAttributeSet, CriticalHitResistance);
 ON_REP_ATTRIBUTE(UAuraAttributeSet, HealthRegeneration);
 ON_REP_ATTRIBUTE(UAuraAttributeSet, ManaRegeneration);
 ON_REP_ATTRIBUTE(UAuraAttributeSet, MaxHealth);
-ON_REP_ATTRIBUTE(UAuraAttributeSet, MaxMana);
+ON_REP_ATTRIBUTE(UAuraAttributeSet, MaxMana)
+ON_REP_ATTRIBUTE(UAuraAttributeSet, FireResistance)
+ON_REP_ATTRIBUTE(UAuraAttributeSet, LightningResistance)
+ON_REP_ATTRIBUTE(UAuraAttributeSet, ArcaneResistance)
+ON_REP_ATTRIBUTE(UAuraAttributeSet, PhysicalResistance)
+
 
 const TArray<FGameplayAttribute>& UAuraAttributeSet::GetPrimaryAttributes()
 {
@@ -76,7 +85,11 @@ const TArray<FGameplayAttribute>& UAuraAttributeSet::GetSecondaryAttributes()
 		GetHealthRegenerationAttribute(),
 		GetManaRegenerationAttribute(),
 		GetMaxHealthAttribute(),
-		GetMaxManaAttribute()
+		GetMaxManaAttribute(),
+		GetFireResistanceAttribute(),
+		GetLightningResistanceAttribute(),
+		GetArcaneResistanceAttribute(),
+		GetPhysicalResistanceAttribute()
 	};
 
 	return SecondaryAttributes;
@@ -110,7 +123,11 @@ const TArray<FGameplayAttribute>& UAuraAttributeSet::GetAttributes()
 		GetHealthRegenerationAttribute(),
 		GetManaRegenerationAttribute(),
 		GetMaxHealthAttribute(),
-		GetMaxManaAttribute()
+		GetMaxManaAttribute(),
+		GetFireResistanceAttribute(),
+		GetLightningResistanceAttribute(),
+		GetArcaneResistanceAttribute(),
+		GetPhysicalResistanceAttribute()
 	};
 
 	return Attributes;

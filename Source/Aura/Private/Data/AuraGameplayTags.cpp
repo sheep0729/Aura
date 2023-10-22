@@ -33,6 +33,10 @@ IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, HealthRegeneration);
 IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, ManaRegeneration);
 IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, MaxHealth);
 IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, MaxMana);
+IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, FireResistance);
+IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, LightningResistance);
+IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, ArcaneResistance);
+IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, PhysicalResistance);
 
 #define ATTRIBUTE_TAG_STR(AttributeClass, AttributeName) "Attributes." #AttributeClass "." #AttributeName
 
@@ -59,7 +63,7 @@ const TArray<FGameplayTag>& FAuraGameplayTags::GetPrimaryAttributeTags()
 
 const TArray<FGameplayTag>& FAuraGameplayTags::GetSecondaryAttributeTags()
 {
-	static const TArray SecondaryAttributeTags = {
+	static const TArray SecondaryAttributeTags{
 		GetAttributeTagArmor(),
 		GetAttributeTagArmorPenetration(),
 		GetAttributeTagBlockChance(),
@@ -69,7 +73,11 @@ const TArray<FGameplayTag>& FAuraGameplayTags::GetSecondaryAttributeTags()
 		GetAttributeTagHealthRegeneration(),
 		GetAttributeTagManaRegeneration(),
 		GetAttributeTagMaxHealth(),
-		GetAttributeTagMaxMana()
+		GetAttributeTagMaxMana(),
+		GetAttributeTagFireResistance(),
+		GetAttributeTagLightningResistance(),
+		GetAttributeTagArcaneResistance(),
+		GetAttributeTagPhysicalResistance(),
 	};
 
 	return SecondaryAttributeTags;
@@ -77,7 +85,7 @@ const TArray<FGameplayTag>& FAuraGameplayTags::GetSecondaryAttributeTags()
 
 const TArray<FGameplayTag>& FAuraGameplayTags::GetVitalAttributeTags()
 {
-	static const TArray VitalAttributeTags = {
+	static const TArray VitalAttributeTags{
 		GetAttributeTagHealth(),
 		GetAttributeTagMana()
 	};
@@ -87,7 +95,7 @@ const TArray<FGameplayTag>& FAuraGameplayTags::GetVitalAttributeTags()
 
 const TMap<FGameplayTag, FGameplayAttribute>& FAuraGameplayTags::GetAttributeMap()
 {
-	static const TMap<FGameplayTag, FGameplayAttribute> AttributeMap = {
+	static const TMap<FGameplayTag, FGameplayAttribute> AttributeMap{
 		{GetAttributeTagHealth(), UAuraAttributeSet::GetHealthAttribute()},
 		{GetAttributeTagMana(), UAuraAttributeSet::GetManaAttribute()},
 
@@ -105,10 +113,27 @@ const TMap<FGameplayTag, FGameplayAttribute>& FAuraGameplayTags::GetAttributeMap
 		{GetAttributeTagHealthRegeneration(), UAuraAttributeSet::GetHealthRegenerationAttribute()},
 		{GetAttributeTagManaRegeneration(), UAuraAttributeSet::GetManaRegenerationAttribute()},
 		{GetAttributeTagMaxHealth(), UAuraAttributeSet::GetMaxHealthAttribute()},
-		{GetAttributeTagMaxMana(), UAuraAttributeSet::GetMaxManaAttribute()}
+		{GetAttributeTagMaxMana(), UAuraAttributeSet::GetMaxManaAttribute()},
+		{GetAttributeTagFireResistance(), UAuraAttributeSet::GetFireResistanceAttribute()},
+		{GetAttributeTagLightningResistance(), UAuraAttributeSet::GetLightningResistanceAttribute()},
+		{GetAttributeTagArcaneResistance(), UAuraAttributeSet::GetArcaneResistanceAttribute()},
+		{GetAttributeTagPhysicalResistance(), UAuraAttributeSet::GetPhysicalResistanceAttribute()}
 	};
 
 	return AttributeMap;
+}
+
+// 伤害类型和对应的护甲类型
+const TMap<FGameplayTag, FGameplayTag>& FAuraGameplayTags::GetDamageTypeMap()
+{
+	static TMap<FGameplayTag, FGameplayTag> DamageTypeMap{
+		{GetDamageTypeTagFire(), GetAttributeTagFireResistance()},
+		{GetDamageTypeTagLightning(), GetAttributeTagLightningResistance()},
+		{GetDamageTypeTagArcane(), GetAttributeTagArcaneResistance()},
+		{GetDamageTypeTagPhysical(), GetAttributeTagPhysicalResistance()},
+	};
+
+	return DamageTypeMap;
 }
 
 // Input Tag
@@ -139,6 +164,18 @@ IMPLEMENT_INPUT_TAG(FAuraGameplayTags, Shift);
 IMPLEMENT_EFFECT_TAG(FAuraGameplayTags, Damage);
 IMPLEMENT_EFFECT_TAG(FAuraGameplayTags, HitReact);
 
+// Damage Type Tag
+
+#define IMPLEMENT_DAMAGE_TYPE_TAG(ClassName, DamageTypeName) IMPLEMENT_TAG(ClassName, DAMAGE_TYPE_TAG_NAME(DamageTypeName))
+#define DAMAGE_TYPE_TAG_STR(DamageTypeName) "DamageType." #DamageTypeName
+#define ADD_NATIVE_DAMAGE_TYPE_TAG(DamageTypeName, TagDevComment) \
+	DAMAGE_TYPE_TAG_NAME(DamageTypeName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(DAMAGE_TYPE_TAG_STR(DamageTypeName)), TagDevComment);
+
+IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Fire);
+IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Lightning);
+IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Arcane);
+IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Physical);
+
 // Initialize
 
 void FAuraGameplayTags::InitializeAuraGameplayTags()
@@ -161,6 +198,10 @@ void FAuraGameplayTags::InitializeAuraGameplayTags()
 	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(ManaRegeneration, "Amount of mana regenerated every second");
 	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(MaxHealth, "Maxium amount of health obtainable");
 	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(MaxMana, "Maxium amount of mana obtainable");
+	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(FireResistance, "Resistance to Fire Damage");
+	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(LightningResistance, "Resistance to Lightning Damage");
+	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(ArcaneResistance, "Resistance to Arcane Damage");
+	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(PhysicalResistance, "Resistance to Physical Damage");
 
 	ADD_NATIVE_INPUT_TAG(LMB, "Input Tag for Left Mouse Button");
 	ADD_NATIVE_INPUT_TAG(RMB, "Input Tag for Right Mouse Button");
@@ -173,4 +214,9 @@ void FAuraGameplayTags::InitializeAuraGameplayTags()
 
 	ADD_NATIVE_EFFECT_TAG(Damage, "");
 	ADD_NATIVE_EFFECT_TAG(HitReact, "Tag granted when reacting to hit");
+
+	ADD_NATIVE_DAMAGE_TYPE_TAG(Fire, "Fire Damage Tag");
+	ADD_NATIVE_DAMAGE_TYPE_TAG(Lightning, "Lightning Damage Tag");
+	ADD_NATIVE_DAMAGE_TYPE_TAG(Arcane, "Arcane Damage Tag");
+	ADD_NATIVE_DAMAGE_TYPE_TAG(Physical, "Physical Damage Tag");
 }

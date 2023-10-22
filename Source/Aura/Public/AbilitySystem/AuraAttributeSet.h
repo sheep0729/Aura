@@ -72,6 +72,10 @@ public:
 	ATTRIBUTE_ACCESSORS(ThisClass, ManaRegeneration);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxHealth);
 	ATTRIBUTE_ACCESSORS(ThisClass, MaxMana);
+	ATTRIBUTE_ACCESSORS(ThisClass, FireResistance);
+	ATTRIBUTE_ACCESSORS(ThisClass, LightningResistance);
+	ATTRIBUTE_ACCESSORS(ThisClass, ArcaneResistance);
+	ATTRIBUTE_ACCESSORS(ThisClass, PhysicalResistance);
 
 	static const TArray<FGameplayAttribute>& GetPrimaryAttributes();
 	static const TArray<FGameplayAttribute>& GetSecondaryAttributes();
@@ -111,6 +115,14 @@ protected:
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
 	UFUNCTION()
 	void OnRep_MaxMana(const FGameplayAttributeData& OldMaxMana) const;
+	UFUNCTION()
+	void OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance) const;
+	UFUNCTION()
+	void OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance) const;
+	UFUNCTION()
+	void OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance) const;
+	UFUNCTION()
+	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;
 
 private: // 把属性设置为 private 会导致 DEFINE_ATTRIBUTE_CAPTUREDEF 无法使用
 	// Meta Attributes
@@ -171,4 +183,16 @@ private: // 把属性设置为 private 会导致 DEFINE_ATTRIBUTE_CAPTUREDEF 无
 
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess), Category = "Custom|Secondary Attributes", ReplicatedUsing = OnRep_MaxMana)
 	FGameplayAttributeData MaxMana;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess), Category = "Custom|Secondary Attributes", ReplicatedUsing = OnRep_FireResistance)
+	FGameplayAttributeData FireResistance;
+	
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess), Category = "Custom|Secondary Attributes", ReplicatedUsing = OnRep_LightningResistance)
+	FGameplayAttributeData LightningResistance;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess), Category = "Custom|Secondary Attributes", ReplicatedUsing = OnRep_ArcaneResistance)
+	FGameplayAttributeData ArcaneResistance;
+
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess), Category = "Custom|Secondary Attributes", ReplicatedUsing = OnRep_PhysicalResistance)
+	FGameplayAttributeData PhysicalResistance;
 };
