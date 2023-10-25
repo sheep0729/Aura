@@ -20,18 +20,17 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 {
 	check(ProjectileClass);
 
-	// TODO: 改为 Local Predict
-	// FALSE_RETURN_VOID(GetAvatarActorFromActorInfo()->HasAuthority());
+	// TODO: 预测
+	FALSE_RETURN_VOID(GetAvatarActorFromActorInfo()->HasAuthority());
 
 	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 	{
 		const auto SocketLocation = CombatInterface->GetWeaponFireSocketLocation();
-		FRotator Rotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-		Rotation.Pitch = 0;
+		const FRotator Direction = (ProjectileTargetLocation - SocketLocation).Rotation();
 
 		FTransform SpawnTransform;
 		SpawnTransform.SetLocation(SocketLocation);
-		SpawnTransform.SetRotation(Rotation.Quaternion());
+		SpawnTransform.SetRotation(Direction.Quaternion());
 		
 		// TODO: Set the Projectile Rotation
 		const auto Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(

@@ -20,7 +20,8 @@ AAuraProjectile::AAuraProjectile()
 	  LoopingAudioComponent(nullptr)
 {
 	PrimaryActorTick.bCanEverTick = false;
-	bReplicates = false;
+	bReplicates = true;
+	// bReplicates = false;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	Sphere->SetCollisionProfileName(EAuraCollisionProfileName::Projectile);
@@ -35,6 +36,8 @@ AAuraProjectile::AAuraProjectile()
 void AAuraProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetReplicateMovement(true);
 
 	SetLifeSpan(LifeSpan);
 
@@ -61,8 +64,8 @@ void AAuraProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 {
 	if (OtherActor && OtherActor->Implements<UEnemyInterface>())
 	{
-		// TODO 改为 Local Predict
-		if (GetOwner()->HasAuthority())
+		// TODO 改为 Local Predict ?
+		if (HasAuthority())
 		{
 			if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
