@@ -124,7 +124,7 @@ const TMap<FGameplayTag, FGameplayAttribute>& FAuraGameplayTags::GetAttributeMap
 }
 
 // 伤害类型和对应的护甲类型
-const TMap<FGameplayTag, FGameplayTag>& FAuraGameplayTags::GetDamageTypeMap()
+const TMap<FGameplayTag, FGameplayTag>& FAuraGameplayTags::GetDamageToResistanceMap()
 {
 	static TMap<FGameplayTag, FGameplayTag> DamageTypeMap{
 		{GetDamageTypeTagFire(), GetAttributeTagFireResistance()},

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AttributeSet.h"
 #include "GameplayTagContainer.h"
+#include "Marco.h"
 
 #define DECLARE_TAG(TagName) static FGameplayTag TagName;
 
@@ -103,7 +104,7 @@ struct FAuraGameplayTags
 	DAMAGE_TYPE_TAG_GETTER(Arcane);
 	DAMAGE_TYPE_TAG_GETTER(Physical);
 
-	static const TMap<FGameplayTag, FGameplayTag>& GetDamageTypeMap();
+	static const TMap<FGameplayTag, FGameplayTag>& GetDamageToResistanceMap();
 	
 protected:
 	DECLARE_VITAL_ATTRIBUTE_TAG(Health);

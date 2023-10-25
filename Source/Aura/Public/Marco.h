@@ -53,6 +53,8 @@
 		return Property;                                 \
 	}
 
+#define STATIC_REF_GETTER(Property) static REF_GETTER(Property)
+
 #define SETTER_FUNC_NAME(Property, FuncName)                                  \
 	FORCEINLINE void FuncName(const auto& In##Property) { \
 		Property = In##Property;                                          \
