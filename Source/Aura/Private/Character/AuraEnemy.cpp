@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemNativeLibrary.h"
 #include "AbilitySystem/AuraAbilityType.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
@@ -112,6 +113,7 @@ void AAuraEnemy::HandleDamaged(const float Damage, const float OldHealth, const 
 void AAuraEnemy::ShowFloatingDamage_Implementation(float Damage, const FGameplayEffectContextHandle& EffectContextHandle)
 {
 	INVALID_RETURN_VOID(FloatingDamageComponentClass);
+	FALSE_RETURN_VOID(AuraAbilitySystemNativeLibrary::IsEffectCauserLocallyControlled(EffectContextHandle));
 	
 	const bool bBlockedHit = UAuraAbilitySystemLibrary::IsBlockedHit(EffectContextHandle);
 	const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(EffectContextHandle);

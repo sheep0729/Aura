@@ -50,8 +50,8 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 				{\
 					AttributeName.ToString(), \
 					Data.Target.GetAvatarActor()->GetName(), \
-					##Attribute.GetBaseValue(), \
-					##Attribute.GetCurrentValue()\
+					Attribute.GetBaseValue(), \
+					Attribute.GetCurrentValue()\
 				}), \
 			true, true, FLinearColor::Green, 2, AttributeName);\
 	}
