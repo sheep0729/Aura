@@ -8,6 +8,7 @@
 #include "AbilitySystem/AuraAbilitySystemNativeLibrary.h"
 #include "AbilitySystem/AuraAbilityType.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AI/AuraAIController.h"
 #include "Aura/Aura.h"
 #include "Character/FloatingDamageComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -108,6 +109,14 @@ void AAuraEnemy::HandleDamaged(const float Damage, const float OldHealth, const 
 	Super::HandleDamaged(Damage, OldHealth, NewHealth, EffectContextHandle);
 
 	ShowFloatingDamage(Damage, EffectContextHandle);
+}
+
+AAuraAIController* AAuraEnemy::GetAIController() const
+{
+	const auto MyController = GetController();
+	INVALID_RETURN_VALUE(MyController, nullptr);
+
+	return Cast<AAuraAIController>(MyController);
 }
 
 void AAuraEnemy::ShowFloatingDamage_Implementation(float Damage, const FGameplayEffectContextHandle& EffectContextHandle)

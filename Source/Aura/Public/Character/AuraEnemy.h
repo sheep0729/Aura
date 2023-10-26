@@ -9,6 +9,7 @@
 #include "Marco.h"
 #include "AuraEnemy.generated.h"
 
+class AAuraAIController;
 struct FGameplayEffectContext;
 class UFloatingDamageComponent;
 struct FGameplayTag;
@@ -67,6 +68,8 @@ protected:
     void OnHitReact(const FGameplayTag Tag, int32 Count);
 
     virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle) override;
+
+    AAuraAIController* GetAIController() const;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom|Character Class Defults")
     int32 ActorLevel;
