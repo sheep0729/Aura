@@ -13,6 +13,8 @@
 AAuraEffectActor::AAuraEffectActor()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	bDestroyOnApplied = true;
+	bApplyToEnemy = false;
 
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("SceneRoot"));
 }
@@ -25,6 +27,7 @@ void AAuraEffectActor::BeginPlay()
 void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
 	check(GameplayEffectClass);
+	FALSE_RETURN_VOID(!TargetActor->ActorHasTag(FName("Enemy")) || bApplyToEnemy);
 
 	// UAbilitySystemComponent* TargetASC = Cast<IAbilitySystemInterface>(Target);
 	UAuraAbilitySystemComponent* TargetASC = Cast<UAuraAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor));
@@ -47,6 +50,11 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassO
 		EEffectRemovalPolicy::RemoveOnEndOverlap)
 	{
 		ActiveEffects.Add(ActiveEffect, TargetASC);
+	}
+
+	if (bDestroyOnApplied)
+	{
+		Destroy();
 	}
 }
 

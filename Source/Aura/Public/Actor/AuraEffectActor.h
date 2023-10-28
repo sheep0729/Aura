@@ -69,4 +69,10 @@ protected:
 	void OnEndOverlap(AActor* TargetActor);
 
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffects;
+
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects")
+	bool bDestroyOnApplied;
+
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects")
+	bool bApplyToEnemy;
 };
