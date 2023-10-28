@@ -16,6 +16,7 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/EnemyWidgetController.h"
 #include "Data/AuraGameplayTags.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AAuraEnemy::AAuraEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
@@ -35,6 +36,11 @@ AAuraEnemy::AAuraEnemy(const FObjectInitializer& ObjectInitializer)
 	HealthBar->SetWidgetSpace(EWidgetSpace::Screen);
 
 	WidgetController = CreateDefaultSubobject<UEnemyWidgetController>("WidgetController");
+
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 }
 
 void AAuraEnemy::BeginPlay()
