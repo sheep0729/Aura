@@ -1,7 +1,8 @@
 #include "AbilitySystem/AuraAbilityType.h"
 
 FAuraGameplayEffectContext::FAuraGameplayEffectContext()
-	:bIsBlockHit(false)
+	: bIsBlockHit(false),
+	  bIsCriticalHit(false)
 {
 }
 
