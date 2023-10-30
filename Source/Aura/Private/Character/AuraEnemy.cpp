@@ -63,7 +63,7 @@ void AAuraEnemy::InitAbilitySystemComponent()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::GetEffectTagHitReact(), EGameplayTagEventType::NewOrRemoved).AddUObject(
 		this,
-		&AAuraEnemy::OnHitReact
+		&AAuraEnemy::OnHitReactTagChanged
 	);
 }
 
@@ -105,7 +105,7 @@ void AAuraEnemy::Die()
 	SetLifeSpan(LifeSpanAfterDeath);
 }
 
-void AAuraEnemy::OnHitReact(const FGameplayTag Tag, int32 Count)
+void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag Tag, int32 Count)
 {
 	bHitReacting = Count != 0;
 }

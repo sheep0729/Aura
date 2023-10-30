@@ -65,7 +65,7 @@ protected:
     virtual void InitUI() override;
 
     UFUNCTION()
-    void OnHitReact(const FGameplayTag Tag, int32 Count);
+    void OnHitReactTagChanged(const FGameplayTag Tag, int32 Count);
 
     virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle) override;
 
@@ -79,8 +79,7 @@ protected:
 
     UPROPERTY(EditAnywhere, Instanced)
     TObjectPtr<UEnemyWidgetController> WidgetController;
-
-    // TODO 考虑删掉
+    
     UPROPERTY()
     bool bHitReacting;
 

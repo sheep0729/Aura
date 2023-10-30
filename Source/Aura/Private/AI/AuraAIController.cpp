@@ -3,9 +3,14 @@
 
 #include "AI/AuraAIController.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Character/AuraEnemy.h"
+#include "Data/AuraCharacterInfo.h"
+#include "Data/AuraGameplayTags.h"
 
 
 // Sets default values
@@ -22,4 +27,28 @@ AAuraAIController::AAuraAIController()
 void AAuraAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+
+	if (const auto AbilitySystemInterface = Cast<IAbilitySystemInterface>(InPawn))
+	{
+		if (const auto AbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent())
+		{
+			AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::GetEffectTagHitReact(), EGameplayTagEventType::NewOrRemoved).AddUObject(
+				this,
+				&ThisClass::OnHitReactTagChanged
+			);
+		}
+	}
+
+	if (const auto AuraEnemy = Cast<AAuraEnemy>(InPawn))
+	{
+		GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), AuraEnemy->GetCharacterClass() != EAuraCharacterClass::Warrior);
+	}
+}
+
+void AAuraAIController::OnHitReactTagChanged(const FGameplayTag Tag, const int32 Count)
+{
+	const auto AuraEnemy = Cast<AAuraEnemy>(GetPawn());
+	INVALID_RETURN_VOID(AuraEnemy);
+	
+	GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), AuraEnemy->IsHitReacting());
 }

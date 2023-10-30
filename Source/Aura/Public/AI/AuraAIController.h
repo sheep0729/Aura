@@ -4,6 +4,7 @@
 #include "AIController.h"
 #include "AuraAIController.generated.h"
 
+struct FGameplayTag;
 class UBlackboardComponent;
 class UBehaviorTreeComponent;
 
@@ -25,4 +26,7 @@ private:
 	
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess))
 	TObjectPtr<UBehaviorTreeComponent> BehaviorTreeComponent;
+
+	UFUNCTION()
+	void OnHitReactTagChanged(const FGameplayTag Tag, int32 Count);
 };

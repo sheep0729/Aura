@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "Marco.h"
 #include "AbilitySystem/AuraAbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
@@ -34,6 +35,8 @@ public:
 	virtual UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent() const override;
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+
+	VALUE_GETTER(CharacterClass);
 
 protected:
 	virtual void BeginPlay() override;
