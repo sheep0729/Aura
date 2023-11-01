@@ -55,6 +55,16 @@ static const FGameplayTag& GetDamageTypeTag##DamageTypeName()      \
 	return DAMAGE_TYPE_TAG_NAME(DamageTypeName);                   \
 }
 
+// Ability
+
+#define ABILITY_TAG_NAME(AbilityName) Ability_##AbilityName
+#define DECLARE_ABILITY_TAG(AbilityName) DECLARE_TAG(ABILITY_TAG_NAME(AbilityName))
+#define ABILITY_TAG_GETTER(AbilityName)                      \
+static const FGameplayTag& GetAbilityTag##AbilityName()      \
+{                                                            \
+	return ABILITY_TAG_NAME(AbilityName);                    \
+}
+
 struct FAuraGameplayTags
 {
 	static void InitializeAuraGameplayTags();
@@ -105,6 +115,8 @@ struct FAuraGameplayTags
 	DAMAGE_TYPE_TAG_GETTER(Physical);
 
 	static const TMap<FGameplayTag, FGameplayTag>& GetDamageToResistanceMap();
+
+	ABILITY_TAG_GETTER(Attack);
 	
 protected:
 	DECLARE_VITAL_ATTRIBUTE_TAG(Health);
@@ -146,4 +158,6 @@ protected:
 	DECLARE_DAMAGE_TYPE_TAG(Lightning);
 	DECLARE_DAMAGE_TYPE_TAG(Arcane);
 	DECLARE_DAMAGE_TYPE_TAG(Physical);
+
+	DECLARE_ABILITY_TAG(Attack);
 };

@@ -176,6 +176,15 @@ IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Lightning);
 IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Arcane);
 IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Physical);
 
+// Ability Tag
+
+#define IMPLEMENT_ABILITY_TAG(ClassName, AbilityName) IMPLEMENT_TAG(ClassName, ABILITY_TAG_NAME(AbilityName))
+#define ABILITY_TAG_STR(AbilityName) "Ability." #AbilityName
+#define ADD_NATIVE_ABILITY_TAG(AbilityName, TagDevComment) \
+	ABILITY_TAG_NAME(AbilityName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(ABILITY_TAG_STR(AbilityName)), TagDevComment);
+
+IMPLEMENT_ABILITY_TAG(FAuraGameplayTags, Attack);
+
 // Initialize
 
 void FAuraGameplayTags::InitializeAuraGameplayTags()
@@ -219,4 +228,6 @@ void FAuraGameplayTags::InitializeAuraGameplayTags()
 	ADD_NATIVE_DAMAGE_TYPE_TAG(Lightning, "Lightning Damage Tag");
 	ADD_NATIVE_DAMAGE_TYPE_TAG(Arcane, "Arcane Damage Tag");
 	ADD_NATIVE_DAMAGE_TYPE_TAG(Physical, "Physical Damage Tag");
+
+	ADD_NATIVE_ABILITY_TAG(Attack, "Attack Ability Tag");
 }

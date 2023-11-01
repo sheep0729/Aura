@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Ability/AuraDamageGameplayAbility.h"
+#include "AbilitySystem/Ability/DamageGameplayAbility.h"
 #include "AuraProjectileSpell.generated.h"
 
 class AAuraProjectile;
 
 UCLASS()
-class AURA_API UAuraProjectileSpell : public UAuraDamageGameplayAbility
+class AURA_API UAuraProjectileSpell : public UDamageGameplayAbility
 {
 	GENERATED_BODY()
 protected:
