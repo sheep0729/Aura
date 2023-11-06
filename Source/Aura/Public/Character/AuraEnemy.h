@@ -26,11 +26,7 @@ public:
     
     virtual void BeginPlay() override;
 
-    UFUNCTION()
-    virtual void HighlightActor(UPrimitiveComponent* TouchedComponent) override;
 
-    UFUNCTION()
-    virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) override;
     
     virtual void Die() override;
     
@@ -39,25 +35,24 @@ public:
     {
         return ActorLevel;
     }
-
     /* Combat Interface */
 
-    UFUNCTION(BlueprintCallable)
-    bool IsHighlighted() const
-    {
-        return bHighlighted;
-    }
-
-    void SetHighlighted(bool InBool)
-    {
-        bHighlighted = InBool;
-    }
+    /* Enemy Interface */
+    UFUNCTION()
+    virtual void HighlightActor(UPrimitiveComponent* TouchedComponent) override;
 
     UFUNCTION()
-    bool IsHitReacting() const
-    {
-        return bHitReacting;
-    }
+    virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) override;
+
+    virtual void SetCombatTarget_Implementation(UObject* InCombatTarget) override;
+
+    virtual UObject* GetCombatTarget_Implementation() override;
+    /* Enemy Interface */
+    
+    VALUE_GETTER_FUNC_NAME(bHighlighted, IsHighlighted);
+    SETTER_FUNC_NAME(bHighlighted, SetHighlighted);
+
+    VALUE_GETTER_FUNC_NAME(bHitReacting, IsHitReacting);
 
 protected:
     virtual void InitAbilitySystemComponent() override;
@@ -96,4 +91,7 @@ private:
 
     UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
     TSubclassOf<UFloatingDamageComponent> FloatingDamageComponentClass;
+
+    UPROPERTY(BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess))
+    TObjectPtr<UObject> CombatTarget;
 };

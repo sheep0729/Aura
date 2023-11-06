@@ -70,7 +70,7 @@ void AAuraEnemy::InitAbilitySystemComponent()
 void AAuraEnemy::InitUI()
 {
 	Super::InitUI();
-	
+
 	INVALID_RETURN_VOID(WidgetController);
 
 	WidgetController->Initialize(AbilitySystemComponent);
@@ -96,6 +96,16 @@ void AAuraEnemy::UnhighlightActor(UPrimitiveComponent* TouchedComponent)
 
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
+}
+
+void AAuraEnemy::SetCombatTarget_Implementation(UObject* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+UObject* AAuraEnemy::GetCombatTarget_Implementation()
+{
+	return CombatTarget;
 }
 
 void AAuraEnemy::Die()
@@ -129,15 +139,15 @@ void AAuraEnemy::ShowFloatingDamage_Implementation(float Damage, const FGameplay
 {
 	INVALID_RETURN_VOID(FloatingDamageComponentClass);
 	FALSE_RETURN_VOID(AuraAbilitySystemNativeLibrary::IsEffectCauserLocallyControlled(EffectContextHandle));
-	
+
 	const bool bBlockedHit = UAuraAbilitySystemLibrary::IsBlockedHit(EffectContextHandle);
 	const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(EffectContextHandle);
-	
+
 	UFloatingDamageComponent* FloatingDamageComponent = NewObject<UFloatingDamageComponent>(this, FloatingDamageComponentClass);
 	FloatingDamageComponent->RegisterComponent();
-	
+
 	FloatingDamageComponent->SetDamage(Damage, bBlockedHit, bCriticalHit);
 	FloatingDamageComponent->SetRelativeTransform(GetRootComponent()->GetRelativeTransform());
-	
+
 	// FloatingDamageComponent->SetWorldTransform(GetActorTransform() + GetRootComponent()->GetRelativeTransform());
 }

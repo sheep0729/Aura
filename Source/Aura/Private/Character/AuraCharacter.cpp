@@ -126,10 +126,13 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 {
     Super::PossessedBy(NewController);
 
-    GetAuraPlayerController()->GetPathFollowingComponent()->Initialize();
-
     // 在这里能拿到 PlayerState ，见 APawn::PossessedBy
     InitAbilitySystem();
+
+    INVALID_RETURN_VOID(GetAuraPlayerController());
+    INVALID_RETURN_VOID(GetAuraPlayerController()->GetPathFollowingComponent());
+    
+    GetAuraPlayerController()->GetPathFollowingComponent()->Initialize();
 }
 
 void AAuraCharacter::OnRep_Controller()

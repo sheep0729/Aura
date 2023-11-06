@@ -10,6 +10,7 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UMotionWarpingComponent;
 struct FGameplayEffectContext;
 struct FGameplayEffectContextHandle;
 enum class EAuraCharacterClass : uint8;
@@ -35,6 +36,10 @@ public:
 	virtual UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent() const override;
 
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+
+	/* Combat Interface */
+	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
+	/* Combat Interface */
 
 	VALUE_GETTER(CharacterClass);
 
@@ -94,6 +99,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
 	friend class UAuraAbilitySystemComponent;
 };

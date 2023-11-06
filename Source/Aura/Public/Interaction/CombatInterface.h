@@ -24,7 +24,7 @@ public:
 	virtual FVector GetWeaponFireSocketLocation() PURE_VIRTUAL(ICombatInterface::GetWeaponFireSocketLocation, return FVector(););
 	virtual void Die() = 0;
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetFacingTarget(const FVector& TargetLocation);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
