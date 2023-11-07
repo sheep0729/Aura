@@ -71,7 +71,10 @@ void AAuraCharacterBase::InitAbilitySystemComponent()
 
 void AAuraCharacterBase::PostInitAbilitySystemComponent()
 {
-	AbilitySystemComponent->GetOnDamaged().AddDynamic(this, &ThisClass::HandleDamaged);
+	if (HasAuthority())
+	{
+		AbilitySystemComponent->GetOnDamaged().AddDynamic(this, &ThisClass::HandleDamaged); // 在 Server 上发起 Die
+	}
 }
 
 void AAuraCharacterBase::ApplyEffectToSelf(TSubclassOf<UGameplayEffect> Effect, float Level) const
@@ -108,12 +111,14 @@ void AAuraCharacterBase::InitAbilities()
 
 void AAuraCharacterBase::Die()
 {
-	Weapon->DetachFromComponent(FDetachmentTransformRules{EDetachmentRule::KeepWorld, true});
+	GetController()->UnPossess();
+	
 	MulticastHandleDeath();
 }
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
+	Weapon->DetachFromComponent(FDetachmentTransformRules{EDetachmentRule::KeepWorld, true});
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
@@ -122,12 +127,14 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Dissolve();
+
+	bDead = true;
 }
 
-FVector AAuraCharacterBase::GetWeaponFireSocketLocation()
+FVector AAuraCharacterBase::GetWeaponFireSocketLocation_Implementation()
 {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponFireSocketName);

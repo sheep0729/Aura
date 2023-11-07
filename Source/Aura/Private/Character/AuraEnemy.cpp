@@ -113,6 +113,7 @@ void AAuraEnemy::Die()
 	Super::Die();
 
 	SetLifeSpan(LifeSpanAfterDeath);
+	// HealthBar->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 }
 
 void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag Tag, int32 Count)
