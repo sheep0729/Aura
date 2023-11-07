@@ -6,14 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "Data/AuraGameplayTags.h"
 #include "EnhancedInputSubsystems.h"
-#include "NavigationPath.h"
-#include "NavigationSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
-#include "Algo/ForEach.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "Components/SplineComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Input/AuraEnhancedInputComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -24,7 +18,7 @@
 
 AAuraCharacter::AAuraCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer),
-    bShiftKeyDown(0),
+    bShiftKeyDown(false),
     Destination(FVector::Zero()),
     ShortPressThreshold(.5),
     FollowTime(0)

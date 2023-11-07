@@ -35,10 +35,13 @@ public:
 
 	virtual UAuraAbilitySystemComponent* GetAuraAbilitySystemComponent() const override;
 
-	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-
 	/* Combat Interface */
+	virtual void Die() override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
+	virtual FVector GetWeaponFireSocketLocation_Implementation() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
 	/* Combat Interface */
 
 	VALUE_GETTER(CharacterClass);
@@ -62,12 +65,8 @@ protected:
 
 	virtual void InitAbilities();
 
-	virtual void Die() override;
-
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
-
-	virtual FVector GetWeaponFireSocketLocation() override;
 
 	UFUNCTION()
 	virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle);
@@ -84,7 +83,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Custom|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
-	
+
 	UPROPERTY(EditAnywhere, Category="Custom|Combat")
 	FName WeaponFireSocketName;
 
@@ -103,5 +102,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
+private:
+	bool bDead;
+	
 	friend class UAuraAbilitySystemComponent;
 };

@@ -16,10 +16,11 @@
 #include "Data/AuraGameplayTags.h"
 
 AAuraCharacterBase::AAuraCharacterBase(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer.SetDefaultSubobjectClass(CharacterMovementComponentName, UAuraCharacterMovementComponent::StaticClass()))
+	: Super(ObjectInitializer.SetDefaultSubobjectClass(CharacterMovementComponentName, UAuraCharacterMovementComponent::StaticClass())),
+	  bDead(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
-
+	
 	bCanAffectNavigationGeneration = true;
 	GetCapsuleComponent()->SetCanEverAffectNavigation(true);
 
@@ -138,6 +139,16 @@ FVector AAuraCharacterBase::GetWeaponFireSocketLocation_Implementation()
 {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponFireSocketName);
+}
+
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+AActor* AAuraCharacterBase::GetAvatar_Implementation()
+{
+	return this;
 }
 
 void AAuraCharacterBase::HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle)

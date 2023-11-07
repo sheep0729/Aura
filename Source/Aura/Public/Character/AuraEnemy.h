@@ -25,8 +25,6 @@ public:
     AAuraEnemy(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
     
     virtual void BeginPlay() override;
-
-
     
     virtual void Die() override;
     
