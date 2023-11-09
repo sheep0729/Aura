@@ -16,6 +16,9 @@ public:
 	CONST_REF_GETTER(DamageMap);
 	CONST_REF_GETTER(DamageEffectClass);
 
+	UFUNCTION(BlueprintCallable)
+	void CauseDamage(AActor* TargetActor);
+
 private:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage", meta = (AllowPrivateAccess))

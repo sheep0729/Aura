@@ -111,7 +111,7 @@ void UGEEC_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionPa
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDefinition, AggregatorEvaluateParameters, Resistance);
 		Resistance = FMath::Clamp(Resistance, 0, 100);
 
-		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageAndResistance.Key);
+		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageAndResistance.Key, false, 0);
 		DamageTypeValue *= (100 - Resistance) / 100;
 
 		DamageMagnitude += DamageTypeValue;

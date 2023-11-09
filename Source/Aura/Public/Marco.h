@@ -43,6 +43,13 @@
 		return Property;                                        \
 	}
 
+#define CONST_REF_BLUEPRINT_GETTER(Property)                    \
+	CONST_REF_GETTER_UFUNCTION(Property, BlueprintGetter)
+
+#define CONST_REF_GETTER_UFUNCTION(Property, ...)               \
+	UFUNCTION(__VA_ARGS__)		                                \
+	CONST_REF_GETTER(Property)
+
 #define CONST_REF_GETTER(Property)                             \
 	FORCEINLINE const auto& Get##Property() const { \
 	    return Property;                                       \
