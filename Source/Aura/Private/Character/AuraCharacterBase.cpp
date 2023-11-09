@@ -110,10 +110,12 @@ void AAuraCharacterBase::InitAbilities()
 	}
 }
 
+// Server
 void AAuraCharacterBase::Die()
 {
 	GetController()->UnPossess();
-	
+	GetMovementComponent()->Deactivate();
+
 	MulticastHandleDeath();
 }
 
