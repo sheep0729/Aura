@@ -10,6 +10,8 @@
 #include "Interaction/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UWidgetComponent;
+class UFloatingDamageComponent;
 class UMotionWarpingComponent;
 struct FGameplayEffectContext;
 struct FGameplayEffectContextHandle;
@@ -44,6 +46,8 @@ public:
 	virtual AActor* GetAvatar_Implementation() override;
 	/* Combat Interface */
 
+	void ShowFloatingDamage(float Damage, const FGameplayEffectContextHandle& EffectContextHandle);
+
 	VALUE_GETTER(CharacterClass);
 
 protected:
@@ -69,7 +73,10 @@ protected:
 	virtual void MulticastHandleDeath();
 
 	UFUNCTION()
-	virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle);
+	virtual void ServerHandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle);
+	
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void HandleDamagedCosmetic(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle);
 
 	void Dissolve();
 
@@ -104,6 +111,9 @@ protected:
 
 private:
 	bool bDead;
-	
+
+	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
+	TSubclassOf<UFloatingDamageComponent> FloatingDamageComponentClass;
+
 	friend class UAuraAbilitySystemComponent;
 };

@@ -6,21 +6,22 @@
 #include "MotionWarpingComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemNativeLibrary.h"
 #include "Character/AuraCharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"  // Rider bug
 #include "Data/AuraCharacterInfo.h"
-#include "Kismet/GameplayStatics.h"
-#include "Game/AuraGameStateBase.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
+#include "Character/FloatingDamageComponent.h"
 #include "Data/AuraGameplayTags.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AAuraCharacterBase::AAuraCharacterBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass(CharacterMovementComponentName, UAuraCharacterMovementComponent::StaticClass())),
 	  bDead(false)
 {
 	PrimaryActorTick.bCanEverTick = false;
-	
+
 	bCanAffectNavigationGeneration = true;
 	GetCapsuleComponent()->SetCanEverAffectNavigation(true);
 
@@ -74,7 +75,9 @@ void AAuraCharacterBase::PostInitAbilitySystemComponent()
 {
 	if (HasAuthority())
 	{
-		AbilitySystemComponent->GetOnDamaged().AddDynamic(this, &ThisClass::HandleDamaged); // 在 Server 上发起 Die
+		// 造成伤害的 GE 使用了 Gameplay Effect Execution Calculation（GEEc_Damage），这种 GE 不支持预测！
+		// 所以 OnDamaged 只会在服务器上触发！
+		AbilitySystemComponent->GetOnDamaged().AddDynamic(this, &ThisClass::ServerHandleDamaged); // 在 Server 上发起 Die
 	}
 }
 
@@ -130,6 +133,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
+	// TODO 为什么这行会导致客户端的 Capsule 掉下去，但服务器上的角色不掉下去？
 	// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Dissolve();
@@ -153,16 +157,39 @@ AActor* AAuraCharacterBase::GetAvatar_Implementation()
 	return this;
 }
 
-void AAuraCharacterBase::HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle)
+void AAuraCharacterBase::ShowFloatingDamage(float Damage, const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	INVALID_RETURN_VOID(FloatingDamageComponentClass);
+
+	const bool bBlockedHit = UAuraAbilitySystemLibrary::IsBlockedHit(EffectContextHandle);
+	const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(EffectContextHandle);
+
+	UFloatingDamageComponent* FloatingDamageComponent = NewObject<UFloatingDamageComponent>(this, FloatingDamageComponentClass);
+	FloatingDamageComponent->RegisterComponent();
+
+	FloatingDamageComponent->SetDamage(Damage, bBlockedHit, bCriticalHit);
+	FloatingDamageComponent->SetRelativeTransform(GetRootComponent()->GetRelativeTransform());
+
+	// FloatingDamageComponent->SetWorldTransform(GetActorTransform() + GetRootComponent()->GetRelativeTransform());
+}
+
+void AAuraCharacterBase::ServerHandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle)
 {
 	if (NewHealth == 0)
 	{
-		Die();
+		Die(); // 死亡只在服务器判定
 	}
 	else
 	{
 		AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer{FAuraGameplayTags::GetEffectTagHitReact()});
 	}
+
+	HandleDamagedCosmetic(Damage, OldHealth, NewHealth, EffectContextHandle);
+}
+
+void AAuraCharacterBase::HandleDamagedCosmetic_Implementation(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle)
+{
+	ShowFloatingDamage(Damage, EffectContextHandle);
 }
 
 void AAuraCharacterBase::Dissolve()

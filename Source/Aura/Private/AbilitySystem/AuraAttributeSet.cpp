@@ -53,7 +53,7 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 					Attribute.GetBaseValue(), \
 					Attribute.GetCurrentValue()\
 				}), \
-			true, true, FLinearColor::Green, 2, AttributeName);\
+			true, true, FLinearColor::Green, 2);\
 	}
 
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)

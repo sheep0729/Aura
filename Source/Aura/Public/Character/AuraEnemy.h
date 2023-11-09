@@ -60,8 +60,6 @@ protected:
     UFUNCTION()
     void OnHitReactTagChanged(const FGameplayTag Tag, int32 Count);
 
-    virtual void HandleDamaged(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle) override;
-
     AAuraAIController* GetAIController() const;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom|Character Class Defults")
@@ -83,13 +81,7 @@ protected:
     int LifeSpanAfterDeath;
 
 private:
-
-    UFUNCTION(NetMulticast, Reliable)
-    void ShowFloatingDamage(float Damage, const FGameplayEffectContextHandle& EffectContextHandle);
-
-    UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
-    TSubclassOf<UFloatingDamageComponent> FloatingDamageComponentClass;
-
+    
     UPROPERTY(BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess))
     TObjectPtr<UObject> CombatTarget;
 };

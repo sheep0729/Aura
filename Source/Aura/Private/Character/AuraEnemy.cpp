@@ -4,13 +4,10 @@
 #include "Character/AuraEnemy.h"
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
-#include "AbilitySystem/AuraAbilitySystemLibrary.h"
-#include "AbilitySystem/AuraAbilitySystemNativeLibrary.h"
 #include "AbilitySystem/AuraAbilityType.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AI/AuraAIController.h"
 #include "Aura/Aura.h"
-#include "Character/FloatingDamageComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
@@ -121,34 +118,10 @@ void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag Tag, int32 Count)
 	bHitReacting = Count != 0;
 }
 
-void AAuraEnemy::HandleDamaged(const float Damage, const float OldHealth, const float NewHealth, const FGameplayEffectContextHandle EffectContextHandle)
-{
-	Super::HandleDamaged(Damage, OldHealth, NewHealth, EffectContextHandle);
-
-	ShowFloatingDamage(Damage, EffectContextHandle);
-}
-
 AAuraAIController* AAuraEnemy::GetAIController() const
 {
 	const auto MyController = GetController();
 	INVALID_RETURN_VALUE(MyController, nullptr);
 
 	return Cast<AAuraAIController>(MyController);
-}
-
-void AAuraEnemy::ShowFloatingDamage_Implementation(float Damage, const FGameplayEffectContextHandle& EffectContextHandle)
-{
-	INVALID_RETURN_VOID(FloatingDamageComponentClass);
-	FALSE_RETURN_VOID(AuraAbilitySystemNativeLibrary::IsEffectCauserLocallyControlled(EffectContextHandle));
-
-	const bool bBlockedHit = UAuraAbilitySystemLibrary::IsBlockedHit(EffectContextHandle);
-	const bool bCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(EffectContextHandle);
-
-	UFloatingDamageComponent* FloatingDamageComponent = NewObject<UFloatingDamageComponent>(this, FloatingDamageComponentClass);
-	FloatingDamageComponent->RegisterComponent();
-
-	FloatingDamageComponent->SetDamage(Damage, bBlockedHit, bCriticalHit);
-	FloatingDamageComponent->SetRelativeTransform(GetRootComponent()->GetRelativeTransform());
-
-	// FloatingDamageComponent->SetWorldTransform(GetActorTransform() + GetRootComponent()->GetRelativeTransform());
 }
