@@ -28,9 +28,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	FALSE_RETURN_VOID(AvatarActor->HasAuthority());
 	FALSE_RETURN_VOID(AvatarActor->Implements<UCombatInterface>());
 
-	// ICombatInterface::GetWeaponFireSocketLocation() in CombatInterface.gen.cpp:
-	// Do not directly call Event functions in Interfaces. Call Execute_GetWeaponFireSocketLocation instead.
-	const auto SocketLocation = ICombatInterface::Execute_GetWeaponFireSocketLocation(AvatarActor); 
+	// ICombatInterface::GetCombatSocketLocation() in CombatInterface.gen.cpp:
+	// Do not directly call Event functions in Interfaces. Call Execute_GetCombatSocketLocation instead.
+	const auto SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, FAuraGameplayTags::GetMontageTagAttackWeapon()); 
 	const FRotator Direction = (ProjectileTargetLocation - SocketLocation).Rotation();
 
 	FTransform SpawnTransform;

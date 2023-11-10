@@ -8,8 +8,10 @@
 #include "AbilitySystem/AuraAbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "Interaction/CombatInterface.h"
+#include "GameplayTagContainer.h"
 #include "AuraCharacterBase.generated.h"
 
+struct FGameplayTag;
 class UWidgetComponent;
 class UFloatingDamageComponent;
 class UMotionWarpingComponent;
@@ -41,9 +43,10 @@ public:
 	virtual void Die() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
-	virtual FVector GetWeaponFireSocketLocation_Implementation() override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
+	virtual void GetMontages_Implementation(TArray<FTaggedMontage>& OutMontages) override;
 	/* Combat Interface */
 
 	void ShowFloatingDamage(float Damage, const FGameplayEffectContextHandle& EffectContextHandle);
@@ -91,8 +94,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Custom|Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
+	// TODO 应该有一个 MontageType
 	UPROPERTY(EditAnywhere, Category="Custom|Combat")
 	FName WeaponFireSocketName;
+
+	UPROPERTY(EditAnywhere, Category="Custom|Combat")
+	FName LeftHandDamageSocketName;
+
+	UPROPERTY(EditAnywhere, Category="Custom|Combat")
+	FName RightHandDamageSocketName;
 
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
@@ -114,6 +124,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, meta = (AllowPrivateAccess))
 	TSubclassOf<UFloatingDamageComponent> FloatingDamageComponentClass;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess))
+	TArray<FTaggedMontage> Montages;
 
 	friend class UAuraAbilitySystemComponent;
 };

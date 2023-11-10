@@ -6,7 +6,17 @@
 #include "GameplayTagsManager.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
-#define IMPLEMENT_TAG(ClassName, TagName) FGameplayTag ClassName::TagName = FGameplayTag::EmptyTag;
+// TODO 全部改为使用通用的宏
+#define IMPLEMENT_TAG(Class, TagName) FGameplayTag Class::TagName = FGameplayTag::EmptyTag
+
+#define TAG_STR(TagType, TagSubName) #TagType "." #TagSubName
+#define TAG_STR_Two(TagType, TagSubName1, TagSubName2) #TagType "." #TagSubName1 "." #TagSubName2
+
+#define ADD_NATIVE_TAG(TagType, TagSubName, TagDevComment) \
+	TAG_NAME(TagType, TagSubName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(TAG_STR(TagType, TagSubName)), TagDevComment)
+
+#define ADD_NATIVE_TAG_Two(TagType, TagSubName1, TagSubName2, TagDevComment) \
+	TAG_NAME_Two(TagType, TagSubName1, TagSubName2) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(TAG_STR_Two(TagType, TagSubName1, TagSubName2)), TagDevComment)
 
 // Attribute Tags（Tag 关联 Attribute） TODO 如果没有什么实际用途的话应该考虑删掉
 
@@ -185,6 +195,12 @@ IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Physical);
 
 IMPLEMENT_ABILITY_TAG(FAuraGameplayTags, Attack);
 
+// Montage
+
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, Weapon));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, LeftHand));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, RightHand));
+
 // Initialize
 
 void FAuraGameplayTags::InitializeAuraGameplayTags()
@@ -230,4 +246,8 @@ void FAuraGameplayTags::InitializeAuraGameplayTags()
 	ADD_NATIVE_DAMAGE_TYPE_TAG(Physical, "Physical Damage Tag");
 
 	ADD_NATIVE_ABILITY_TAG(Attack, "Attack Ability Tag");
+
+	ADD_NATIVE_TAG_Two(Montage, Attack, Weapon, "Weapon");
+	ADD_NATIVE_TAG_Two(Montage, Attack, LeftHand, "LeftHand");
+	ADD_NATIVE_TAG_Two(Montage, Attack, RightHand, "RightHand");
 }

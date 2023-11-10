@@ -7,12 +7,28 @@
 #include "GameplayTagContainer.h"
 #include "Marco.h"
 
-#define DECLARE_TAG(TagName) static FGameplayTag TagName;
+// TODO 写一个通用的宏
+#define TAG_NAME(TagType, TagSubName) TagType##_##TagSubName
+#define TAG_NAME_Two(TagType, TagSubName1, TagSubName2) TagType##_##TagSubName1##_##TagSubName2
+
+#define DECLARE_TAG(TagName) static FGameplayTag TagName
+
+#define TAG_GETTER(TagType, TagSubName) \
+	static const FGameplayTag& Get##TagType##Tag##TagSubName()       \
+	{                                                             \
+		return TAG_NAME(TagType, TagSubName); \
+	}
+
+#define TAG_GETTER_Two(TagType, TagSubName1, TagSubName2) \
+	static const FGameplayTag& Get##TagType##Tag##TagSubName1##TagSubName2()       \
+	{                                                             \
+		return TAG_NAME_Two(TagType, TagSubName1, TagSubName2); \
+	}
 
 // Attribute
 
 #define ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName) Attribute_##AttributeClass##_##AttributeName
-#define DECLARE_ATTRIBUTE_TAG(AttributeClass, AttributeName) DECLARE_TAG(ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName));
+#define DECLARE_ATTRIBUTE_TAG(AttributeClass, AttributeName) DECLARE_TAG(ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName))
 #define DECLARE_VITAL_ATTRIBUTE_TAG(AttributeName) DECLARE_ATTRIBUTE_TAG(Vital, AttributeName)
 #define DECLARE_PRIMARY_ATTRIBUTE_TAG(AttributeName) DECLARE_ATTRIBUTE_TAG(Primary, AttributeName)
 #define DECLARE_SECONDARY_ATTRIBUTE_TAG(AttributeName) DECLARE_ATTRIBUTE_TAG(Secondary, AttributeName)
@@ -117,6 +133,10 @@ struct FAuraGameplayTags
 	static const TMap<FGameplayTag, FGameplayTag>& GetDamageToResistanceMap();
 
 	ABILITY_TAG_GETTER(Attack);
+
+	TAG_GETTER_Two(Montage, Attack, Weapon);
+	TAG_GETTER_Two(Montage, Attack, LeftHand);
+	TAG_GETTER_Two(Montage, Attack, RightHand);
 	
 protected:
 	DECLARE_VITAL_ATTRIBUTE_TAG(Health);
@@ -160,4 +180,8 @@ protected:
 	DECLARE_DAMAGE_TYPE_TAG(Physical);
 
 	DECLARE_ABILITY_TAG(Attack);
+
+	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, Weapon));
+	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, LeftHand));
+	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, RightHand));
 };

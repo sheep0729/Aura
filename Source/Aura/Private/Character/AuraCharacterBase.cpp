@@ -42,6 +42,11 @@ UAuraAbilitySystemComponent* AAuraCharacterBase::GetAuraAbilitySystemComponent()
 	return AbilitySystemComponent;
 }
 
+// void AAuraCharacterBase::GetMontages_Implementation(TMap<FGameplayTag, UAnimMontage*>& OutMontages)
+// {
+// 	OutMontages = Montages;
+// }
+
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
@@ -141,10 +146,22 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	bDead = true;
 }
 
-FVector AAuraCharacterBase::GetWeaponFireSocketLocation_Implementation()
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {
-	check(Weapon);
-	return Weapon->GetSocketLocation(WeaponFireSocketName);
+	if (MontageTag == FAuraGameplayTags::GetMontageTagAttackWeapon())
+	{
+		return IsValid(Weapon) ? Weapon->GetSocketLocation(WeaponFireSocketName) : FVector::Zero();
+	}
+	else if (MontageTag == FAuraGameplayTags::GetMontageTagAttackLeftHand())
+	{
+		return GetMesh()->GetSocketLocation(LeftHandDamageSocketName);
+	}
+	else if (MontageTag == FAuraGameplayTags::GetMontageTagAttackRightHand())
+	{
+		return GetMesh()->GetSocketLocation(RightHandDamageSocketName);
+	}
+
+	else return FVector();
 }
 
 bool AAuraCharacterBase::IsDead_Implementation() const
@@ -155,6 +172,11 @@ bool AAuraCharacterBase::IsDead_Implementation() const
 AActor* AAuraCharacterBase::GetAvatar_Implementation()
 {
 	return this;
+}
+
+void AAuraCharacterBase::GetMontages_Implementation(TArray<FTaggedMontage>& OutMontages)
+{
+	OutMontages = Montages;
 }
 
 void AAuraCharacterBase::ShowFloatingDamage(float Damage, const FGameplayEffectContextHandle& EffectContextHandle)
@@ -187,7 +209,8 @@ void AAuraCharacterBase::ServerHandleDamaged(float Damage, float OldHealth, floa
 	HandleDamagedCosmetic(Damage, OldHealth, NewHealth, EffectContextHandle);
 }
 
-void AAuraCharacterBase::HandleDamagedCosmetic_Implementation(float Damage, float OldHealth, float NewHealth, const FGameplayEffectContextHandle EffectContextHandle)
+void AAuraCharacterBase::HandleDamagedCosmetic_Implementation(float Damage, float OldHealth, float NewHealth,
+                                                              const FGameplayEffectContextHandle EffectContextHandle)
 {
 	ShowFloatingDamage(Damage, EffectContextHandle);
 }
