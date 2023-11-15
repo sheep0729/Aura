@@ -22,8 +22,8 @@ public:
 	virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) = 0;
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void SetCombatTarget(UObject* InCombatTarget);
+	void SetCombatTarget(AActor* InCombatTarget);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	UObject* GetCombatTarget();
+	AActor* GetCombatTarget();
 };

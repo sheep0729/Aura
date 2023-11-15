@@ -42,9 +42,9 @@ public:
     UFUNCTION()
     virtual void UnhighlightActor(UPrimitiveComponent* TouchedComponent) override;
 
-    virtual void SetCombatTarget_Implementation(UObject* InCombatTarget) override;
+    virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 
-    virtual UObject* GetCombatTarget_Implementation() override;
+    virtual AActor* GetCombatTarget_Implementation() override;
     /* Enemy Interface */
     
     VALUE_GETTER_FUNC_NAME(bHighlighted, IsHighlighted);
@@ -83,5 +83,5 @@ protected:
 private:
     
     UPROPERTY(BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess))
-    TObjectPtr<UObject> CombatTarget;
+    TObjectPtr<AActor> CombatTarget;
 };

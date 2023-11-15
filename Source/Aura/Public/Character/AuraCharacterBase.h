@@ -91,7 +91,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Custom|Class")
 	EAuraCharacterClass CharacterClass;
 
-	UPROPERTY(EditAnywhere, Category="Custom|Combat")
+	UPROPERTY(EditAnywhere, Category="Custom|Combat", BlueprintReadOnly)
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	// TODO 应该有一个 MontageType

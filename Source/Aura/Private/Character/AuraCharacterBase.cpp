@@ -30,6 +30,9 @@ AAuraCharacterBase::AAuraCharacterBase(const FObjectInitializer& ObjectInitializ
 	Weapon->SetCollisionProfileName(EAuraCollisionProfileName::Weapon);
 
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>("MotionWarpingComponent");
+
+	GetMesh()->SetGenerateOverlapEvents(true);
+	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
@@ -121,7 +124,7 @@ void AAuraCharacterBase::InitAbilities()
 // Server
 void AAuraCharacterBase::Die()
 {
-	GetController()->UnPossess();
+	// GetController()->UnPossess();
 	GetMovementComponent()->Deactivate();
 
 	MulticastHandleDeath();
@@ -218,9 +221,15 @@ void AAuraCharacterBase::HandleDamagedCosmetic_Implementation(float Damage, floa
 void AAuraCharacterBase::Dissolve()
 {
 	TArray<UMaterialInstanceDynamic*> DynamicMaterials;
-	DynamicMaterials.Add(SetDynamicDissolveMaterial(GetMesh(), DissolveMaterialInstance));
-	DynamicMaterials.Add(SetDynamicDissolveMaterial(Weapon, WeaponDissolveMaterialInstance));
-	StartDissolveTimeline(DynamicMaterials);
+
+	VALID_THEN_THAT(DissolveMaterialInstance,
+	                DynamicMaterials.Add(SetDynamicDissolveMaterial(GetMesh(), DissolveMaterialInstance));
+	)
+
+	VALID_THEN_THAT(WeaponDissolveMaterialInstance,
+	                DynamicMaterials.Add(SetDynamicDissolveMaterial(Weapon, WeaponDissolveMaterialInstance));
+	                StartDissolveTimeline(DynamicMaterials);
+	)
 }
 
 UMaterialInstanceDynamic* AAuraCharacterBase::SetDynamicDissolveMaterial(USkeletalMeshComponent* InMesh, UMaterialInstance* MaterialInstance)

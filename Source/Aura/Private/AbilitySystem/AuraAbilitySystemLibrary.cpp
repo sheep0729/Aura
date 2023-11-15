@@ -122,3 +122,18 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(const UObject* WorldCo
 		}
 	}
 }
+
+bool UAuraAbilitySystemLibrary::IsEnemy(AActor* Actor)
+{
+	return Actor->ActorHasTag("Enemy");
+}
+
+bool UAuraAbilitySystemLibrary::IsPlayer(AActor* Actor)
+{
+	return Actor->ActorHasTag("Player");
+}
+
+bool UAuraAbilitySystemLibrary::IsNotFriends(AActor* Actor1, AActor* Actor2)
+{
+	return !(IsEnemy(Actor1) && IsEnemy(Actor2) || IsPlayer(Actor1) && IsPlayer(Actor2));
+}

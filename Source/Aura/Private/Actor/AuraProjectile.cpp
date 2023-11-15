@@ -7,10 +7,12 @@
 #include "AbilitySystemComponent.h"
 #include "Marco.h"
 #include "NiagaraFunctionLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Aura/Aura.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Interaction/CombatInterface.h"
 #include "Interaction/EnemyInterface.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -25,6 +27,7 @@ AAuraProjectile::AAuraProjectile()
 
 	Sphere = CreateDefaultSubobject<USphereComponent>("Sphere");
 	Sphere->SetCollisionProfileName(EAuraCollisionProfileName::Projectile);
+	Sphere->SetGenerateOverlapEvents(true);
 	SetRootComponent(Sphere);
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovementComponent");
@@ -42,7 +45,7 @@ void AAuraProjectile::BeginPlay()
 	SetLifeSpan(LifeSpan);
 
 	LoopingAudioComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
-
+	
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlap);
 	Sphere->OnComponentHit.AddDynamic(this, &ThisClass::OnHit);
 }
@@ -57,24 +60,30 @@ void AAuraProjectile::Destroyed()
 void AAuraProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
                                 bool bFromSweep, const FHitResult& Result)
 {
+	FALSE_RETURN_VOID(DamageEffectSpecHandle.Data.IsValid());
+	const auto EffectCauser = DamageEffectSpecHandle.Data->GetContext().GetEffectCauser();
+
+	INVALID_RETURN_VOID(OtherActor);
+	FALSE_RETURN_VOID(OtherActor->Implements<UCombatInterface>());
+	TRUE_RETURN_VOID(EffectCauser == OtherActor);
+	FALSE_RETURN_VOID(UAuraAbilitySystemLibrary::IsNotFriends(EffectCauser, OtherActor));
+	
+	// TODO 改为 Local Predict ?
+	if (HasAuthority())
+	{
+		if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		{
+			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data);
+		}
+	}
+
+	UKismetSystemLibrary::PrintString(this, FString::Format(TEXT("Destroying [{0}] {1}"), {GetNameSafe(this), Destroy() ? "Success" : "Failed"}));
 }
 
 void AAuraProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse,
                             const FHitResult& Hit)
 {
-	if (OtherActor && OtherActor->Implements<UEnemyInterface>())
-	{
-		// TODO 改为 Local Predict ?
-		if (HasAuthority())
-		{
-			if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
-			{
-				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data);
-			}
-		}
-	}
-	
-	Destroy();
+	UKismetSystemLibrary::PrintString(this, FString::Format(TEXT("Destroying [{0}] {1}"), {GetNameSafe(this), Destroy() ? "Success" : "Failed"}));
 }
 
 void AAuraProjectile::DestroyCosmetic()

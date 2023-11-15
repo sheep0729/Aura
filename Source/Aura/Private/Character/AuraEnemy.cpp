@@ -95,12 +95,12 @@ void AAuraEnemy::UnhighlightActor(UPrimitiveComponent* TouchedComponent)
 	Weapon->SetRenderCustomDepth(false);
 }
 
-void AAuraEnemy::SetCombatTarget_Implementation(UObject* InCombatTarget)
+void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
 {
 	CombatTarget = InCombatTarget;
 }
 
-UObject* AAuraEnemy::GetCombatTarget_Implementation()
+AActor* AAuraEnemy::GetCombatTarget_Implementation()
 {
 	return CombatTarget;
 }
