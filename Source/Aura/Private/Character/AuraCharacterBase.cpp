@@ -125,24 +125,24 @@ void AAuraCharacterBase::InitAbilities()
 void AAuraCharacterBase::Die()
 {
 	// GetController()->UnPossess();
-	GetMovementComponent()->Deactivate();
-
 	MulticastHandleDeath();
 }
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
+	GetMovementComponent()->Deactivate(); // 先停止移动，不然 Capsule 仍然会有速度
+	
 	Weapon->DetachFromComponent(FDetachmentTransformRules{EDetachmentRule::KeepWorld, true});
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 
+	GetCapsuleComponent()->SetEnableGravity(false);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-
-	// TODO 为什么这行会导致客户端的 Capsule 掉下去，但服务器上的角色不掉下去？
-	// GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Dissolve();
 
