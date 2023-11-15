@@ -88,7 +88,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartDissolveTimeline(const TArray<UMaterialInstanceDynamic*>& MaterialInstanceDynamic);
 
-	UPROPERTY(EditAnywhere, Category="Custom|Class")
+	UPROPERTY(EditAnywhere, Category="Custom|Class", BlueprintReadOnly)
 	EAuraCharacterClass CharacterClass;
 
 	UPROPERTY(EditAnywhere, Category="Custom|Combat", BlueprintReadOnly)

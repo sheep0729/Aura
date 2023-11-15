@@ -7,13 +7,14 @@
 		{
 			"Name": "Aura",
 			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "AuraEditor",
+			"Type": "Editor",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine",
-				"GameplayAbilities",
-				"UMG",
-				"CoreUObject",
-				"EnhancedInput"
+				"AnimationModifiers"
 			]
 		}
 	],
@@ -45,6 +46,14 @@
 			"Name": "FlatNodes",
 			"Enabled": true,
 			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/b719437f3fb54c259b34227363df8cab"
+		},
+		{
+			"Name": "TargetingSystem",
+			"Enabled": true
+		},
+		{
+			"Name": "AnimationModifierLibrary",
+			"Enabled": true
 		}
 	]
 }

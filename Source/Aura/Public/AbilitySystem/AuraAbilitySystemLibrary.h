@@ -69,4 +69,7 @@ public:
 
 	UFUNCTION(BlueprintPure, BlueprintCallable, Category="Custom|AuraAbilitySystemLibrary|Gameplay Mechanis")
 	static bool IsNotFriends(AActor* Actor1, AActor* Actor2);
+
+	UFUNCTION(BlueprintPure, BlueprintCallable, Category="Custom|AuraAbilitySystemLibrary|Animation")
+	FVector GetBonePosition(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation);
 };

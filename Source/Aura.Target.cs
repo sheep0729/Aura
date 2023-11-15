@@ -12,6 +12,6 @@ public class AuraTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.Latest;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 
-		ExtraModuleNames.AddRange( new[] { "Aura" } );
+		// ExtraModuleNames.AddRange( new[] { "Aura" } );
 	}
 }

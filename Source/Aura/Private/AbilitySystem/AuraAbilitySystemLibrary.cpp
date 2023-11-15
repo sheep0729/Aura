@@ -139,3 +139,8 @@ bool UAuraAbilitySystemLibrary::IsNotFriends(AActor* Actor1, AActor* Actor2)
 {
 	return !(IsEnemy(Actor1) && IsEnemy(Actor2) || IsPlayer(Actor1) && IsPlayer(Actor2));
 }
+
+FVector UAuraAbilitySystemLibrary::GetBonePosition(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+{
+	return FVector::Zero();
+}
