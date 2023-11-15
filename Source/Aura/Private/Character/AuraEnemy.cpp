@@ -8,6 +8,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AI/AuraAIController.h"
 #include "Aura/Aura.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
@@ -110,6 +111,8 @@ void AAuraEnemy::Die()
 	Super::Die();
 
 	SetLifeSpan(LifeSpanAfterDeath);
+	if (GetAIController())
+		GetAIController()->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 	// HealthBar->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 }
 
