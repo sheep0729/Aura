@@ -125,11 +125,13 @@ void UAuraAbilitySystemLibrary::GetLivePlayerWithinRadius(const UObject* WorldCo
 
 bool UAuraAbilitySystemLibrary::IsEnemy(AActor* Actor)
 {
+	INVALID_RETURN_VALUE(Actor, false);
 	return Actor->ActorHasTag("Enemy");
 }
 
 bool UAuraAbilitySystemLibrary::IsPlayer(AActor* Actor)
 {
+	INVALID_RETURN_VALUE(Actor, false);
 	return Actor->ActorHasTag("Player");
 }
 
