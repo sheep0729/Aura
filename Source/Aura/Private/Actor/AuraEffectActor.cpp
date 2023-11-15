@@ -8,9 +8,12 @@
 #include "Marco.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "GameplayPrediction.h"
+#include "Algo/ForEach.h"
 
 
 AAuraEffectActor::AAuraEffectActor()
+	: bRefreshDurationOnApply(true),
+	  EffectDuration(1)
 {
 	PrimaryActorTick.bCanEverTick = false;
 	bDestroyOnApplied = true;
@@ -42,6 +45,22 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassO
 	FGameplayEffectContextHandle EffectContext = TargetASC->MakeEffectContext();
 	EffectContext.AddSourceObject(this);
 	const FGameplayEffectSpecHandle EffectSpec = TargetASC->MakeOutgoingSpec(GameplayEffectClass, 1, EffectContext);
+
+	if (bRefreshDurationOnApply)
+	{
+		FGameplayEffectQuery CurrentEffect;
+		CurrentEffect.EffectDefinition = GameplayEffectClass;
+
+		const auto EffectHandles = TargetASC->GetActiveEffects(CurrentEffect);
+		Algo::ForEach(EffectHandles, [this](const auto EffectHandle) { ActiveEffects.Remove(EffectHandle); });
+
+		const auto TimeRemainings = TargetASC->GetActiveEffectsTimeRemaining(CurrentEffect);
+		const float CurrentTimeRemaining = TimeRemainings.IsEmpty() ? 0 : TimeRemainings[0];
+
+		TargetASC->RemoveActiveEffects(CurrentEffect, -1);
+		
+		EffectSpec.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("GameplayEffect.Duration"), CurrentTimeRemaining + EffectDuration);
+	}
 
 	const FActiveGameplayEffectHandle ActiveEffect = TargetASC->ApplyGameplayEffectSpecToSelf(
 		*EffectSpec.Data, TargetASC->GetPredictionKeyForNewAction());
@@ -98,7 +117,7 @@ void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 		{
 			if (TargetASC == Pair.Value)
 			{
-				TargetASC->RemoveActiveGameplayEffect(Pair.Key, 1);
+				TargetASC->RemoveActiveGameplayEffect(Pair.Key, -1);
 				HandlesToRemove.Add(Pair.Key);
 			}
 		}

@@ -75,4 +75,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects")
 	bool bApplyToEnemy;
+
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects")
+	bool bRefreshDurationOnApply;
+
+	UPROPERTY(EditAnywhere, Category = "Custom|Applied Effects")
+	float EffectDuration;
 };
