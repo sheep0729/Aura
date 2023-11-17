@@ -78,7 +78,3 @@
 	FORCEINLINE_DEBUGGABLE void Set##Property(const auto& In##Property) { \
 		Property = In##Property;                                          \
 	}
-
-#define PUBLIC public:
-#define PRIVATE private:
-#define PROTECTED protected:

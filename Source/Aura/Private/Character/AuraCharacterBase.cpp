@@ -53,6 +53,8 @@ UAuraAbilitySystemComponent* AAuraCharacterBase::GetAuraAbilitySystemComponent()
 void AAuraCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetReplicateMovement(true);
 }
 
 void AAuraCharacterBase::InitAbilitySystem()

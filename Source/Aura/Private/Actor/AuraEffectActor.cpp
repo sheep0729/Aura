@@ -15,6 +15,7 @@ AAuraEffectActor::AAuraEffectActor()
 	: bRefreshDurationOnApply(true),
 	  EffectDuration(1)
 {
+	bReplicates = true;
 	PrimaryActorTick.bCanEverTick = false;
 	bDestroyOnApplied = true;
 	bApplyToEnemy = false;
@@ -79,6 +80,8 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassO
 
 void AAuraEffectActor::OnBeginOverlap(AActor* TargetActor)
 {
+	FALSE_RETURN_VOID(HasAuthority());
+	
 	if (InstantGameplayEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnBeginOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
@@ -95,6 +98,8 @@ void AAuraEffectActor::OnBeginOverlap(AActor* TargetActor)
 
 void AAuraEffectActor::OnEndOverlap(AActor* TargetActor)
 {
+	FALSE_RETURN_VOID(HasAuthority());
+	
 	if (InstantGameplayEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlap)
 	{
 		ApplyEffectToTarget(TargetActor, InstantGameplayEffectClass);
