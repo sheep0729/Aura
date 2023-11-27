@@ -124,7 +124,7 @@ void AAuraEnemy::OnHitReactTagChanged(const FGameplayTag Tag, int32 Count)
 AAuraAIController* AAuraEnemy::GetAIController() const
 {
 	const auto MyController = GetController();
-	INVALID_RETURN_VALUE(MyController, nullptr);
+	INVALID_RETURN_OBJECT(MyController, nullptr);
 
 	return Cast<AAuraAIController>(MyController);
 }

@@ -25,13 +25,12 @@ void UAbilityTask_CursorTarget::Activate()
 		const FGameplayAbilitySpecHandle AbilitySpecHandle = GetAbilitySpecHandle();
 		const FPredictionKey ActivationPredictionKey = GetActivationPredictionKey();
 
-		AbilitySystemComponent.Get()->AbilityTargetDataSetDelegate(AbilitySpecHandle, ActivationPredictionKey).AddUObject(
+		AbilitySystemComponent->AbilityTargetDataSetDelegate(AbilitySpecHandle, ActivationPredictionKey).AddUObject(
 			this, &ThisClass::HandleCursorDataReplicated);
 
-		if (const bool bCalledDelegate = AbilitySystemComponent->CallReplicatedTargetDataDelegatesIfSet(AbilitySpecHandle, ActivationPredictionKey))
-		{
-			SetWaitingOnRemotePlayerData();
-		}
+		AbilitySystemComponent->CallReplicatedTargetDataDelegatesIfSet(AbilitySpecHandle, ActivationPredictionKey);
+
+		SetWaitingOnRemotePlayerData();
 	}
 }
 

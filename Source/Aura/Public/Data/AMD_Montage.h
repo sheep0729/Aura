@@ -7,6 +7,7 @@
 #include "Animation/AnimMetaData.h"
 #include "AMD_Montage.generated.h"
 
+class UCurveTransform;
 class UCurveVector;
 
 UCLASS()
@@ -15,11 +16,10 @@ class AURA_API UAMD_Montage : public UAnimMetaData
 	GENERATED_BODY()
 
 public:
-	VALUE_GETTER(DamageOrigins);
-
 	UAMD_Montage();
 
+	VALUE_GETTER(DamageTransform)
 private:
 	UPROPERTY(Instanced)
-	UCurveVector* DamageOrigins;
+	UCurveTransform* DamageTransform;
 };

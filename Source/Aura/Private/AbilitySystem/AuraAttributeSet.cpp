@@ -66,7 +66,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
-		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health, Health);
+		// PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health, Health);
 		SetHealth(FMath::Clamp(GetHealth(), 0, GetMaxHealth()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetManaAttribute())
@@ -75,8 +75,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	}
 	else if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
-		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health, BeforeDamage);
-		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(IncomingDamage, Damage);
+		// PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health, BeforeDamage);
+		// PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(IncomingDamage, Damage);
 
 		const float Damage = GetIncomingDamage();
 		const float OldHealth = GetHealth();
@@ -88,10 +88,10 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		const auto TargetASC = Cast<UAuraAbilitySystemComponent>(Target.AbilitySystemComponent);
 		TargetASC->GetOnDamaged().Broadcast(Damage, OldHealth, NewHealth, EffectContext);
 
-		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health, AfterDamage);
+		// PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Health, AfterDamage);
 	}
 	else if (Data.EvaluatedData.Attribute == GetArmorAttribute())
 	{
-		PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Armor, Armor);
+		// PRINT_POST_GAMEPLAY_EFFECT_ATTRIBUTE(Armor, Armor);
 	}
 }

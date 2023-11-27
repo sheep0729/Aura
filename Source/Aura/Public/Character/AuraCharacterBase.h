@@ -11,6 +11,7 @@
 #include "GameplayTagContainer.h"
 #include "AuraCharacterBase.generated.h"
 
+class UNiagaraSystem;
 struct FGameplayTag;
 class UWidgetComponent;
 class UFloatingDamageComponent;
@@ -47,6 +48,8 @@ public:
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
 	virtual void GetMontages_Implementation(TArray<FTaggedMontage>& OutMontages) override;
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
+	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
 	/* Combat Interface */
 
 	void ShowFloatingDamage(float Damage, const FGameplayEffectContextHandle& EffectContextHandle);
@@ -104,6 +107,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Custom|Combat")
 	FName RightHandDamageSocketName;
 
+	UPROPERTY(EditAnywhere, Category="Custom|Combat")
+	FName TailSocketName;
+
 	UPROPERTY()
 	TObjectPtr<UAuraAbilitySystemComponent> AbilitySystemComponent;
 
@@ -127,6 +133,12 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess))
 	TArray<FTaggedMontage> Montages;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess), BlueprintReadOnly)
+	TObjectPtr<UNiagaraSystem> BloodEffect;
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess), BlueprintReadOnly)
+	TObjectPtr<USoundBase> DeathSound;
 
 	friend class UAuraAbilitySystemComponent;
 };

@@ -197,9 +197,17 @@ IMPLEMENT_ABILITY_TAG(FAuraGameplayTags, Attack);
 
 // Montage
 
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, Weapon));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, LeftHand));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, RightHand));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, 1));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, 2));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, 3));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, 4));
+
+// Socket
+
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(CombatSocket, Weapon));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(CombatSocket, LeftHand));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(CombatSocket, RightHand));
+IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(CombatSocket, Tail));
 
 // Initialize
 
@@ -247,7 +255,13 @@ void FAuraGameplayTags::InitializeAuraGameplayTags()
 
 	ADD_NATIVE_ABILITY_TAG(Attack, "Attack Ability Tag");
 
-	ADD_NATIVE_TAG_Two(Montage, Attack, Weapon, "Weapon");
-	ADD_NATIVE_TAG_Two(Montage, Attack, LeftHand, "LeftHand");
-	ADD_NATIVE_TAG_Two(Montage, Attack, RightHand, "RightHand");
+	ADD_NATIVE_TAG(CombatSocket, Weapon, "Weapon");
+	ADD_NATIVE_TAG(CombatSocket, LeftHand, "LeftHand");
+	ADD_NATIVE_TAG(CombatSocket, RightHand, "RightHand");
+	ADD_NATIVE_TAG(CombatSocket, Tail, "Tail");
+
+	ADD_NATIVE_TAG_Two(Montage, Attack, 1, "Attack 1");
+	ADD_NATIVE_TAG_Two(Montage, Attack, 2, "Attack 2");
+	ADD_NATIVE_TAG_Two(Montage, Attack, 3, "Attack 3");
+	ADD_NATIVE_TAG_Two(Montage, Attack, 4, "Attack 4");
 }

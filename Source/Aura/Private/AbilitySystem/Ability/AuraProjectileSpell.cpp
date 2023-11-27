@@ -30,7 +30,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 	// ICombatInterface::GetCombatSocketLocation() in CombatInterface.gen.cpp:
 	// Do not directly call Event functions in Interfaces. Call Execute_GetCombatSocketLocation instead.
-	const auto SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, FAuraGameplayTags::GetMontageTagAttackWeapon()); 
+	const auto SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, FAuraGameplayTags::GetCombatSocketTagWeapon()); 
 	const FRotator Direction = (ProjectileTargetLocation - SocketLocation).Rotation();
 
 	FTransform SpawnTransform;

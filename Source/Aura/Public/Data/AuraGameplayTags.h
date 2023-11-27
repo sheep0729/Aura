@@ -134,10 +134,15 @@ struct FAuraGameplayTags
 
 	ABILITY_TAG_GETTER(Attack);
 
-	TAG_GETTER_Two(Montage, Attack, Weapon);
-	TAG_GETTER_Two(Montage, Attack, LeftHand);
-	TAG_GETTER_Two(Montage, Attack, RightHand);
+	TAG_GETTER(CombatSocket, Weapon);
+	TAG_GETTER(CombatSocket, LeftHand);
+	TAG_GETTER(CombatSocket, RightHand);
+	TAG_GETTER(CombatSocket, Tail);
 	
+	TAG_GETTER_Two(Montage, Attack, 1);
+	TAG_GETTER_Two(Montage, Attack, 2);
+	TAG_GETTER_Two(Montage, Attack, 3);
+	TAG_GETTER_Two(Montage, Attack, 4);
 protected:
 	DECLARE_VITAL_ATTRIBUTE_TAG(Health);
 	DECLARE_VITAL_ATTRIBUTE_TAG(Mana);
@@ -173,7 +178,7 @@ protected:
 
 	DECLARE_EFFECT_TAG(Damage);
 	DECLARE_EFFECT_TAG(HitReact);
-	
+
 	DECLARE_DAMAGE_TYPE_TAG(Fire);
 	DECLARE_DAMAGE_TYPE_TAG(Lightning);
 	DECLARE_DAMAGE_TYPE_TAG(Arcane);
@@ -181,7 +186,13 @@ protected:
 
 	DECLARE_ABILITY_TAG(Attack);
 
-	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, Weapon));
-	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, LeftHand));
-	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, RightHand));
+	DECLARE_TAG(TAG_NAME(CombatSocket, Weapon));
+	DECLARE_TAG(TAG_NAME(CombatSocket, LeftHand));
+	DECLARE_TAG(TAG_NAME(CombatSocket, RightHand));
+	DECLARE_TAG(TAG_NAME(CombatSocket, Tail));
+
+	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, 1));
+	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, 2));
+	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, 3));
+	DECLARE_TAG(TAG_NAME_Two(Montage, Attack, 4));
 };

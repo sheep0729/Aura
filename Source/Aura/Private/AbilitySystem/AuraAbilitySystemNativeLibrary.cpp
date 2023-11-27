@@ -15,7 +15,7 @@ TTuple<const FGameplayTagContainer*, const FGameplayTagContainer*> AuraAbilitySy
 bool AuraAbilitySystemNativeLibrary::IsEffectCauserLocallyControlled(const FGameplayEffectContextHandle& GameplayEffectContext)
 {
 	const auto SourceCharacter = Cast<ACharacter>(GameplayEffectContext.GetEffectCauser());
-	INVALID_RETURN_VALUE(SourceCharacter, false);
+	INVALID_RETURN_OBJECT(SourceCharacter, false);
 
 	return SourceCharacter->IsLocallyControlled();
 }
