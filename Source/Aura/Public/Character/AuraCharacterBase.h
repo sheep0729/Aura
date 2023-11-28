@@ -44,6 +44,7 @@ public:
 	virtual void Die() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void SetFacingTarget_Implementation(const FVector& TargetLocation) override;
+	// TODO 可以直接使用 SocketName， 在这里用 GameplayTag 毫无意义
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;

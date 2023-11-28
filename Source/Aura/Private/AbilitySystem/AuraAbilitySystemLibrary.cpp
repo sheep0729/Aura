@@ -137,7 +137,12 @@ bool UAuraAbilitySystemLibrary::IsPlayer(AActor* Actor)
 
 bool UAuraAbilitySystemLibrary::IsNotFriends(AActor* Actor1, AActor* Actor2)
 {
-	return !(IsEnemy(Actor1) && IsEnemy(Actor2) || IsPlayer(Actor1) && IsPlayer(Actor2));
+	return !IsFriends(Actor1, Actor2);
+}
+
+bool UAuraAbilitySystemLibrary::IsFriends(AActor* Actor1, AActor* Actor2)
+{
+	return IsEnemy(Actor1) && IsEnemy(Actor2) || IsPlayer(Actor1) && IsPlayer(Actor2);
 }
 
 FVector UAuraAbilitySystemLibrary::GetBonePosition(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)

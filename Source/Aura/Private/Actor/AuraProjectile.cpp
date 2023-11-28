@@ -45,7 +45,7 @@ void AAuraProjectile::BeginPlay()
 	SetLifeSpan(LifeSpan);
 
 	LoopingAudioComponent = UGameplayStatics::SpawnSoundAttached(LoopingSound, GetRootComponent());
-	
+
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlap);
 	Sphere->OnComponentHit.AddDynamic(this, &ThisClass::OnHit);
 }
@@ -63,20 +63,31 @@ void AAuraProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	FALSE_RETURN_VOID(DamageEffectSpecHandle.Data.IsValid());
 	const auto EffectCauser = DamageEffectSpecHandle.Data->GetContext().GetEffectCauser();
 
+	// Overlap 无效的目标
 	INVALID_RETURN_VOID(OtherActor);
-	FALSE_RETURN_VOID(OtherActor->Implements<UCombatInterface>());
+
+	// Overlap 自己
 	TRUE_RETURN_VOID(EffectCauser == OtherActor);
-	FALSE_RETURN_VOID(UAuraAbilitySystemLibrary::IsNotFriends(EffectCauser, OtherActor));
-	
-	// TODO 改为 Local Predict ?
-	if (HasAuthority())
+
+	// Overlap 朋友
+	TRUE_RETURN_VOID(UAuraAbilitySystemLibrary::IsFriends(EffectCauser, OtherActor));
+
+	//// Overlap 有效的目标，可能是敌人
+
+	// Overlap 敌人
+	if (OtherActor->Implements<UCombatInterface>())
 	{
-		if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+		// TODO 改为 Local Predict ?
+		if (HasAuthority())
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data);
+			if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
+			{
+				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data);
+			}
 		}
 	}
 
+	// Overlap 有效的目标
 	UKismetSystemLibrary::PrintString(this, FString::Format(TEXT("Destroying [{0}] {1}"), {GetNameSafe(this), Destroy() ? "Success" : "Failed"}));
 }
 
