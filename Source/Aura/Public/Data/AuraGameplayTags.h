@@ -74,12 +74,6 @@ static const FGameplayTag& GetDamageTypeTag##DamageTypeName()      \
 // Ability
 
 #define ABILITY_TAG_NAME(AbilityName) Ability_##AbilityName
-#define DECLARE_ABILITY_TAG(AbilityName) DECLARE_TAG(ABILITY_TAG_NAME(AbilityName))
-#define ABILITY_TAG_GETTER(AbilityName)                      \
-static const FGameplayTag& GetAbilityTag##AbilityName()      \
-{                                                            \
-	return ABILITY_TAG_NAME(AbilityName);                    \
-}
 
 struct FAuraGameplayTags
 {
@@ -131,8 +125,9 @@ struct FAuraGameplayTags
 	DAMAGE_TYPE_TAG_GETTER(Physical);
 
 	static const TMap<FGameplayTag, FGameplayTag>& GetDamageToResistanceMap();
-
-	ABILITY_TAG_GETTER(Attack);
+	
+	TAG_GETTER(Ability, Attack);
+	TAG_GETTER(Ability, Summon);
 
 	TAG_GETTER(CombatSocket, Weapon);
 	TAG_GETTER(CombatSocket, LeftHand);
@@ -183,8 +178,9 @@ protected:
 	DECLARE_DAMAGE_TYPE_TAG(Lightning);
 	DECLARE_DAMAGE_TYPE_TAG(Arcane);
 	DECLARE_DAMAGE_TYPE_TAG(Physical);
-
-	DECLARE_ABILITY_TAG(Attack);
+	
+	DECLARE_TAG(TAG_NAME(Ability, Attack));
+	DECLARE_TAG(TAG_NAME(Ability, Summon));
 
 	DECLARE_TAG(TAG_NAME(CombatSocket, Weapon));
 	DECLARE_TAG(TAG_NAME(CombatSocket, LeftHand));

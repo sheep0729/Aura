@@ -84,4 +84,7 @@ private:
     
     UPROPERTY(BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess))
     TObjectPtr<AActor> CombatTarget;
+
+    UFUNCTION()
+    void PrintDestroyed(AActor* Actor);
 };

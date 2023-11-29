@@ -42,6 +42,7 @@ void AAuraAIController::OnPossess(APawn* InPawn)
 	if (const auto AuraEnemy = Cast<AAuraEnemy>(InPawn))
 	{
 		GetBlackboardComponent()->SetValueAsBool(FName("RangedAttacker"), AuraEnemy->GetCharacterClass() != EAuraCharacterClass::Warrior);
+		GetBlackboardComponent()->SetValueAsBool(FName("ElementalistAttacker"), AuraEnemy->GetCharacterClass() == EAuraCharacterClass::Elementalist);
 	}
 }
 

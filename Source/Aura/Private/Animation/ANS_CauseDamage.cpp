@@ -10,6 +10,7 @@
 #include "Interaction/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "CollisionShape.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "Actor/DamageVolume/DamageVolumeBase.h"
 
 
@@ -37,7 +38,7 @@ void UANS_CauseDamage::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequen
 
 	INVALID_RETURN_VOID(DamageVolumeClass);
 	DamageVolume = Cast<ADamageVolumeBase>(DamageVolumeClass.GetDefaultObject());
-	
+
 	InitCollisionShape();
 
 	ActorsToIgnore.Add(MeshComp->GetOwner());
@@ -120,24 +121,26 @@ void UANS_CauseDamage::SendGameplayEvent(AActor* TargetActor, const TArray<AActo
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventTag, EventData);
 }
 
-void UANS_CauseDamage::DrawDebug(const UWorld* World, const FTransform& Transform)
+void UANS_CauseDamage::DrawDebug(const UWorld* World, const FTransform& Transform, bool bHit)
 {
 	FALSE_RETURN_VOID(bDrawDebug);
 	FALSE_RETURN_VOID(CollisionShape.IsSet());
 
+	const FLinearColor Color = bHit ? FLinearColor::Red : FLinearColor::Blue;
+
 	if (CollisionShape->IsBox())
 	{
-		UKismetSystemLibrary::DrawDebugBox(World, Transform.GetTranslation(), CollisionShape->GetExtent(), FLinearColor::Blue,
+		UKismetSystemLibrary::DrawDebugBox(World, Transform.GetTranslation(), CollisionShape->GetExtent(), Color,
 		                                   Transform.GetRotation().Rotator(), .5, 1);
 	}
 	else if (CollisionShape->IsCapsule())
 	{
 		UKismetSystemLibrary::DrawDebugCapsule(World, Transform.GetTranslation(), CollisionShape->GetCapsuleHalfHeight(),
-		                                       CollisionShape->GetCapsuleRadius(), Transform.GetRotation().Rotator(), FLinearColor::Blue, .5, 1);
+		                                       CollisionShape->GetCapsuleRadius(), Transform.GetRotation().Rotator(), Color, .5, 1);
 	}
 	else if (CollisionShape->IsSphere())
 	{
-		UKismetSystemLibrary::DrawDebugSphere(World, Transform.GetTranslation(), CollisionShape->GetSphereRadius(), 16, FLinearColor::Blue, .5, 1);
+		UKismetSystemLibrary::DrawDebugSphere(World, Transform.GetTranslation(), CollisionShape->GetSphereRadius(), 16, Color, .5, 1);
 	}
 }
 
@@ -145,33 +148,37 @@ TArray<AActor*> UANS_CauseDamage::GetOverlappingActors(const USkeletalMeshCompon
 {
 	TArray<AActor*> OverlappingActors;
 	FALSE_RETURN_OBJECT(CollisionShape.IsSet(), OverlappingActors);
-	
+
 	TArray<FOverlapResult> Overlaps;
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActors(ActorsToIgnore);
-	
+
 	// TODO 这里可以改成 By Channel、这里应该检查 CollisionShape
 	MeshComp->GetWorld()->OverlapMultiByObjectType(Overlaps, DamageTransform.GetTranslation(), DamageTransform.GetRotation(),
 	                                               FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects),
 	                                               CollisionShape.GetValue(), CollisionQueryParams);
 
-	if (bDrawDebug)
-	{
-		DrawDebug(MeshComp->GetWorld(), DamageTransform);
-	}
-
 	for (FOverlapResult& Overlap : Overlaps)
 	{
-		if (const auto OverlappingActor = Overlap.GetActor(); OverlappingActor && OverlappingActor->Implements<UCombatInterface>())
+		if (const auto OverlappingActor = Overlap.GetActor();
+			OverlappingActor &&
+			OverlappingActor->Implements<UCombatInterface>() &&
+			UAuraAbilitySystemLibrary::IsNotFriends(MeshComp->GetOwner(), OverlappingActor))
 		{
-			if (!ICombatInterface::Execute_IsDead(OverlappingActor))
+			if (UAuraAbilitySystemLibrary::IsNotFriends(MeshComp->GetOwner(), OverlappingActor) &&
+				!ICombatInterface::Execute_IsDead(OverlappingActor))
 			{
 				OverlappingActors.AddUnique(OverlappingActor);
 			}
+
+			ActorsToIgnore.Add(OverlappingActor); // 每个 Actor 受到一次伤害
 		}
 	}
 
-	ActorsToIgnore.Append(OverlappingActors); // 每个 Actor 受到一次伤害
+	if (bDrawDebug)
+	{
+		DrawDebug(MeshComp->GetWorld(), DamageTransform, !OverlappingActors.IsEmpty());
+	}
 
 	return OverlappingActors;
 }

@@ -51,6 +51,8 @@ public:
 	virtual void GetMontages_Implementation(TArray<FTaggedMontage>& OutMontages) override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
+	virtual int32 GetMinionCount_Implementation() override;
+	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
 	/* Combat Interface */
 
 	void ShowFloatingDamage(float Damage, const FGameplayEffectContextHandle& EffectContextHandle);
@@ -140,6 +142,9 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess), BlueprintReadOnly)
 	TObjectPtr<USoundBase> DeathSound;
+
+	UPROPERTY()
+	int32 MinionCount;
 
 	friend class UAuraAbilitySystemComponent;
 };

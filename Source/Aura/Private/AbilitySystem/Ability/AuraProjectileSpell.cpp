@@ -17,21 +17,21 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag)
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag, float AdditionalDirectionZ)
 {
 	check(ProjectileClass);
 
 	const auto AvatarActor = GetAvatarActorFromActorInfo();
 	INVALID_RETURN_VOID(AvatarActor);
-	
+
 	// TODO: 预测
 	FALSE_RETURN_VOID(AvatarActor->HasAuthority());
 	FALSE_RETURN_VOID(AvatarActor->Implements<UCombatInterface>());
 
 	// ICombatInterface::GetCombatSocketLocation() in CombatInterface.gen.cpp:
 	// Do not directly call Event functions in Interfaces. Call Execute_GetCombatSocketLocation instead.
-	const auto SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, SocketTag); 
-	const FRotator Direction = (ProjectileTargetLocation - SocketLocation).Rotation();
+	const auto SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, SocketTag);
+	const FRotator Direction = (ProjectileTargetLocation - SocketLocation + FVector{0, 0, AdditionalDirectionZ}).Rotation();
 
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(SocketLocation);

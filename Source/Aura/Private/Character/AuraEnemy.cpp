@@ -15,6 +15,7 @@
 #include "UI/WidgetController/EnemyWidgetController.h"
 #include "Data/AuraGameplayTags.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AAuraEnemy::AAuraEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer),
@@ -52,6 +53,8 @@ void AAuraEnemy::BeginPlay()
 	GetCapsuleComponent()->OnEndCursorOver.AddDynamic(this, &ThisClass::UnhighlightActor);
 
 	InitAbilitySystem();
+
+	// OnDestroyed.AddDynamic(this, &ThisClass::PrintDestroyed);
 }
 
 void AAuraEnemy::InitAbilitySystemComponent()
@@ -127,4 +130,9 @@ AAuraAIController* AAuraEnemy::GetAIController() const
 	INVALID_RETURN_OBJECT(MyController, nullptr);
 
 	return Cast<AAuraAIController>(MyController);
+}
+
+void AAuraEnemy::PrintDestroyed(AActor* Actor)
+{
+	UKismetSystemLibrary::PrintString(this, FString::Format(TEXT("{1} Destroyed."), {GetNameSafe(Actor)}));
 }

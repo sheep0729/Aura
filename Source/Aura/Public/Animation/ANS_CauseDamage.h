@@ -62,7 +62,7 @@ private:
 
 	void SendGameplayEvent(AActor* TargetActor, const TArray<AActor*>& OverlappingActors, const FTransform& DamageTransform);
 
-	void DrawDebug(const UWorld* World, const FTransform& Transform);
+	void DrawDebug(const UWorld* World, const FTransform& Transform, bool bHit);
 
 	TArray<AActor*> GetOverlappingActors(const USkeletalMeshComponent* MeshComp, const FTransform& DamageTransform);
 
