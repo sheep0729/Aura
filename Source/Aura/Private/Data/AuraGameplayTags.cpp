@@ -1,71 +1,25 @@
 ﻿// Copyright Yang Dong
 
-
 #include "Data/AuraGameplayTags.h"
-
-#include "GameplayTagsManager.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
-// TODO 全部改为使用通用的宏
-#define IMPLEMENT_TAG(Class, TagName) FGameplayTag Class::TagName = FGameplayTag::EmptyTag
+const TArray<FGameplayTag>& FAuraGameplayTags::GetVitalAttributeTags()
+{
+	static const TArray<FGameplayTag> VitalAttributeTags{
+		Attribute_Vital_Health,
+		Attribute_Vital_Mana
+	};
 
-#define TAG_STR(TagType, TagSubName) #TagType "." #TagSubName
-#define TAG_STR_Two(TagType, TagSubName1, TagSubName2) #TagType "." #TagSubName1 "." #TagSubName2
-
-#define ADD_NATIVE_TAG(TagType, TagSubName, TagDevComment) \
-	TAG_NAME(TagType, TagSubName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(TAG_STR(TagType, TagSubName)), TagDevComment)
-
-#define ADD_NATIVE_TAG_Two(TagType, TagSubName1, TagSubName2, TagDevComment) \
-	TAG_NAME_Two(TagType, TagSubName1, TagSubName2) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(TAG_STR_Two(TagType, TagSubName1, TagSubName2)), TagDevComment)
-
-// Attribute Tags（Tag 关联 Attribute） TODO 如果没有什么实际用途的话应该考虑删掉
-
-#define IMPLEMENT_ATTRIBUTE_TAG(ClassName, AttributeClass, AttributeName) IMPLEMENT_TAG(ClassName, ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName))
-#define IMPLEMENT_VITAL_ATTRIBUTE_TAG(ClassName, AttributeName) IMPLEMENT_ATTRIBUTE_TAG(ClassName, Vital, AttributeName)
-#define IMPLEMENT_PRIMARY_ATTRIBUTE_TAG(ClassName, AttributeName) IMPLEMENT_ATTRIBUTE_TAG(ClassName, Primary, AttributeName)
-#define IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(ClassName, AttributeName) IMPLEMENT_ATTRIBUTE_TAG(ClassName, Secondary, AttributeName)
-
-IMPLEMENT_VITAL_ATTRIBUTE_TAG(FAuraGameplayTags, Health);
-IMPLEMENT_VITAL_ATTRIBUTE_TAG(FAuraGameplayTags, Mana);
-
-IMPLEMENT_PRIMARY_ATTRIBUTE_TAG(FAuraGameplayTags, Strength);
-IMPLEMENT_PRIMARY_ATTRIBUTE_TAG(FAuraGameplayTags, Intelligence);
-IMPLEMENT_PRIMARY_ATTRIBUTE_TAG(FAuraGameplayTags, Resilience);
-IMPLEMENT_PRIMARY_ATTRIBUTE_TAG(FAuraGameplayTags, Vigor);
-
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, Armor);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, ArmorPenetration);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, BlockChance);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, CriticalHitChance);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, CriticalHitDamage);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, CriticalHitResistance);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, HealthRegeneration);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, ManaRegeneration);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, MaxHealth);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, MaxMana);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, FireResistance);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, LightningResistance);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, ArcaneResistance);
-IMPLEMENT_SECONDARY_ATTRIBUTE_TAG(FAuraGameplayTags, PhysicalResistance);
-
-#define ATTRIBUTE_TAG_STR(AttributeClass, AttributeName) "Attributes." #AttributeClass "." #AttributeName
-
-#define REQUEST_ATTRIBUTE_TAG(AttributeClass, AttributeName) \
-	ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName) = FGameplayTag::RequestGameplayTag(FName(ATTRIBUTE_TAG_STR(AttributeClass, AttributeName)))
-#define REQUEST_VITAL_ATTRIBUTE_TAG(AttributeName) REQUEST_ATTRIBUTE_TAG(Vital, AttributeName)
-#define REQUEST_PRIMARY_ATTRIBUTE_TAG(AttributeName) REQUEST_ATTRIBUTE_TAG(Primary, AttributeName)
-
-#define ADD_NATIVE_ATTRIBUTE_TAG(AttributeClass, AttributeName, TagDevComment) \
-   ATTRIBUTE_TAG_NAME(AttributeClass, AttributeName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(ATTRIBUTE_TAG_STR(AttributeClass, AttributeName)), TagDevComment);
-#define ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(AttributeName, TagDevComment) ADD_NATIVE_ATTRIBUTE_TAG(Secondary, AttributeName, TagDevComment)
+	return VitalAttributeTags;
+}
 
 const TArray<FGameplayTag>& FAuraGameplayTags::GetPrimaryAttributeTags()
 {
-	static const TArray PrimaryAttributeTags = {
-		GetAttributeTagStrength(),
-		GetAttributeTagIntelligence(),
-		GetAttributeTagResilience(),
-		GetAttributeTagVigor()
+	static const TArray<FGameplayTag> PrimaryAttributeTags = {
+		Attribute_Primary_Strength,
+		Attribute_Primary_Intelligence,
+		Attribute_Primary_Resilience,
+		Attribute_Primary_Vigor,
 	};
 
 	return PrimaryAttributeTags;
@@ -73,61 +27,52 @@ const TArray<FGameplayTag>& FAuraGameplayTags::GetPrimaryAttributeTags()
 
 const TArray<FGameplayTag>& FAuraGameplayTags::GetSecondaryAttributeTags()
 {
-	static const TArray SecondaryAttributeTags{
-		GetAttributeTagArmor(),
-		GetAttributeTagArmorPenetration(),
-		GetAttributeTagBlockChance(),
-		GetAttributeTagCriticalHitChance(),
-		GetAttributeTagCriticalHitDamage(),
-		GetAttributeTagCriticalHitResistance(),
-		GetAttributeTagHealthRegeneration(),
-		GetAttributeTagManaRegeneration(),
-		GetAttributeTagMaxHealth(),
-		GetAttributeTagMaxMana(),
-		GetAttributeTagFireResistance(),
-		GetAttributeTagLightningResistance(),
-		GetAttributeTagArcaneResistance(),
-		GetAttributeTagPhysicalResistance(),
+	static const TArray<FGameplayTag> SecondaryAttributeTags{
+		Attribute_Secondary_Armor,
+		Attribute_Secondary_ArmorPenetration,
+		Attribute_Secondary_BlockChance,
+		Attribute_Secondary_CriticalHitChance,
+		Attribute_Secondary_CriticalHitDamage,
+		Attribute_Secondary_CriticalHitResistance,
+		Attribute_Secondary_HealthRegeneration,
+		Attribute_Secondary_ManaRegeneration,
+		Attribute_Secondary_MaxHealth,
+		Attribute_Secondary_MaxMana,
+		Attribute_Secondary_FireResistance,
+		Attribute_Secondary_LightningResistance,
+		Attribute_Secondary_ArcaneResistance,
+		Attribute_Secondary_PhysicalResistance,
 	};
 
 	return SecondaryAttributeTags;
 }
 
-const TArray<FGameplayTag>& FAuraGameplayTags::GetVitalAttributeTags()
-{
-	static const TArray VitalAttributeTags{
-		GetAttributeTagHealth(),
-		GetAttributeTagMana()
-	};
-
-	return VitalAttributeTags;
-}
 
 const TMap<FGameplayTag, FGameplayAttribute>& FAuraGameplayTags::GetAttributeMap()
 {
 	static const TMap<FGameplayTag, FGameplayAttribute> AttributeMap{
-		{GetAttributeTagHealth(), UAuraAttributeSet::GetHealthAttribute()},
-		{GetAttributeTagMana(), UAuraAttributeSet::GetManaAttribute()},
+		{Attribute_Vital_Health, UAuraAttributeSet::GetHealthAttribute()},
+		{Attribute_Vital_Mana, UAuraAttributeSet::GetManaAttribute()},
 
-		{GetAttributeTagStrength(), UAuraAttributeSet::GetStrengthAttribute()},
-		{GetAttributeTagIntelligence(), UAuraAttributeSet::GetIntelligenceAttribute()},
-		{GetAttributeTagResilience(), UAuraAttributeSet::GetResilienceAttribute()},
-		{GetAttributeTagVigor(), UAuraAttributeSet::GetVigorAttribute()},
+		{Attribute_Primary_Strength, UAuraAttributeSet::GetStrengthAttribute()},
+		{Attribute_Primary_Intelligence, UAuraAttributeSet::GetIntelligenceAttribute()},
+		{Attribute_Primary_Resilience, UAuraAttributeSet::GetResilienceAttribute()},
+		{Attribute_Primary_Vigor, UAuraAttributeSet::GetVigorAttribute()},
 
-		{GetAttributeTagArmor(), UAuraAttributeSet::GetArmorAttribute()},
-		{GetAttributeTagArmorPenetration(), UAuraAttributeSet::GetArmorPenetrationAttribute()},
-		{GetAttributeTagBlockChance(), UAuraAttributeSet::GetBlockChanceAttribute()},
-		{GetAttributeTagCriticalHitChance(), UAuraAttributeSet::GetCriticalHitChanceAttribute()},
-		{GetAttributeTagCriticalHitDamage(), UAuraAttributeSet::GetCriticalHitDamageAttribute()},
-		{GetAttributeTagCriticalHitResistance(), UAuraAttributeSet::GetCriticalHitResistanceAttribute()},
-		{GetAttributeTagHealthRegeneration(), UAuraAttributeSet::GetHealthRegenerationAttribute()},
-		{GetAttributeTagManaRegeneration(), UAuraAttributeSet::GetManaRegenerationAttribute()},
-		{GetAttributeTagMaxHealth(), UAuraAttributeSet::GetMaxHealthAttribute()},
-		{GetAttributeTagMaxMana(), UAuraAttributeSet::GetMaxManaAttribute()},
-		{GetAttributeTagFireResistance(), UAuraAttributeSet::GetFireResistanceAttribute()},
-		{GetAttributeTagLightningResistance(), UAuraAttributeSet::GetLightningResistanceAttribute()},
-		{GetAttributeTagArcaneResistance(), UAuraAttributeSet::GetArcaneResistanceAttribute()},
-		{GetAttributeTagPhysicalResistance(), UAuraAttributeSet::GetPhysicalResistanceAttribute()}
+		{Attribute_Secondary_Armor, UAuraAttributeSet::GetArmorAttribute()},
+		{Attribute_Secondary_ArmorPenetration, UAuraAttributeSet::GetArmorPenetrationAttribute()},
+		{Attribute_Secondary_BlockChance, UAuraAttributeSet::GetBlockChanceAttribute()},
+		{Attribute_Secondary_CriticalHitChance, UAuraAttributeSet::GetCriticalHitChanceAttribute()},
+		{Attribute_Secondary_CriticalHitDamage, UAuraAttributeSet::GetCriticalHitDamageAttribute()},
+		{Attribute_Secondary_CriticalHitResistance, UAuraAttributeSet::GetCriticalHitResistanceAttribute()},
+		{Attribute_Secondary_HealthRegeneration, UAuraAttributeSet::GetHealthRegenerationAttribute()},
+		{Attribute_Secondary_ManaRegeneration, UAuraAttributeSet::GetManaRegenerationAttribute()},
+		{Attribute_Secondary_MaxHealth, UAuraAttributeSet::GetMaxHealthAttribute()},
+		{Attribute_Secondary_MaxMana, UAuraAttributeSet::GetMaxManaAttribute()},
+		{Attribute_Secondary_FireResistance, UAuraAttributeSet::GetFireResistanceAttribute()},
+		{Attribute_Secondary_LightningResistance, UAuraAttributeSet::GetLightningResistanceAttribute()},
+		{Attribute_Secondary_ArcaneResistance, UAuraAttributeSet::GetArcaneResistanceAttribute()},
+		{Attribute_Secondary_PhysicalResistance, UAuraAttributeSet::GetPhysicalResistanceAttribute()}
 	};
 
 	return AttributeMap;
@@ -137,128 +82,72 @@ const TMap<FGameplayTag, FGameplayAttribute>& FAuraGameplayTags::GetAttributeMap
 const TMap<FGameplayTag, FGameplayTag>& FAuraGameplayTags::GetDamageToResistanceMap()
 {
 	static TMap<FGameplayTag, FGameplayTag> DamageTypeMap{
-		{GetDamageTypeTagFire(), GetAttributeTagFireResistance()},
-		{GetDamageTypeTagLightning(), GetAttributeTagLightningResistance()},
-		{GetDamageTypeTagArcane(), GetAttributeTagArcaneResistance()},
-		{GetDamageTypeTagPhysical(), GetAttributeTagPhysicalResistance()},
+		{Damage_Fire, Attribute_Secondary_FireResistance},
+		{Damage_Lightning, Attribute_Secondary_LightningResistance},
+		{Damage_Arcane, Attribute_Secondary_ArcaneResistance},
+		{Damage_Physical, Attribute_Secondary_PhysicalResistance},
 	};
 
 	return DamageTypeMap;
 }
 
-// Input Tag
-
-#define IMPLEMENT_INPUT_TAG(ClassName, InputName) IMPLEMENT_TAG(ClassName, INPUT_TAG_NAME(InputName))
-
-IMPLEMENT_INPUT_TAG(FAuraGameplayTags, LMB);
-IMPLEMENT_INPUT_TAG(FAuraGameplayTags, RMB);
-IMPLEMENT_INPUT_TAG(FAuraGameplayTags, 1);
-IMPLEMENT_INPUT_TAG(FAuraGameplayTags, 2);
-IMPLEMENT_INPUT_TAG(FAuraGameplayTags, 3);
-IMPLEMENT_INPUT_TAG(FAuraGameplayTags, 4);
-IMPLEMENT_INPUT_TAG(FAuraGameplayTags, Move);
-IMPLEMENT_INPUT_TAG(FAuraGameplayTags, Shift);
-
-#define INPUT_TAG_STR(InputName) "Input." #InputName
-
-#define ADD_NATIVE_INPUT_TAG(InputName, TagDevComment) \
-	INPUT_TAG_NAME(InputName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(INPUT_TAG_STR(InputName)), TagDevComment);
-
-// Effect Tag
-
-#define IMPLEMENT_EFFECT_TAG(ClassName, EffectName) IMPLEMENT_TAG(ClassName, EFFECT_TAG_NAME(EffectName))
-#define EFFECT_TAG_STR(EffectName) "Effect." #EffectName
-#define ADD_NATIVE_EFFECT_TAG(EffectName, TagDevComment) \
-	EFFECT_TAG_NAME(EffectName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(EFFECT_TAG_STR(EffectName)), TagDevComment);
-
-IMPLEMENT_EFFECT_TAG(FAuraGameplayTags, Damage);
-IMPLEMENT_EFFECT_TAG(FAuraGameplayTags, HitReact);
-
-// Damage Type Tag
-
-#define IMPLEMENT_DAMAGE_TYPE_TAG(ClassName, DamageTypeName) IMPLEMENT_TAG(ClassName, DAMAGE_TYPE_TAG_NAME(DamageTypeName))
-#define DAMAGE_TYPE_TAG_STR(DamageTypeName) "DamageType." #DamageTypeName
-#define ADD_NATIVE_DAMAGE_TYPE_TAG(DamageTypeName, TagDevComment) \
-	DAMAGE_TYPE_TAG_NAME(DamageTypeName) = UGameplayTagsManager::Get().AddNativeGameplayTag(FName(DAMAGE_TYPE_TAG_STR(DamageTypeName)), TagDevComment);
-
-IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Fire);
-IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Lightning);
-IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Arcane);
-IMPLEMENT_DAMAGE_TYPE_TAG(FAuraGameplayTags, Physical);
-
-// Ability
-
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(Ability, Attack));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(Ability, Summon));
-
-// Montage
-
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, 1));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, 2));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, 3));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME_Two(Montage, Attack, 4));
-
-// Socket
-
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(CombatSocket, Weapon));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(CombatSocket, LeftHand));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(CombatSocket, RightHand));
-IMPLEMENT_TAG(FAuraGameplayTags, TAG_NAME(CombatSocket, Tail));
-
-// Initialize
-
-void FAuraGameplayTags::InitializeAuraGameplayTags()
-{
-	REQUEST_VITAL_ATTRIBUTE_TAG(Health);
-	REQUEST_VITAL_ATTRIBUTE_TAG(Mana);
-
-	REQUEST_PRIMARY_ATTRIBUTE_TAG(Strength);
-	REQUEST_PRIMARY_ATTRIBUTE_TAG(Intelligence);
-	REQUEST_PRIMARY_ATTRIBUTE_TAG(Resilience);
-	REQUEST_PRIMARY_ATTRIBUTE_TAG(Vigor);
-
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(Armor, "Reduces damage taken, improves block chance");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(ArmorPenetration, "Ignore percentage of enemy Armor, increases crictical hit damage");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(BlockChance, "Chance to cut incoming damage in half");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(CriticalHitChance, "Chance to double damage plus crictical hit bonus");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(CriticalHitDamage, "Bonus damage added when a crictical hit is scored");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(CriticalHitResistance, "Reduces crictical hit chance of attacking enemies");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(HealthRegeneration, "Amount of health regenerated every second");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(ManaRegeneration, "Amount of mana regenerated every second");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(MaxHealth, "Maxium amount of health obtainable");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(MaxMana, "Maxium amount of mana obtainable");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(FireResistance, "Resistance to Fire Damage");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(LightningResistance, "Resistance to Lightning Damage");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(ArcaneResistance, "Resistance to Arcane Damage");
-	ADD_NATIVE_SECONDARY_ATTRIBUTE_TAG(PhysicalResistance, "Resistance to Physical Damage");
-
-	ADD_NATIVE_INPUT_TAG(LMB, "Input Tag for Left Mouse Button");
-	ADD_NATIVE_INPUT_TAG(RMB, "Input Tag for Right Mouse Button");
-	ADD_NATIVE_INPUT_TAG(1, "Input Tag for 1 Key");
-	ADD_NATIVE_INPUT_TAG(2, "Input Tag for 2 Key");
-	ADD_NATIVE_INPUT_TAG(3, "Input Tag for 3 Key");
-	ADD_NATIVE_INPUT_TAG(4, "Input Tag for 4 Key");
-	ADD_NATIVE_INPUT_TAG(Move, "Input Tag for Move");
-	ADD_NATIVE_INPUT_TAG(Shift, "Input Tag for Shift Key");
-
-	ADD_NATIVE_EFFECT_TAG(Damage, "");
-	ADD_NATIVE_EFFECT_TAG(HitReact, "Tag granted when reacting to hit");
-
-	ADD_NATIVE_DAMAGE_TYPE_TAG(Fire, "Fire Damage Tag");
-	ADD_NATIVE_DAMAGE_TYPE_TAG(Lightning, "Lightning Damage Tag");
-	ADD_NATIVE_DAMAGE_TYPE_TAG(Arcane, "Arcane Damage Tag");
-	ADD_NATIVE_DAMAGE_TYPE_TAG(Physical, "Physical Damage Tag");
-
-	ADD_NATIVE_TAG(Ability, Attack, "Attack Ability Tag");
-	ADD_NATIVE_TAG(Ability, Summon, "Attack Summon Tag");
-
-	ADD_NATIVE_TAG(CombatSocket, Weapon, "Weapon");
-	ADD_NATIVE_TAG(CombatSocket, LeftHand, "LeftHand");
-	ADD_NATIVE_TAG(CombatSocket, RightHand, "RightHand");
-	ADD_NATIVE_TAG(CombatSocket, Tail, "Tail");
-
-	ADD_NATIVE_TAG_Two(Montage, Attack, 1, "Attack 1");
-	ADD_NATIVE_TAG_Two(Montage, Attack, 2, "Attack 2");
-	ADD_NATIVE_TAG_Two(Montage, Attack, 3, "Attack 3");
-	ADD_NATIVE_TAG_Two(Montage, Attack, 4, "Attack 4");
-}
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Vital_Health, "Attribute.Vital.Health",
+                                     "Amount of damage a player can take before death");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Vital_Mana, "Attribute.Vital.Mana", "");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Primary_Strength, "Attribute.Primary.Strength", "Increases physical damage");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Primary_Intelligence, "Attribute.Primary.Intelligence",
+                                     "Increases armor and armor pentration");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Primary_Resilience, "Attribute.Primary.Resilience",
+                                     "Increases armor and armor pentration");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Primary_Vigor, "Attribute.Primary.Vigor", "Increases health");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_Armor, "Attribute.Secondary.Armor",
+                                     "Reduces damage taken, improves block chance");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_ArmorPenetration, "Attribute.Secondary.ArmorPenetration",
+                                     "Ignore percentage of enemy Armor, increases crictical hit damage");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_BlockChance, "Attribute.Secondary.BlockChance",
+                                     "Chance to cut incoming damage in half");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_CriticalHitChance, "Attribute.Secondary.CriticalHitChance",
+                                     "Chance to double damage plus crictical hit bonus");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_CriticalHitDamage, "Attribute.Secondary.CriticalHitDamage",
+                                     "Bonus damage added when a crictical hit is scored");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_CriticalHitResistance, "Attribute.Secondary.CriticalHitResistance",
+                                     "Reduces crictical hit chance of attacking enemies");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_HealthRegeneration, "Attribute.Secondary.HealthRegeneration",
+                                     "Amount of health regenerated every second");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_ManaRegeneration, "Attribute.Secondary.ManaRegeneration",
+                                     "Amount of mana regenerated every second");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_MaxHealth, "Attribute.Secondary.MaxHealth",
+                                     "Maxium amount of health obtainable");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_MaxMana, "Attribute.Secondary.MaxMana", "Maxium amount of mana obtainable");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_FireResistance, "Attribute.Secondary.FireResistance",
+                                     "Resistance to Fire Damage");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_LightningResistance, "Attribute.Secondary.LightningResistance",
+                                     "Resistance to Lightning Damage");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_ArcaneResistance, "Attribute.Secondary.ArcaneResistance",
+                                     "Resistance to Arcane Damage");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Attribute_Secondary_PhysicalResistance, "Attribute.Secondary.PhysicalResistance",
+                                     "Resistance to Physical Damage");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Input_LMB, "Input.LMB", "Input Tag for Left Mouse Button");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Input_RMB, "Input.RMB", "Input Tag for Right Mouse Button");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Input_1, "Input.1", "Input Tag for 1 Key");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Input_2, "Input.2", "Input Tag for 2 Key");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Input_3, "Input.3", "Input Tag for 3 Key");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Input_4, "Input.4", "Input Tag for 4 Key");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Input_Move, "Input.Move", "Input Tag for Move");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Input_Shift, "Input.Shift", "Input Tag for Shift Key");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Effect_Damage, "Effect.Damage", "");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Effect_HitReact, "Effect.HitReact", "Tag granted when reacting to hit");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Damage_Fire, "Damage.Fire", "Fire Damage Tag");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Damage_Lightning, "Damage.Lightning", "Lightning Damage Tag");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Damage_Arcane, "Damage.Arcane", "Arcane Damage Tag");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Damage_Physical, "Damage.Physical", "Physical Damage Tag");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Ability_Attack, "Ability.Attack", "Attack Ability Tag");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Ability_Summon, "Ability.Summon", "Attack Summon Tag");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::CombatSocket_Weapon, "CombatSocket.Weapon", "Weapon");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::CombatSocket_LeftHand, "CombatSocket.LeftHand", "LeftHand");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::CombatSocket_RightHand, "CombatSocket.RightHand", "RightHand");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::CombatSocket_Tail, "CombatSocket.Tail", "Tail");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Montage_Attack_1, "Montage.Attack.1", "Attack 1");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Montage_Attack_2, "Montage.Attack.2", "Attack 2");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Montage_Attack_3, "Montage.Attack.3", "Attack 3");
+const UE_DEFINE_GAMEPLAY_TAG_COMMENT(FAuraGameplayTags::Montage_Attack_4, "Montage.Attack.4", "Attack 4");

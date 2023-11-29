@@ -6,9 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "Actor/AuraProjectile.h"
-#include "Data/AuraGameplayTags.h"
 #include "Interaction/CombatInterface.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                            const FGameplayAbilityActivationInfo ActivationInfo,
@@ -23,9 +21,8 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 
 	const auto AvatarActor = GetAvatarActorFromActorInfo();
 	INVALID_RETURN_VOID(AvatarActor);
-
-	// TODO: 预测
-	FALSE_RETURN_VOID(AvatarActor->HasAuthority());
+	
+	// FALSE_RETURN_VOID(AvatarActor->HasAuthority());
 	FALSE_RETURN_VOID(AvatarActor->Implements<UCombatInterface>());
 
 	// ICombatInterface::GetCombatSocketLocation() in CombatInterface.gen.cpp:

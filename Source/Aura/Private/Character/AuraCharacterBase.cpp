@@ -144,7 +144,7 @@ void AAuraCharacterBase::Die()
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
-	
+
 	GetMovementComponent()->Deactivate(); // 先停止移动，不然 Capsule 仍然会有速度
 
 	Weapon->DetachFromComponent(FDetachmentTransformRules{EDetachmentRule::KeepWorld, true});
@@ -166,23 +166,22 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 
 FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag)
 {
-	if (MontageTag == FAuraGameplayTags::GetCombatSocketTagWeapon())
+	if (MontageTag == FAuraGameplayTags::CombatSocket_Weapon)
 	{
 		return IsValid(Weapon) ? Weapon->GetSocketLocation(WeaponFireSocketName) : FVector::Zero();
 	}
-	
-	if (MontageTag == FAuraGameplayTags::GetCombatSocketTagLeftHand())
+
+	if (MontageTag == FAuraGameplayTags::CombatSocket_LeftHand)
 	{
 		return GetMesh()->GetSocketLocation(LeftHandDamageSocketName);
 	}
-	
-	if (MontageTag == FAuraGameplayTags::GetCombatSocketTagRightHand())
+
+	if (MontageTag == FAuraGameplayTags::CombatSocket_RightHand)
 	{
 		return GetMesh()->GetSocketLocation(RightHandDamageSocketName);
 	}
-
 	
-	if (MontageTag == FAuraGameplayTags::GetCombatSocketTagTail())
+	if (MontageTag == FAuraGameplayTags::CombatSocket_Tail)
 	{
 		return GetMesh()->GetSocketLocation(TailSocketName);
 	}
@@ -240,7 +239,7 @@ void AAuraCharacterBase::ServerHandleDamaged(float Damage, float OldHealth, floa
 	}
 	else
 	{
-		AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer{FAuraGameplayTags::GetEffectTagHitReact()});
+		AbilitySystemComponent->TryActivateAbilitiesByTag(FGameplayTagContainer{FAuraGameplayTags::Effect_HitReact});
 	}
 
 	HandleDamagedCosmetic(Damage, OldHealth, NewHealth, EffectContextHandle);

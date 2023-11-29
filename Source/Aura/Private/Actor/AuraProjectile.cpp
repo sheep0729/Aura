@@ -13,7 +13,6 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interaction/CombatInterface.h"
-#include "Interaction/EnemyInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 AAuraProjectile::AAuraProjectile()
@@ -77,7 +76,6 @@ void AAuraProjectile::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	// Overlap 敌人
 	if (OtherActor->Implements<UCombatInterface>())
 	{
-		// TODO 改为 Local Predict ?
 		if (HasAuthority())
 		{
 			if (const auto TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))

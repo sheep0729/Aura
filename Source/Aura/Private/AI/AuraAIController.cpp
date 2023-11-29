@@ -32,7 +32,7 @@ void AAuraAIController::OnPossess(APawn* InPawn)
 	{
 		if (const auto AbilitySystemComponent = AbilitySystemInterface->GetAbilitySystemComponent())
 		{
-			AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::GetEffectTagHitReact(), EGameplayTagEventType::NewOrRemoved).AddUObject(
+			AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
 				this,
 				&ThisClass::OnHitReactTagChanged
 			);

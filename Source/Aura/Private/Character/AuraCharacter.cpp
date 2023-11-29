@@ -67,10 +67,10 @@ void AAuraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
     UAuraEnhancedInputComponent* AuraEnhancedInputComponent = CastChecked<UAuraEnhancedInputComponent>(PlayerInputComponent);
 
-    AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::GetInputTagMove(), ETriggerEvent::Triggered, this, &ThisClass::Move);
-    AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::GetInputTagShift(), ETriggerEvent::Started, this,
+    AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Move);
+    AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::Input_Shift, ETriggerEvent::Started, this,
         &ThisClass::ShiftPressed);
-    AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::GetInputTagShift(), ETriggerEvent::Completed, this,
+    AuraEnhancedInputComponent->BindNativeAction(InputConfig, FAuraGameplayTags::Input_Shift, ETriggerEvent::Completed, this,
         &ThisClass::ShiftReleased);
 
     AuraEnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::HandleAbilityInput_Pressed, &ThisClass::HandleAbilityInput_Holding,
@@ -111,7 +111,7 @@ void AAuraCharacter::InitUI()
 
 bool AAuraCharacter::IsAbilityInput(const FGameplayTag& InputTag) const
 {
-    return !InputTag.MatchesTagExact(FAuraGameplayTags::GetInputTagLMB()) || Cast<AAuraPlayerController>(GetController())->IsTargetingEnemy() ||
+    return !InputTag.MatchesTagExact(FAuraGameplayTags::Input_LMB) || Cast<AAuraPlayerController>(GetController())->IsTargetingEnemy() ||
         bShiftKeyDown;
 }
 

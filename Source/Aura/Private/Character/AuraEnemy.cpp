@@ -62,7 +62,7 @@ void AAuraEnemy::InitAbilitySystemComponent()
 	Super::InitAbilitySystemComponent();
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::GetEffectTagHitReact(), EGameplayTagEventType::NewOrRemoved).AddUObject(
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Effect_HitReact, EGameplayTagEventType::NewOrRemoved).AddUObject(
 		this,
 		&AAuraEnemy::OnHitReactTagChanged
 	);
