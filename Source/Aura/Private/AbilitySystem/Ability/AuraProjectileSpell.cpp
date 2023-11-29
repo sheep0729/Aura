@@ -31,8 +31,10 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	// ICombatInterface::GetCombatSocketLocation() in CombatInterface.gen.cpp:
 	// Do not directly call Event functions in Interfaces. Call Execute_GetCombatSocketLocation instead.
 	const auto SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(AvatarActor, SocketTag);
-	const FRotator Direction = (ProjectileTargetLocation - SocketLocation + FVector{0, 0, AdditionalDirectionZ}).Rotation();
-
+	FVector DirectionVector = ProjectileTargetLocation - SocketLocation;
+	DirectionVector.Normalize();
+	const FRotator Direction = (DirectionVector + FVector{0, 0, AdditionalDirectionZ}).Rotation();
+	
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(SocketLocation);
 	SpawnTransform.SetRotation(Direction.Quaternion());

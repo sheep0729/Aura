@@ -8,6 +8,7 @@
 #include "Marco.h"
 #include "AbilitySystem/AuraAbilityType.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/TargetData/GameplayAbilityTargetData_ActorSpawn.h"
 #include "Game/AuraGameStateBase.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -148,4 +149,16 @@ bool UAuraAbilitySystemLibrary::IsFriends(AActor* Actor1, AActor* Actor2)
 FVector UAuraAbilitySystemLibrary::GetBonePosition(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	return FVector::Zero();
+}
+
+FGameplayAbilityTargetDataHandle UAuraAbilitySystemLibrary::AbilityTargetDataFromActorSpawn(const FTransform& Transform)
+{
+	// Construct TargetData
+	FGameplayAbilityTargetData_ActorSpawn* TargetData = new FGameplayAbilityTargetData_ActorSpawn(Transform);
+
+	// Give it a handle and return
+	FGameplayAbilityTargetDataHandle	Handle;
+	Handle.Data.Add(TSharedPtr<FGameplayAbilityTargetData>(TargetData));
+
+	return Handle;
 }

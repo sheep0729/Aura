@@ -41,7 +41,7 @@ public:
 
 	UFUNCTION(BlueprintPure, Category="Custom|AuraAbilitySystemLibrary|Character")
 	static const FAuraCharacterInfo& GetCharacterInfo(const UObject* WorldContextObject, const EAuraCharacterClass CharacterClass);
-	
+
 	UFUNCTION(BlueprintPure, Category="Custom|AuraAbilitySystemLibrary|Character")
 	static const UCurveTable* GetDamageCalculationCoefficients(const UObject* WorldContextObject);
 
@@ -59,7 +59,8 @@ public:
 	static void SetIsIsCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bInIsCriticalHit);
 
 	UFUNCTION(BlueprintCallable, Category="Custom|AuraAbilitySystemLibrary|Gameplay Mechanis")
-	static void GetLivePlayerWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
+	static void GetLivePlayerWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors,
+	                                      const TArray<AActor*>& ActorsToIgnore, float Radius, const FVector& SphereOrigin);
 
 	UFUNCTION(BlueprintCallable, Category="Custom|AuraAbilitySystemLibrary|Gameplay Mechanis")
 	static bool IsEnemy(AActor* Actor);
@@ -74,5 +75,8 @@ public:
 	static bool IsFriends(AActor* Actor1, AActor* Actor2);
 
 	UFUNCTION(BlueprintPure, BlueprintCallable, Category="Custom|AuraAbilitySystemLibrary|Animation")
-	FVector GetBonePosition(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation);
+	static FVector GetBonePosition(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation);
+
+	UFUNCTION(BlueprintPure, BlueprintCallable, Category="Custom|AuraAbilitySystemLibrary")
+	static FGameplayAbilityTargetDataHandle AbilityTargetDataFromActorSpawn(const FTransform& Transform);
 };
