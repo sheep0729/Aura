@@ -51,5 +51,5 @@ void AAuraAIController::OnHitReactTagChanged(const FGameplayTag Tag, const int32
 	const auto AuraEnemy = Cast<AAuraEnemy>(GetPawn());
 	INVALID_RETURN_VOID(AuraEnemy);
 	
-	GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), AuraEnemy->IsHitReacting());
+	GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), Count != 0);
 }

@@ -49,16 +49,16 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, const TSubclassO
 
 	if (bRefreshDurationOnApply)
 	{
-		FGameplayEffectQuery CurrentEffect;
-		CurrentEffect.EffectDefinition = GameplayEffectClass;
+		FGameplayEffectQuery CurrentEffectQuery;
+		CurrentEffectQuery.EffectDefinition = GameplayEffectClass;
 
-		const auto EffectHandles = TargetASC->GetActiveEffects(CurrentEffect);
+		const auto EffectHandles = TargetASC->GetActiveEffects(CurrentEffectQuery);
 		Algo::ForEach(EffectHandles, [this](const auto EffectHandle) { ActiveEffects.Remove(EffectHandle); });
+		
+		const auto TimeRemaining = TargetASC->GetActiveEffectsTimeRemaining(CurrentEffectQuery);
+		const float CurrentTimeRemaining = TimeRemaining.IsEmpty() ? 0 : *MaxElement(TimeRemaining.GetData(), TimeRemaining.GetData() + TimeRemaining.Num());
 
-		const auto TimeRemainings = TargetASC->GetActiveEffectsTimeRemaining(CurrentEffect);
-		const float CurrentTimeRemaining = TimeRemainings.IsEmpty() ? 0 : TimeRemainings[0];
-
-		TargetASC->RemoveActiveEffects(CurrentEffect, -1);
+		TargetASC->RemoveActiveEffects(CurrentEffectQuery, -1);
 		
 		EffectSpec.Data->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("GameplayEffect.Duration"), CurrentTimeRemaining + EffectDuration);
 	}
