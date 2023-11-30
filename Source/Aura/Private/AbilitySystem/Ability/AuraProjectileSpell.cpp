@@ -22,7 +22,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	const auto AvatarActor = GetAvatarActorFromActorInfo();
 	INVALID_RETURN_VOID(AvatarActor);
 	
-	// FALSE_RETURN_VOID(AvatarActor->HasAuthority());
+	FALSE_RETURN_VOID(AvatarActor->HasAuthority());
 	FALSE_RETURN_VOID(AvatarActor->Implements<UCombatInterface>());
 
 	// ICombatInterface::GetCombatSocketLocation() in CombatInterface.gen.cpp:
